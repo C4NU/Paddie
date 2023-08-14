@@ -1,12 +1,11 @@
 from PIL import Image
 
 class Converter():
-	#GetImage -> ConvertImage -> SaveImage로 순서
+	#ConvertImage에서 처리
 	def __init__(self) -> None:
 		pass
 
-	def ConvertImage(filePath):
-		#main에서 drag drop으로 파일 읽어오면 webpmodule로 GetImage 호출해서 경로 받고 변환, 저장은 
+	def ConvertImage(filePath = "file Path"):
 		image = Image.open(filePath).convert("RGB")
-		filePath = filePath[:-4]
+		filePath = filePath[:-4]	# TO FIX: 마지막 파일 확장자명만 떼네는 방법 생각하기
 		image.save(filePath+".webp", "webp")
