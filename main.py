@@ -1,22 +1,32 @@
-import sys	# Module
-from PyQt5.QtWidgets import QApplication, QWidget	# PyQt5 GUI Module
+from PyQt5.QtWidgets import QMainWindow, QApplication	# PyQt5 모듈
+import sys	# 시스템 모듈
 
-import WebP_module
+import WebP_module as webp	# WebP 변환 모듈
 
 
-class MyApp(QWidget):
+class MainWidget(QMainWindow):
 	def __init__(self):
 		super().__init__()
-		self.initUI()
-        
-	def initUI(self):
-		self.setWindowTitle('My First Application')
-		self.move(300, 300)
-		self.resize(400, 200)
-		self.show()
+
+		self.setWindowTitle("WebP Converter")
+		self.resize(720, 480)
+		self.setAcceptDrops(True)
+
+	def dragEnterEvent(self, event):
+		if event.mimeData().hasUrls():
+			event.accept()
+		else:
+			event.ignore()
+
+	def dropEvent(self, event):
+		files = [u.toLocalFile() for u in event.mimeData().urls()]
+		for f in files:
+			print(f)
+			webp.Converter.ConvertImage(f)
 
 
 if __name__ == '__main__':
-   app = QApplication(sys.argv)
-   ex = MyApp()
-   sys.exit(app.exec_())
+	app = QApplication(sys.argv)
+	ui = MainWidget()
+	ui.show()
+	sys.exit(app.exec_())
