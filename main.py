@@ -1,6 +1,7 @@
 import sys	# Module
 from PyQt5.QtWidgets import QApplication, QWidget	# PyQt5 GUI Module
-from PIL import Image	# WebP Converter Module
+
+import WebP_module
 
 
 class MyApp(QWidget):
