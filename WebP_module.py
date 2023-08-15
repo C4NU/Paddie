@@ -7,7 +7,9 @@ class Converter():
 		pass
 
 	def ConvertImage(self, filePath):
+		# 확장자명 탐색
 		condition, fileFormat = self.SearchFileFormat(filePath)
+
 		if(condition):
 			# jpg, jpeg, png, tiff 등 지원하는 파일 형식일 때
 			image = Image.open(filePath).convert("RGB")
