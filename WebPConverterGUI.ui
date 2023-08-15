@@ -85,7 +85,7 @@
      <enum>QAbstractItemView::DragDrop</enum>
     </property>
     <property name="defaultDropAction">
-     <enum>Qt::MoveAction</enum>
+     <enum>Qt::CopyAction</enum>
     </property>
     <property name="alternatingRowColors">
      <bool>true</bool>
@@ -168,11 +168,23 @@
       <string>Exit</string>
      </property>
     </widget>
+    <addaction name="actionAdd_Files"/>
+    <addaction name="actionRemove_Files"/>
     <addaction name="menuExit"/>
    </widget>
    <addaction name="menuOptions"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionAdd_Files">
+   <property name="text">
+    <string>Add Files ...</string>
+   </property>
+  </action>
+  <action name="actionRemove_Files">
+   <property name="text">
+    <string>Remove Files ...</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>
