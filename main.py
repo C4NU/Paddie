@@ -2,13 +2,21 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import QtGui, QtWidgets, QtCore
 from PyQt5 import uic
-
+########################################
 import sys	# 시스템 모듈
 import os
-
+from fileinput import filename
+########################################
 import WebP_module as webp	# WebP 변환 모듈
+########################################
 
-formClass = uic.loadUiType("WebPConverterGUI.ui")[0]
+def resource_path(relative_path):
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base_path, relative_path)
+
+form = resource_path("WebPConverterGUI.ui")
+formClass = uic.loadUiType(form)[0]
 
 class WindowClass(QMainWindow, formClass) :
 	def __init__(self) :
