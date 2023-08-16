@@ -48,15 +48,15 @@ class WindowClass(QMainWindow, formClass) :
 			event.ignore()
 
 	def okButtonClicked(self):
+		savePath = QFileDialog.getSaveFileName(self, 'Save File', './')
 		# 변환 실행 버튼 callback 함수
 		for index in range(self.listWidget.count()):
-			print(self.listWidget.item(index).text())
-			self.converter.ConvertImage(self.listWidget.item(index).text())
+			self.converter.ConvertImage(self.listWidget.item(index).text(), savePath[0])
 		
 		self.listWidget.clear()
 
 	def addFileButtonClicked(self):
-		fname = QFileDialog.getOpenFileName(self, 'Open file', './')
+		fname = QFileDialog.getOpenFileName(self, 'Open File', './')
 		self.LoadFile(fname[0])
 
 	def exitButtonClicked(self):
