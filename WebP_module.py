@@ -6,7 +6,7 @@ class Converter():
 	def __init__(self) -> None:
 		pass
 
-	def ConvertImage(self, filePath, savePath):
+	def ConvertImage(self, filePath, savePath, saveName):
 		# 확장자명 탐색
 		condition, fileFormat = self.SearchFileFormat(filePath)
 
@@ -14,7 +14,8 @@ class Converter():
 			# jpg, jpeg, png, tiff 등 지원하는 파일 형식일 때
 			image = Image.open(filePath).convert("RGB")
 			filePath = filePath.replace(fileFormat, '.webp')
-			image.save(savePath+".webp", "webp")
+			print(savePath+saveName+".webp")
+			image.save(savePath+saveName+".webp", "webp")
 			print("변환 완료 되었습니다.")
 		else:
 			# 지원하지 않는 파일 형식일 때
