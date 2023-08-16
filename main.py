@@ -23,6 +23,7 @@ class WindowClass(QMainWindow, formClass) :
 	def __init__(self) :
 		super().__init__()
 		self.converter = webp.Converter()
+		self.fileName = []
 		self.setupUi(self)
 		self.buttonBox.clicked.connect(self.okButtonClicked)
 		self.actionAdd_Files.triggered.connect(self.addFileButtonClicked)
@@ -48,12 +49,8 @@ class WindowClass(QMainWindow, formClass) :
 			event.ignore()
 
 	def okButtonClicked(self):
-		savePath = QFileDialog.getSaveFileName(self, 'Save File', './')
-		# 변환 실행 버튼 callback 함수
-		for index in range(self.listWidget.count()):
-			self.converter.ConvertImage(self.listWidget.item(index).text(), savePath[0])
-		
-		self.listWidget.clear()
+		if self.listWidget.count() != 0:
+			self.SaveFile()
 
 	def addFileButtonClicked(self):
 		fname = QFileDialog.getOpenFileName(self, 'Open File', './')
@@ -72,9 +69,21 @@ class WindowClass(QMainWindow, formClass) :
 		size.setWidth(128)
 				
 		item.setSizeHint(size)
+		fileName = os.path.splitext(filePath)[0]
+		self.fileName.append(fileName.split(sep='/')[-1])
 		self.listWidget.addItem(item)
-	def SaveFile(self, filePath):
-		pass
+
+	def SaveFile(self):
+		# 변환 실행 버튼 callback 함수
+		savePath = QFileDialog.getSaveFileName(None, 'Save File', self.fileName[0])
+		if savePath[0]:
+			strSavePath = savePath[0]
+			strSavePath = strSavePath[:strSavePath.rfind("/")]
+			for index in range(self.listWidget.count()):
+				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', self.fileName[index])
+		
+		self.listWidget.clear()
+		self.fileName.clear()
 
 def main():
 	app = QApplication(sys.argv) 
