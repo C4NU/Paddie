@@ -163,3 +163,11 @@ cython_debug/
 *.webp
 *.jpg
 *.png
+
+# macOS Files
+.DS_Store
+.vscode/
+
+# Test Folder
+Test/
+.DS_Store
