@@ -10,10 +10,11 @@ from fileinput import filename
 import WebP_module as webp	# WebP 변환 모듈
 ########################################
 
+#
 def resource_path(relative_path):
-    """ Get absolute path to resource, works for dev and for PyInstaller """
-    base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
-    return os.path.join(base_path, relative_path)
+	""" Get absolute path to resource, works for dev and for PyInstaller """
+	base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
+	return os.path.join(base_path, relative_path)
 
 form = resource_path("WebPConverterGUI.ui")
 formClass = uic.loadUiType(form)[0]
@@ -24,6 +25,8 @@ class WindowClass(QMainWindow, formClass) :
 		self.converter = webp.Converter()
 		self.setupUi(self)
 		self.buttonBox.clicked.connect(self.okButtonClicked)
+		self.actionAdd_Files.triggered.connect(self.addFileButtonClicked)
+		self.actionExit.triggered.connect(self.exitButtonClicked)
 
 	def dragEnterEvent(self, event):
 		if event.mimeData().hasUrls():
@@ -39,16 +42,7 @@ class WindowClass(QMainWindow, formClass) :
 			self.links = []
 			# 드래그 드롭시 파일 추가되는 코드
 			for url in event.mimeData().urls():
-				icon = QtGui.QIcon(url.toLocalFile())
-				item = QtWidgets.QListWidgetItem(icon, url.toLocalFile())
-				
-				size = QtCore.QSize()
-				size.setHeight(128)
-				size.setWidth(128)
-				
-				item.setSizeHint(size)
-				
-				self.listWidget.addItem(item)
+				self.LoadFile(url.toLocalFile())
 
 		else:
 			event.ignore()
@@ -61,8 +55,32 @@ class WindowClass(QMainWindow, formClass) :
 		
 		self.listWidget.clear()
 
-if __name__ == "__main__" :
+	def addFileButtonClicked(self):
+		fname = QFileDialog.getOpenFileName(self, 'Open file', './')
+		self.LoadFile(fname[0])
+
+	def exitButtonClicked(self):
+		exit()
+		
+	#################### FUNCTIONS
+	def LoadFile(self, filePath):
+		icon = QtGui.QIcon(filePath)
+		item = QtWidgets.QListWidgetItem(icon, filePath)
+				
+		size = QtCore.QSize()
+		size.setHeight(128)
+		size.setWidth(128)
+				
+		item.setSizeHint(size)
+		self.listWidget.addItem(item)
+	def SaveFile(self, filePath):
+		pass
+
+def main():
 	app = QApplication(sys.argv) 
 	myWindow = WindowClass() 
 	myWindow.show()
 	app.exec_()
+
+if __name__ == "__main__" :
+	main()

@@ -21,19 +21,6 @@
     <normaloff>Resources/Icon@64X64_02.ico</normaloff>Resources/Icon@64X64_02.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QScrollBar" name="verticalScrollBar">
-    <property name="geometry">
-     <rect>
-      <x>460</x>
-      <y>0</y>
-      <width>16</width>
-      <height>431</height>
-     </rect>
-    </property>
-    <property name="orientation">
-     <enum>Qt::Vertical</enum>
-    </property>
-   </widget>
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
@@ -65,7 +52,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>461</width>
+      <width>481</width>
       <height>431</height>
      </rect>
     </property>
@@ -100,14 +87,14 @@
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>10</x>
+      <x>20</x>
       <y>460</y>
-      <width>120</width>
+      <width>441</width>
       <height>131</height>
      </rect>
     </property>
     <property name="title">
-     <string>GroupBox</string>
+     <string>Conversion Options</string>
     </property>
     <widget class="QCheckBox" name="checkBox">
      <property name="geometry">
@@ -122,30 +109,36 @@
       <string>Loseless</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="checkBox_2">
+    <widget class="QSlider" name="horizontalSlider">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>40</y>
+       <width>301</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>100</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>40</y>
-       <width>81</width>
+       <width>101</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>CheckBox</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="checkBox_3">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>81</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>CheckBox</string>
+      <string>Image Quality</string>
      </property>
     </widget>
    </widget>
@@ -156,21 +149,15 @@
      <x>0</x>
      <y>0</y>
      <width>480</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
      <string>Options</string>
     </property>
-    <widget class="QMenu" name="menuExit">
-     <property name="title">
-      <string>Exit</string>
-     </property>
-    </widget>
     <addaction name="actionAdd_Files"/>
-    <addaction name="actionRemove_Files"/>
-    <addaction name="menuExit"/>
+    <addaction name="actionExit"/>
    </widget>
    <addaction name="menuOptions"/>
   </widget>
@@ -179,10 +166,18 @@
    <property name="text">
     <string>Add Files ...</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
   </action>
   <action name="actionRemove_Files">
    <property name="text">
     <string>Remove Files ...</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit ...</string>
    </property>
   </action>
  </widget>
