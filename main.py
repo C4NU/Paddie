@@ -5,6 +5,7 @@ from PyQt5 import uic
 ########################################
 import sys	# 시스템 모듈
 import os
+import platform
 import subprocess
 ########################################
 import WebP_module as webp	# WebP 변환 모듈
@@ -82,7 +83,11 @@ class WindowClass(QMainWindow, formClass) :
 			for index in range(self.listWidget.count()):
 				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', self.fileName[index])
 		
-		os.startfile(strSavePath)
+		if(platform.system() == "Windows"):	#Windows
+			os.startfile(strSavePath)
+		if(platform.system() == "Darwin"):	#macOS
+			subprocess.run(["open", strSavePath])
+
 		self.listWidget.clear()
 		self.fileName.clear()
 
