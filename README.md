@@ -17,3 +17,13 @@ pyinstaller -w -F 'C:\Users\canu1\Documents\Development\#1 Python Projects\WebPC
 
 ### 3. .spec 파일로 다시 빌드
 pyinstaller.exe "WebP Converter.spec"
+
+## macOS 빌드할 때 (pyinstaller)
+### 1. app 빌드
+pyinstaller -w -F '/Users/jeonhyojae/Dev/Python Projects/WebP-Converter-GUI/main.py' --icon=./Resources/Icon@64X64_02.ico -n='WebP Converter'
+
+### 2. .spec 파일 수정
+    datas=[('WebPConverterGUI.ui', '.')],
+
+### 3. .spec 파일로 다시 빌드
+pyinstaller "WebP Converter.spec"
