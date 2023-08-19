@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>720</height>
+    <height>636</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -32,19 +32,6 @@
     </property>
     <property name="value">
      <number>24</number>
-    </property>
-   </widget>
-   <widget class="QDialogButtonBox" name="buttonBox">
-    <property name="geometry">
-     <rect>
-      <x>340</x>
-      <y>650</y>
-      <width>131</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="standardButtons">
-     <set>QDialogButtonBox::Save</set>
     </property>
    </widget>
    <widget class="QListWidget" name="listWidget">
@@ -96,7 +83,7 @@
     <property name="title">
      <string>Conversion Options</string>
     </property>
-    <widget class="QCheckBox" name="checkBox">
+    <widget class="QCheckBox" name="LoselessOptionBox">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -109,12 +96,12 @@
       <string>Loseless</string>
      </property>
     </widget>
-    <widget class="QSlider" name="horizontalSlider">
+    <widget class="QSpinBox" name="ImageQualityBox">
      <property name="geometry">
       <rect>
-       <x>120</x>
-       <y>40</y>
-       <width>301</width>
+       <x>350</x>
+       <y>20</y>
+       <width>81</width>
        <height>22</height>
       </rect>
      </property>
@@ -124,21 +111,47 @@
      <property name="maximum">
       <number>100</number>
      </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+     <property name="value">
+      <number>80</number>
      </property>
     </widget>
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>101</width>
-       <height>16</height>
+       <x>250</x>
+       <y>20</y>
+       <width>91</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
       <string>Image Quality</string>
+     </property>
+    </widget>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>100</y>
+       <width>131</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Save</set>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="ExifOptionBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>81</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Exif</string>
      </property>
     </widget>
    </widget>
