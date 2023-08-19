@@ -6,16 +6,19 @@ class Converter():
 	def __init__(self) -> None:
 		pass
 
-	def ConvertImage(self, filePath, savePath, saveName):
+	def ConvertImage(self, filePath, savePath, saveName, loselessOpt, imageQualityOpt, exifOpt):
 		# 확장자명 탐색
 		condition, fileFormat = self.SearchFileFormat(filePath)
 
 		if(condition):
 			# jpg, jpeg, png, tiff 등 지원하는 파일 형식일 때
+
 			image = Image.open(filePath).convert("RGB")
 			filePath = filePath.replace(fileFormat, '.webp')
-			print(savePath+saveName+".webp")
-			image.save(savePath+saveName+".webp", "webp")
+			dest = savePath+saveName+".webp"
+			image.save(dest, format="webp", loseless=loselessOpt, quality=imageQualityOpt)#, exif=exifOpt)
+			print(loselessOpt, imageQualityOpt, exifOpt)
+
 			print("변환 완료 되었습니다.")
 		else:
 			# 지원하지 않는 파일 형식일 때

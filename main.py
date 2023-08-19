@@ -25,10 +25,30 @@ class WindowClass(QMainWindow, formClass) :
 		super().__init__()
 		self.converter = webp.Converter()
 		self.fileName = []
+		self.loselessOpt = True
+		self.imageQualityOpt = 120
+		self.exifOpt = True
+
 		self.setupUi(self)
+		
+		# 실행 버튼 함수 링킹
 		self.buttonBox.clicked.connect(self.okButtonClicked)
+		# 파일 추가 버튼 함수 링킹
 		self.actionAdd_Files.triggered.connect(self.addFileButtonClicked)
+		# 종료 버튼 함수 링킹
 		self.actionExit.triggered.connect(self.exitButtonClicked)
+		# Loseless 옵션 링킹
+		self.LoselessOptionBox.stateChanged.connect(self.LoselessOption)
+		# 이미지 퀄리티 옵션 링킹
+		self.ImageQualityBox.valueChanged.connect(self.ImageQualityOption)
+		self.ExifOptionBox.stateChanged.connect(self.ExifOption)
+
+		self.InitOptions()
+
+	def InitOptions(self):
+		self.loselessOpt = self.LoselessOptionBox.isChecked()
+		self.imageQualityOpt = self.ImageQualityBox.value()
+		self.exifOption = self.ExifOptionBox.isChecked()
 
 	def dragEnterEvent(self, event):
 		if event.mimeData().hasUrls():
@@ -81,7 +101,7 @@ class WindowClass(QMainWindow, formClass) :
 			strSavePath = savePath[0]
 			strSavePath = strSavePath[:strSavePath.rfind("/")]
 			for index in range(self.listWidget.count()):
-				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', self.fileName[index])
+				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', self.fileName[index], self.loselessOpt, self.imageQualityOpt, self.exifOpt)
 		
 		if(platform.system() == "Windows"):	#Windows
 			os.startfile(strSavePath)
@@ -90,6 +110,23 @@ class WindowClass(QMainWindow, formClass) :
 
 		self.listWidget.clear()
 		self.fileName.clear()
+
+	def LoselessOption(self, state):
+		#Qt.checked -> True는 2, False는 0
+		if state == Qt.Checked:
+			self.loselessOpt = True
+		else:
+			self.loselessOpt = False
+
+	def ImageQualityOption(self):
+		self.imageQualityOpt = self.imageQualityOpt = self.ImageQualityBox.value()
+		print(self.imageQualityOpt)
+
+	def ExifOption(self, state):
+		if state == Qt.Checked:
+			self.exifOpt = True
+		else:
+			self.exifOpt = False
 
 def main():
 	app = QApplication(sys.argv) 
