@@ -7,11 +7,12 @@ import sys	# 시스템 모듈
 import os
 import platform
 import subprocess
+import logging
 ########################################
 import WebP_module as webp	# WebP 변환 모듈
 ########################################
 
-#
+
 def resource_path(relative_path):
 	""" Get absolute path to resource, works for dev and for PyInstaller """
 	base_path = getattr(sys, '_MEIPASS', os.path.dirname(os.path.abspath(__file__)))
@@ -78,7 +79,7 @@ class WindowClass(QMainWindow, formClass) :
 		self.LoadFile(fname[0])
 
 	def exitButtonClicked(self):
-		exit()
+		sys.exit()
 		
 	#################### FUNCTIONS
 	def LoadFile(self, filePath):
