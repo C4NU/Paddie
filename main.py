@@ -42,10 +42,12 @@ class WindowClass(QMainWindow, formClass) :
 		self.LoselessOptionBox.stateChanged.connect(self.LoselessOption)
 		# 이미지 퀄리티 옵션 링킹
 		self.ImageQualityBox.valueChanged.connect(self.ImageQualityOption)
+		# Exif 정보 저장 옵션 링킹
 		self.ExifOptionBox.stateChanged.connect(self.ExifOption)
 
 		self.InitOptions()
 
+	#################### PyQt5 FUNCTIONS
 	def InitOptions(self):
 		self.loselessOpt = self.LoselessOptionBox.isChecked()
 		self.imageQualityOpt = self.ImageQualityBox.value()
@@ -75,8 +77,9 @@ class WindowClass(QMainWindow, formClass) :
 			self.SaveFile()
 
 	def addFileButtonClicked(self):
-		fname = QFileDialog.getOpenFileName(self, 'Open File', './')
-		self.LoadFile(fname[0])
+		fname = QFileDialog.getOpenFileNames(self, 'Open Files...', './')
+		for name in fname[0]:
+			self.LoadFile(name)
 
 	def exitButtonClicked(self):
 		sys.exit()
@@ -112,6 +115,9 @@ class WindowClass(QMainWindow, formClass) :
 		self.listWidget.clear()
 		self.fileName.clear()
 
+	def IccProfileOption(self):
+		pass
+
 	def LoselessOption(self, state):
 		#Qt.checked -> True는 2, False는 0
 		if state == Qt.Checked:
@@ -121,7 +127,6 @@ class WindowClass(QMainWindow, formClass) :
 
 	def ImageQualityOption(self):
 		self.imageQualityOpt = self.imageQualityOpt = self.ImageQualityBox.value()
-		print(self.imageQualityOpt)
 
 	def ExifOption(self, state):
 		if state == Qt.Checked:
