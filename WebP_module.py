@@ -6,7 +6,7 @@ class Converter():
 	def __init__(self) -> None:
 		pass
 
-	def ConvertImage(self, filePath, savePath, saveName, loselessOpt, imageQualityOpt, exifOpt):
+	def ConvertImage(self, filePath, savePath, saveName, loselessOpt, imageQualityOpt, exifOpt, iccProfileOpt, exactOpt):
 		# 확장자명 탐색
 		condition, fileFormat = self.SearchFileFormat(filePath)
 
@@ -18,11 +18,19 @@ class Converter():
 			filePath = filePath.replace(fileFormat, '.webp')
 			dest = savePath+saveName+".webp"
 			exif = image.info['exif']
+			iccProfile = image.info['icc_profile']
 			
 			if exifOpt == True:
-				image.save(dest, format="webp", loseless=loselessOpt, quality=imageQualityOpt, exif=exif)
+				if iccProfileOpt == True:
+					image.save(dest, format="webp", loseless=loselessOpt, quality=imageQualityOpt, exif=exif, exact = exactOpt, icc_profile=iccProfile)
+				else:
+					image.save(dest, format="webp", loseless=loselessOpt, quality=imageQualityOpt, exif=exif, exact = exactOpt)
+
 			else:
-				image.save(dest, format="webp", loseless=loselessOpt, quality=imageQualityOpt)
+				if iccProfileOpt == True:
+					image.save(dest, format="webp", loseless=loselessOpt, quality=imageQualityOpt, exact=exactOpt, icc_profile=iccProfile)
+				else:
+					image.save(dest, format="webp", loseless=loselessOpt, quality=imageQualityOpt, exact=exactOpt)
 
 			print("변환 완료 되었습니다.")
 		else:
