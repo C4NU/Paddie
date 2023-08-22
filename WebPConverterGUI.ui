@@ -21,19 +21,6 @@
     <normaloff>Resources/Icon@64X64_02.ico</normaloff>Resources/Icon@64X64_02.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QProgressBar" name="progressBar">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>430</y>
-      <width>481</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="value">
-     <number>24</number>
-    </property>
-   </widget>
    <widget class="QListWidget" name="listWidget">
     <property name="geometry">
      <rect>
@@ -118,9 +105,9 @@
     <widget class="QLabel" name="label">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>260</x>
        <y>20</y>
-       <width>91</width>
+       <width>81</width>
        <height>21</height>
       </rect>
      </property>
@@ -131,9 +118,9 @@
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="geometry">
       <rect>
-       <x>310</x>
+       <x>350</x>
        <y>100</y>
-       <width>131</width>
+       <width>81</width>
        <height>23</height>
       </rect>
      </property>
@@ -145,13 +132,39 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>60</y>
+       <y>40</y>
        <width>81</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
       <string>Exif</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="ICCProfileOptionBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ICC Profile</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="ExactOptionBox">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>121</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Transparent RGB</string>
      </property>
     </widget>
    </widget>
