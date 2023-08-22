@@ -22,8 +22,7 @@ class Converter():
 			if exifOpt == True:
 				image.save(dest, format="webp", loseless=loselessOpt, quality=imageQualityOpt, exif=exif)
 			else:
-				image.save(dest, format="webp", loseless=loselessOpt, quality=imageQualityOpt)	
-			print(loselessOpt, imageQualityOpt, exifOpt)
+				image.save(dest, format="webp", loseless=loselessOpt, quality=imageQualityOpt)
 
 			print("변환 완료 되었습니다.")
 		else:
