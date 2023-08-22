@@ -29,6 +29,8 @@ class WindowClass(QMainWindow, formClass) :
 		self.loselessOpt = True
 		self.imageQualityOpt = 120
 		self.exifOpt = True
+		self.iccProfileOpt = False
+		self.exactOpt = False
 
 		self.setupUi(self)
 		
@@ -44,6 +46,8 @@ class WindowClass(QMainWindow, formClass) :
 		self.ImageQualityBox.valueChanged.connect(self.ImageQualityOption)
 		# Exif 정보 저장 옵션 링킹
 		self.ExifOptionBox.stateChanged.connect(self.ExifOption)
+		self.ExactOptionBox.stateChanged.connect(self.ExactOption)
+		self.ICCProfileOptionBox.stateChanged.connect(self.IccProfileOption)
 
 		self.InitOptions()
 
@@ -52,6 +56,8 @@ class WindowClass(QMainWindow, formClass) :
 		self.loselessOpt = self.LoselessOptionBox.isChecked()
 		self.imageQualityOpt = self.ImageQualityBox.value()
 		self.exifOption = self.ExifOptionBox.isChecked()
+		self.iccProfileOpt = self.ICCProfileOptionBox.isChecked()
+		self.exactOpt = self.ExactOptionBox.isChecked()
 
 	def dragEnterEvent(self, event):
 		if event.mimeData().hasUrls():
@@ -78,8 +84,11 @@ class WindowClass(QMainWindow, formClass) :
 
 	def addFileButtonClicked(self):
 		fname = QFileDialog.getOpenFileNames(self, 'Open Files...', './')
-		for name in fname[0]:
-			self.LoadFile(name)
+		if fname == None:
+			print("아무 파일 선택 안됨")
+		else:
+			for name in fname[0]:
+				self.LoadFile(name)
 
 	def exitButtonClicked(self):
 		sys.exit()
@@ -105,7 +114,8 @@ class WindowClass(QMainWindow, formClass) :
 			strSavePath = savePath[0]
 			strSavePath = strSavePath[:strSavePath.rfind("/")]
 			for index in range(self.listWidget.count()):
-				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', self.fileName[index], self.loselessOpt, self.imageQualityOpt, self.exifOpt)
+				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', 
+				self.fileName[index], self.loselessOpt, self.imageQualityOpt, self.exifOpt, self.iccProfileOpt, self.exactOpt)
 		
 		if(platform.system() == "Windows"):	#Windows
 			os.startfile(strSavePath)
@@ -115,8 +125,11 @@ class WindowClass(QMainWindow, formClass) :
 		self.listWidget.clear()
 		self.fileName.clear()
 
-	def IccProfileOption(self):
-		pass
+	def IccProfileOption(self, state):
+		if state == Qt.Checked:
+			self.iccProfileOpt = True
+		else:
+			self.iccProfileOpt = False
 
 	def LoselessOption(self, state):
 		#Qt.checked -> True는 2, False는 0
@@ -134,6 +147,11 @@ class WindowClass(QMainWindow, formClass) :
 		else:
 			self.exifOpt = False
 
+	def ExactOption(self, state):
+		if state == Qt.Checked:
+			self.exactOpt = True
+		else:
+			self.exactOpt = False
 def main():
 	app = QApplication(sys.argv) 
 	myWindow = WindowClass() 
