@@ -49,7 +49,7 @@ pyinstaller -w -F '/Users/jeonhyojae/Dev/Python Projects/WebP-Converter-GUI/main
 #### Sample
 
 ```python
-pyinstaller -w -F '/Users/jeonhyojae/Dev/Python Projects/WebP-Converter-GUI/main.py' --icon=./Resources/Icon@64X64_02.ico -n='WebP Converter'
+pyinstaller -w -F '/Users/jeonhyojae/Dev/Python Projects/WebP-Converter-GUI/main.py' --icon=./Resources/Icon@64X64_02.ico -n='WebP Converter' -d
 ```
 
 ### 2. .spec 파일 수정
