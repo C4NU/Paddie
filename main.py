@@ -117,6 +117,7 @@ class WindowClass(QMainWindow, formClass) :
 		# 변환 실행 버튼 callback 함수
 		self.watermarkOption()
 		savePath = QFileDialog.getSaveFileName(None, 'Save File', self.fileName[0])
+		
 		if savePath[0]:
 			strSavePath = savePath[0]
 			strSavePath = strSavePath[:strSavePath.rfind("/")]
@@ -124,13 +125,16 @@ class WindowClass(QMainWindow, formClass) :
 				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', 
 				self.fileName[index], self.loselessOpt, self.imageQualityOpt, self.exifOpt, self.iccProfileOpt, self.exactOpt, self.watermark)
 		
-		if(platform.system() == "Windows"):	#Windows
-			os.startfile(strSavePath)
-		if(platform.system() == "Darwin"):	#macOS
-			subprocess.run(["open", strSavePath])
+			if(platform.system() == "Windows"):	#Windows
+				os.startfile(strSavePath)
+			if(platform.system() == "Darwin"):	#macOS
+				subprocess.run(["open", strSavePath])
 
-		self.listWidget.clear()
-		self.fileName.clear()
+			self.listWidget.clear()
+			self.fileName.clear()
+		
+		else:
+			return
 
 	def IccProfileOption(self, state):
 		if state == Qt.Checked:
