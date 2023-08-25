@@ -63,3 +63,5 @@ pyinstaller -w -F '/Users/jeonhyojae/Dev/Python Projects/WebP-Converter-GUI/main
 pyinstaller "WebP Converter.spec"
 ```
 
+## 문제점
+이미지 불러오고 취소 누르면 strSavePath가 None값이라 꺼짐
