@@ -31,6 +31,7 @@ class WindowClass(QMainWindow, formClass) :
 		self.exifOpt = True
 		self.iccProfileOpt = False
 		self.exactOpt = False
+		self.watermark = []
 
 		self.setupUi(self)
 		
@@ -58,6 +59,7 @@ class WindowClass(QMainWindow, formClass) :
 		self.exifOption = self.ExifOptionBox.isChecked()
 		self.iccProfileOpt = self.ICCProfileOptionBox.isChecked()
 		self.exactOpt = self.ExactOptionBox.isChecked()
+		self.watermark = self.watermarkBox.toPlainText()
 
 	def dragEnterEvent(self, event):
 		if event.mimeData().hasUrls():
@@ -92,6 +94,10 @@ class WindowClass(QMainWindow, formClass) :
 
 	def exitButtonClicked(self):
 		sys.exit()
+
+	def watermarkOption(self):
+		self.watermark = self.watermarkBox.toPlainText()
+		print(self.watermark)
 		
 	#################### FUNCTIONS
 	def LoadFile(self, filePath):
@@ -109,13 +115,14 @@ class WindowClass(QMainWindow, formClass) :
 
 	def SaveFile(self):
 		# 변환 실행 버튼 callback 함수
+		self.watermarkOption()
 		savePath = QFileDialog.getSaveFileName(None, 'Save File', self.fileName[0])
 		if savePath[0]:
 			strSavePath = savePath[0]
 			strSavePath = strSavePath[:strSavePath.rfind("/")]
 			for index in range(self.listWidget.count()):
 				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', 
-				self.fileName[index], self.loselessOpt, self.imageQualityOpt, self.exifOpt, self.iccProfileOpt, self.exactOpt)
+				self.fileName[index], self.loselessOpt, self.imageQualityOpt, self.exifOpt, self.iccProfileOpt, self.exactOpt, self.watermark)
 		
 		if(platform.system() == "Windows"):	#Windows
 			os.startfile(strSavePath)

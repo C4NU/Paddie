@@ -1,19 +1,20 @@
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 import os
+import Watermark_module
 
 class Converter():
 	def __init__(self) -> None:
-		pass
+		self.watermark = Watermark_module.Watermark()
 
-	def ConvertImage(self, filePath, savePath, saveName, loselessOpt, imageQualityOpt, exifOpt, iccProfileOpt, exactOpt):
+	def ConvertImage(self, filePath, savePath, saveName, loselessOpt, imageQualityOpt, exifOpt, iccProfileOpt, exactOpt, watermarkText):
 		# 확장자명 탐색
 		condition, fileFormat = self.SearchFileFormat(filePath)
 
 		if(condition):
 			# jpg, jpeg, png, tiff 등 지원하는 파일 형식일 때
-
 			image = Image.open(filePath).convert("RGB")
+			image = self.watermark.InsertWatermark(image, watermarkText)
 
 			filePath = filePath.replace(fileFormat, '.webp')
 			dest = savePath+saveName+".webp"
