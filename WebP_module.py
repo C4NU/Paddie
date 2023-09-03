@@ -7,14 +7,14 @@ class Converter():
 	def __init__(self) -> None:
 		self.watermark = Watermark_module.Watermark()
 
-	def ConvertImage(self, filePath, savePath, saveName, loselessOpt, imageQualityOpt, exifOpt, iccProfileOpt, exactOpt, watermarkText):
+	def ConvertImage(self, filePath, savePath, saveName, loselessOpt, imageQualityOpt, exifOpt, iccProfileOpt, exactOpt, watermarkText, watermarkColor):
 		# 확장자명 탐색
 		condition, fileFormat = self.SearchFileFormat(filePath)
 
 		if(condition):
 			# jpg, jpeg, png, tiff 등 지원하는 파일 형식일 때
 			image = Image.open(filePath).convert("RGB")
-			image = self.watermark.InsertWatermark(image, watermarkText)
+			image = self.watermark.InsertWatermark(image=image, fontColor=watermarkColor, watermarkText=watermarkText)
 
 			filePath = filePath.replace(fileFormat, '.webp')
 			dest = savePath+saveName+".webp"

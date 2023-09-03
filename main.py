@@ -50,16 +50,21 @@ class WindowClass(QMainWindow, formClass) :
 		self.ExactOptionBox.stateChanged.connect(self.ExactOption)
 		self.ICCProfileOptionBox.stateChanged.connect(self.IccProfileOption)
 
+		# Watermark 옵션
+		self.watermarkFontColorBox.stateChanged.connect(self.WatermarkColorOption)
 		self.InitOptions()
 
 	#################### PyQt5 FUNCTIONS
 	def InitOptions(self):
+		####################	이미지 품질 관련 옵션
 		self.loselessOpt = self.LoselessOptionBox.isChecked()
 		self.imageQualityOpt = self.ImageQualityBox.value()
 		self.exifOption = self.ExifOptionBox.isChecked()
 		self.iccProfileOpt = self.ICCProfileOptionBox.isChecked()
 		self.exactOpt = self.ExactOptionBox.isChecked()
+		####################	워터마크 관련 옵션
 		self.watermark = self.watermarkBox.toPlainText()
+		self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
 
 	def dragEnterEvent(self, event):
 		if event.mimeData().hasUrls():
@@ -127,7 +132,7 @@ class WindowClass(QMainWindow, formClass) :
 		
 			if(platform.system() == "Windows"):	#Windows
 				os.startfile(strSavePath)
-			if(platform.system() == "Darwin"):	#macOS
+			elif(platform.system() == "Darwin"):	#macOS
 				subprocess.run(["open", strSavePath])
 
 			self.listWidget.clear()
@@ -163,6 +168,13 @@ class WindowClass(QMainWindow, formClass) :
 			self.exactOpt = True
 		else:
 			self.exactOpt = False
+
+	def WatermarkColorOption(self, state):
+		if state == Qt.Checked:
+			self.watermarkOption = True
+		else:
+			self.watermarkOption = False
+			
 def main():
 	app = QApplication(sys.argv) 
 	myWindow = WindowClass() 
