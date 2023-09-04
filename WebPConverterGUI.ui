@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>789</height>
+    <height>906</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -234,7 +234,7 @@
     <property name="geometry">
      <rect>
       <x>380</x>
-      <y>720</y>
+      <y>830</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -243,6 +243,64 @@
      <set>QDialogButtonBox::Save</set>
     </property>
    </widget>
+   <widget class="QGroupBox" name="ExifOptionBox_2">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>740</y>
+      <width>441</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>EXIF Options</string>
+    </property>
+    <widget class="QCheckBox" name="EnableExifPadding">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Enabled</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Padding Size</string>
+     </property>
+    </widget>
+    <widget class="QSpinBox" name="ImageQualityBox_2">
+     <property name="geometry">
+      <rect>
+       <x>110</x>
+       <y>50</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>25</number>
+     </property>
+     <property name="value">
+      <number>5</number>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -250,7 +308,7 @@
      <x>0</x>
      <y>0</y>
      <width>480</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">
