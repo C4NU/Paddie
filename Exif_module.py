@@ -68,7 +68,7 @@ class Exif():
 def main():
 	exifTest = Exif()
 
-	img = Image.open("P2070016.jpg")
+	img = Image.open("P8302280.jpg")
 	padding = int(img.width / 10)
 
 	modelData, exifData = exifTest.GetExifData(img)
@@ -76,7 +76,7 @@ def main():
 	img = exifTest.SetImageText(img, modelData=modelData, exifData=exifData, length = padding)
 	img.show()
 
-	img.save("06.jpg")
+	img.save("04.jpg")
 	
 
 if __name__=="__main__":
