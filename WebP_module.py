@@ -1,3 +1,5 @@
+# Copyright 2023 Hyo Jae Jeon (CANU) canu1832@gmail.com
+
 from PIL import Image, ImageDraw, ImageFont
 
 import os
