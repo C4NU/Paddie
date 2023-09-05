@@ -9,7 +9,7 @@ class Exif():
 		# 폰트 사이즈 (초기)
 		self.fontSize = 50
 		# 폰트 (초기)
-		self.font = ImageFont.truetype("./Resources/Fonts/Poppins/Poppins-Light.ttf", self.fontSize)
+		self.font = ImageFont.truetype("./Resources/Fonts/Barlow/Barlow-Light.ttf", self.fontSize)
 
 	def GetExifData(self, image):
 		exifData = image._getexif()
@@ -36,7 +36,11 @@ class Exif():
 				resultModel = model + " | " + lensModel
 
 			if focalLength is None:
-				focalLength = str(exifData[37386])
+				focalLength = exifData[37386]
+				
+				if model.find("X100") != -1:
+					focalLength = round(focalLength * 1.5 + 0.1)
+					focalLength = str(focalLength)
 			else:
 				pass
 
@@ -73,7 +77,7 @@ class Exif():
 		y = image.height - (length / 2)
 
 		self.fontSize = length / 4.5
-		self.font = ImageFont.truetype("./Resources/Fonts/Poppins/Poppins-Light.ttf", self.fontSize)
+		self.font = ImageFont.truetype("./Resources/Fonts/Barlow/Barlow-Light.ttf", self.fontSize)
 
 		draw.text(xy = (x,y - self.fontSize / 2), text = modelData,font=self.font, fill=(0,0,0), anchor="ms")
 		draw.text(xy = (x,y + self.fontSize), text = exifData,font=self.font, fill=(0,0,0), anchor="ms")
@@ -83,23 +87,16 @@ class Exif():
 def main():
 	exifTest = Exif()
 
-	img = Image.open("DSCF0493.jpg")
+	img = Image.open("DSCF4365.jpg")
 
 	longerLength = img.width if img.width >= img.height else img.height
-	padding = int(longerLength / 10)
+	padding = int(longerLength / 10)\
+	
 
-	exifData = img._getexif()
-
-	print(exifData)
-
-	'''
 	modelData, exifData = exifTest.GetExifData(img)
 	img = exifTest.SetImagePadding2(img, top=int(padding/2), side=int(padding/2), bottom=padding, color=(255,255,255))
 	img = exifTest.SetImageText(img, modelData=modelData, exifData=exifData, length = padding)
 	img.show()
-
-	img.save("04.jpg")
-	'''
 	
 
 if __name__=="__main__":

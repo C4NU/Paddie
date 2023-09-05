@@ -142,7 +142,7 @@ class WindowClass(QMainWindow, formClass) :
 			if(platform.system() == "Windows"):	#Windows
 				os.startfile(strSavePath)
 			elif(platform.system() == "Darwin"):	#macOS
-				subprocess.run(["open", strSavePath])
+				os.system(strSavePath)
 
 			self.listWidget.clear()
 			self.fileName.clear()
