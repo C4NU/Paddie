@@ -33,6 +33,7 @@ class WindowClass(QMainWindow, formClass) :
 		self.exifOpt = True
 		self.iccProfileOpt = False
 		self.exactOpt = False
+		self.conversionOption = True	# webp 변환하는지 선택
 		#self.watermark = []
 
 		self.setupUi(self)
@@ -43,6 +44,8 @@ class WindowClass(QMainWindow, formClass) :
 		self.actionAdd_Files.triggered.connect(self.addFileButtonClicked)
 		# 종료 버튼 함수 링킹
 		self.actionExit.triggered.connect(self.exitButtonClicked)
+
+		self.ConversionEnableBox.stateChanged.connect(self.ConvsersionState)
 		# Loseless 옵션 링킹
 		self.LoselessOptionBox.stateChanged.connect(self.LoselessOption)
 		# 이미지 퀄리티 옵션 링킹
@@ -61,6 +64,8 @@ class WindowClass(QMainWindow, formClass) :
 
 	#################### PyQt5 FUNCTIONS
 	def InitOptions(self):
+		####################	이미지 품질 관련 옵션
+		self.conversionOption = self.ConversionEnableBox.isChecked()
 		####################	이미지 품질 관련 옵션
 		self.loselessOpt = self.LoselessOptionBox.isChecked()
 		self.imageQualityOpt = self.ImageQualityBox.value()
@@ -137,7 +142,8 @@ class WindowClass(QMainWindow, formClass) :
 			#self.watermark#
 			for index in range(self.listWidget.count()):
 				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', 
-				self.fileName[index], self.loselessOpt, self.imageQualityOpt, exifOpt=self.exifOpt, iccProfileOpt=self.iccProfileOpt, exactOpt=self.exactOpt, watermarkText="", exifViewOpt=self.exifPaddingOpt)
+				self.fileName[index], self.loselessOpt, self.imageQualityOpt, exifOpt=self.exifOpt, iccProfileOpt=self.iccProfileOpt, exactOpt=self.exactOpt, watermarkText="", exifViewOpt=self.exifPaddingOpt,
+				conversionOpt = self.conversionOption)
 		
 			if(platform.system() == "Windows"):	#Windows
 				os.startfile(strSavePath)
@@ -149,6 +155,12 @@ class WindowClass(QMainWindow, formClass) :
 		
 		else:
 			return
+
+	def ConvsersionState(self, state):
+		if state == Qt.Checked:
+			self.conversionOption = True
+		else:
+			self.conversionOption = False
 
 	def IccProfileOption(self, state):
 		if state == Qt.Checked:
