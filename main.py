@@ -1,3 +1,5 @@
+# Copyright 2023 Hyo Jae Jeon (CANU) canu1832@gmail.com
+
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import QtGui, QtWidgets, QtCore
