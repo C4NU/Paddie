@@ -9,7 +9,7 @@ class Watermark():
 		# 폰트 사이즈 (초기
 		self.fontSize = 30
 		# 폰트 (초기)
-		self.font = ImageFont.truetype("Chalkduster.ttf", self.fontSize)
+		self.font = ImageFont.truetype("./Resources/Fonts/Poppins/Poppins-Light.ttf", self.fontSize)
 
 	def InsertWatermark(self, image, fontColor, watermarkText):
 			width, height = image.size
@@ -17,7 +17,7 @@ class Watermark():
 			draw = ImageDraw.Draw(image)
 			x, y = int(width/2), int(height/2)
 
-			font = ImageFont.truetype("Chalkduster.ttf", self.fontSize)
+			self.font = ImageFont.truetype("./Resources/Fonts/Poppins/Poppins-Light.ttf", self.fontSize)
 
 			if fontColor:	# FontColor가 
 				draw.text(xy=(width / 2 - (self.fontSize * 2), height / 2), text = watermarkText,font=font, fill=(0,0,0))
