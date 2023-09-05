@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>480</width>
-    <height>792</height>
+    <height>749</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -159,7 +159,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>540</y>
+      <y>550</y>
       <width>441</width>
       <height>61</height>
      </rect>
@@ -198,7 +198,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>610</y>
+      <y>620</y>
       <width>441</width>
       <height>61</height>
      </rect>
@@ -227,7 +227,7 @@
      <x>0</x>
      <y>0</y>
      <width>480</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">
