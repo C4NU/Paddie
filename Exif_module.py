@@ -9,7 +9,7 @@ class Exif():
 		# 폰트 사이즈 (초기)
 		self.fontSize = 50
 		# 폰트 (초기)
-		self.font = ImageFont.truetype("./Resources/Fonts/Barlow/Barlow-Light.ttf", self.fontSize)
+		self.font = ImageFont.truetype("Barlow-Light.ttf", self.fontSize)
 
 	def GetExifData(self, image):
 		exifData = image._getexif()
@@ -77,7 +77,7 @@ class Exif():
 		y = image.height - (length / 2)
 
 		self.fontSize = length / 4.5
-		self.font = ImageFont.truetype("./Resources/Fonts/Barlow/Barlow-Light.ttf", self.fontSize)
+		self.font = ImageFont.truetype("Barlow-Light.ttf", self.fontSize)
 
 		draw.text(xy = (x,y - self.fontSize / 2), text = modelData,font=self.font, fill=(0,0,0), anchor="ms")
 		draw.text(xy = (x,y + self.fontSize), text = exifData,font=self.font, fill=(0,0,0), anchor="ms")

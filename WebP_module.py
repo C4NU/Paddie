@@ -3,12 +3,12 @@
 from PIL import Image, ImageDraw, ImageFont
 
 import os
-import Watermark_module
+#import Watermark_module
 import Exif_module
 
 class Converter():
 	def __init__(self) -> None:
-		self.watermark = Watermark_module.Watermark()
+		#self.watermark = Watermark_module.Watermark()
 		self.exif = Exif_module.Exif()
 
 	def ConvertImage(self, filePath, savePath, saveName, loselessOpt, imageQualityOpt, exifOpt, iccProfileOpt, exactOpt, watermarkText, exifViewOpt):
@@ -35,7 +35,7 @@ class Converter():
 			iccProfile = imageData.info['icc_profile']
 			
 			#image = self.watermark.InsertWatermark(image=image, fontColor=watermarkColor, watermarkText=watermarkText)
-			print(exifOpt)
+
 			if exifOpt == True:
 				if iccProfileOpt == True:
 					image.save(dest, format="webp", loseless=loselessOpt, quality=imageQualityOpt, exif=exifData, exact = exactOpt, icc_profile=iccProfile)

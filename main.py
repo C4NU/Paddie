@@ -192,6 +192,12 @@ class WindowClass(QMainWindow, formClass) :
 			self.exifPaddingOpt = False
 
 def main():
+	try:
+		os.chdir(sys._MEIPASS)
+		print(sys._MEIPASS)
+	except:
+		os.chdir(os.getcwd())
+		
 	app = QApplication(sys.argv) 
 	myWindow = WindowClass() 
 	myWindow.show()
