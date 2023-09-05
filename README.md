@@ -49,7 +49,7 @@ pyinstaller -w -F '/Users/jeonhyojae/Dev/Python Projects/WebP-Converter-GUI/main
 #### Sample
 
 ```python
-pyinstaller -w -F '/Users/jeonhyojae/Dev/Python Projects/WebP-Converter-GUI/main.py' --icon=./Resources/Icon@64X64_02.ico -n='WebP Converter' -d
+pyinstaller -w -F '/Users/jeonhyojae/Dev/Python Projects/WebP-Converter-GUI/main.py' --icon=./Resources/Icon@64X64_02.ico -n='WebP Converter' -d all
 ```
 
 ### 2. .spec 파일 수정
@@ -63,5 +63,7 @@ pyinstaller -w -F '/Users/jeonhyojae/Dev/Python Projects/WebP-Converter-GUI/main
 pyinstaller "WebP Converter.spec"
 ```
 
-## 문제점
-이미지 불러오고 취소 누르면 strSavePath가 None값이라 꺼짐
+워터마크 관련 구현 기능
+1. 워터마크 폰트 고르는 기능
+2. 워터마크 기본 폰트 설정
+3. 워터마크 위치 조정, 폰트 크기 설정, 미리보기 지원?

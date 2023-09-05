@@ -1,5 +1,3 @@
-# Copyright 2023 Hyo Jae Jeon (CANU) canu1832@gmail.com
-
 from PIL import Image, ImageFont, ImageDraw
 
 import os, platform
@@ -8,7 +6,7 @@ class Watermark():
 	def __init__(self):
 		# 변수 초기화
 
-		# 폰트 사이즈 (초기)
+		# 폰트 사이즈 (초기
 		self.fontSize = 30
 		# 폰트 (초기)
 		self.font = ImageFont.truetype("Chalkduster.ttf", self.fontSize)
