@@ -1,5 +1,3 @@
-# Copyright 2023 Hyo Jae Jeon (CANU) canu1832@gmail.com
-
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import *
 from PyQt5 import QtGui, QtWidgets, QtCore
@@ -33,12 +31,12 @@ class WindowClass(QMainWindow, formClass) :
 		self.exifOpt = True
 		self.iccProfileOpt = False
 		self.exactOpt = False
-		self.watermark = []
+		#self.watermark = []
 
 		self.setupUi(self)
 		
 		# 실행 버튼 함수 링킹
-		self.buttonBox.clicked.connect(self.okButtonClicked)
+		self.SaveButton.clicked.connect(self.okButtonClicked)
 		# 파일 추가 버튼 함수 링킹
 		self.actionAdd_Files.triggered.connect(self.addFileButtonClicked)
 		# 종료 버튼 함수 링킹
@@ -53,7 +51,10 @@ class WindowClass(QMainWindow, formClass) :
 		self.ICCProfileOptionBox.stateChanged.connect(self.IccProfileOption)
 
 		# Watermark 옵션
-		self.watermarkFontColorBox.stateChanged.connect(self.WatermarkColorOption)
+		#self.watermarkFontColorBox.stateChanged.connect(self.WatermarkColorOption)
+
+		# ExifView 옵션
+		self.EnableExifPadding.stateChanged.connect(self.ExifPaddingOption)
 		self.InitOptions()
 
 	#################### PyQt5 FUNCTIONS
@@ -61,12 +62,14 @@ class WindowClass(QMainWindow, formClass) :
 		####################	이미지 품질 관련 옵션
 		self.loselessOpt = self.LoselessOptionBox.isChecked()
 		self.imageQualityOpt = self.ImageQualityBox.value()
-		self.exifOption = self.ExifOptionBox.isChecked()
+		self.exifOpt = self.ExifOptionBox.isChecked()
 		self.iccProfileOpt = self.ICCProfileOptionBox.isChecked()
 		self.exactOpt = self.ExactOptionBox.isChecked()
 		####################	워터마크 관련 옵션
-		self.watermark = self.watermarkBox.toPlainText()
-		self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
+		#self.watermark = self.watermarkBox.toPlainText()
+		#self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
+		####################	하단 EXIF 삽입 관련 옵션
+		self.exifPaddingOpt = self.EnableExifPadding.isChecked()
 
 	def dragEnterEvent(self, event):
 		if event.mimeData().hasUrls():
@@ -122,15 +125,17 @@ class WindowClass(QMainWindow, formClass) :
 
 	def SaveFile(self):
 		# 변환 실행 버튼 callback 함수
-		self.watermarkOption()
+		#self.watermarkOption()
 		savePath = QFileDialog.getSaveFileName(None, 'Save File', self.fileName[0])
 		
 		if savePath[0]:
 			strSavePath = savePath[0]
 			strSavePath = strSavePath[:strSavePath.rfind("/")]
+
+			#self.watermark#
 			for index in range(self.listWidget.count()):
 				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', 
-				self.fileName[index], self.loselessOpt, self.imageQualityOpt, self.exifOpt, self.iccProfileOpt, self.exactOpt, self.watermark)
+				self.fileName[index], self.loselessOpt, self.imageQualityOpt, exifOpt=self.exifOpt, iccProfileOpt=self.iccProfileOpt, exactOpt=self.exactOpt, watermarkText="", exifViewOpt=self.exifPaddingOpt)
 		
 			if(platform.system() == "Windows"):	#Windows
 				os.startfile(strSavePath)
@@ -171,12 +176,19 @@ class WindowClass(QMainWindow, formClass) :
 		else:
 			self.exactOpt = False
 
+	# 워터마크 옵션
 	def WatermarkColorOption(self, state):
 		if state == Qt.Checked:
 			self.watermarkOption = True
 		else:
 			self.watermarkOption = False
-			
+
+	def ExifPaddingOption(self, state):
+		if state == Qt.Checked:
+			self.exifPaddingOpt = True
+		else:
+			self.exifPaddingOpt = False
+
 def main():
 	app = QApplication(sys.argv) 
 	myWindow = WindowClass() 
