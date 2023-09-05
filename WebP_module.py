@@ -32,7 +32,10 @@ class Converter():
 
 				filePath = filePath.replace(fileFormat, '.webp')
 				dest = savePath+saveName+".webp"
-				exifData = imageData.info['exif']
+				exifData = getattr(imageData.info, 'exif', None)
+				if not exifData:
+					print(f'no exif data {saveName}')
+					return
 				iccProfile = imageData.info['icc_profile']
 			
 				#image = self.watermark.InsertWatermark(image=image, fontColor=watermarkColor, watermarkText=watermarkText)
