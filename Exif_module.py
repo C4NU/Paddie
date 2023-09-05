@@ -17,11 +17,11 @@ class Exif():
 		if exifData is None:
 			print('Sorry, image has no exif data.')
 		else:
-			model = str(exifData[272]) if 272 in exifData else " "
-			lensModel = str(exifData[42036]) if 42036 in exifData else " "
-			fNumber = str(exifData[33437]) if 33437 in exifData else " "
-			focalLength = str(exifData[41989]) if 41989 in exifData else " "
-			iso = str(exifData[34855]) if 34855 in exifData else " "
+			model = str(exifData[272]) if 272 in exifData else None
+			lensModel = str(exifData[42036]) if 42036 in exifData else None
+			fNumber = str(exifData[33437]) if 33437 in exifData else None
+			focalLength = str(exifData[41989]) if 41989 in exifData else None
+			iso = str(exifData[34855]) if 34855 in exifData else None
 			
 			try:
 				shutterSpeedValue = 1 / (2 ** exifData[37377])
@@ -30,8 +30,19 @@ class Exif():
 			except KeyError:
 				pass
 
-			resultModel = model + " | " + lensModel
+			if lensModel is None:
+				resultModel = model
+			else:
+				resultModel = model + " | " + lensModel
+
+			if focalLength is None:
+				focalLength = str(exifData[37386])
+			else:
+				pass
+
 			resultExif = focalLength + "mm | F/" + fNumber + " | " + "ISO " + iso + " | " + shutterSpeed
+
+			print(resultExif)
 
 			return resultModel, resultExif
 
@@ -72,17 +83,23 @@ class Exif():
 def main():
 	exifTest = Exif()
 
-	img = Image.open("P2121586.jpg")
+	img = Image.open("DSCF0493.jpg")
 
 	longerLength = img.width if img.width >= img.height else img.height
 	padding = int(longerLength / 10)
 
+	exifData = img._getexif()
+
+	print(exifData)
+
+	'''
 	modelData, exifData = exifTest.GetExifData(img)
 	img = exifTest.SetImagePadding2(img, top=int(padding/2), side=int(padding/2), bottom=padding, color=(255,255,255))
 	img = exifTest.SetImageText(img, modelData=modelData, exifData=exifData, length = padding)
 	img.show()
 
 	img.save("04.jpg")
+	'''
 	
 
 if __name__=="__main__":
