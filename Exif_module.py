@@ -28,7 +28,7 @@ class Exif():
 				shutterSpeed = f"1/{int(round(1/shutterSpeedValue))}s"
 			
 			except KeyError:
-				pass
+				shutterSpeed = " "
 
 			if lensModel is None:
 				resultModel = model
@@ -87,16 +87,18 @@ class Exif():
 def main():
 	exifTest = Exif()
 
-	img = Image.open("DSCF4365.jpg")
+	img = Image.open("Error-Test/01.jpg")
 
 	longerLength = img.width if img.width >= img.height else img.height
-	padding = int(longerLength / 10)\
+	padding = int(longerLength / 10)
 	
 
 	modelData, exifData = exifTest.GetExifData(img)
 	img = exifTest.SetImagePadding2(img, top=int(padding/2), side=int(padding/2), bottom=padding, color=(255,255,255))
 	img = exifTest.SetImageText(img, modelData=modelData, exifData=exifData, length = padding)
 	img.show()
+
+	img.save("01_a.jpg")
 	
 
 if __name__=="__main__":
