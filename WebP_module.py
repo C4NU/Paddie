@@ -69,7 +69,7 @@ class Converter():
 				dest = savePath+saveName+'.webp'
 				image.save(dest, format='webp', quality=92)
 			else:
-				print("잘못된 파일 형식 입니다.")
+				print("잘못된 파일 변환 선택지 입니다.")
 				return
 
 		else:
