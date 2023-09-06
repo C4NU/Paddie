@@ -8,7 +8,6 @@ from PyQt5 import uic
 import sys	# 시스템 모듈
 import os
 import platform
-import subprocess
 import logging
 ########################################
 import WebP_module as webp	# WebP 변환 모듈
@@ -173,7 +172,10 @@ class WindowClass(QMainWindow, formClass) :
 				self.listWidget.clear()
 				self.fileName.clear()
 		except:
-			os.system('pause')
+			if(platform.system() == "Windows"):
+				os.system('pause')
+			elif(platform.system() == "Darwin"):
+				input("엔터를 눌러 진행...")
 			return
 
 	def ConvsersionState(self, state):
