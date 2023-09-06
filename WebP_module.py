@@ -78,7 +78,8 @@ class Converter():
 
 	def SearchFileFormat(self, filePath):
 		fileFormat = os.path.splitext(filePath)[1]
-		if(fileFormat == ".jpg" or fileFormat == ".jpeg" or fileFormat == ".png" or fileFormat == ".tiff"):
+
+		if(fileFormat == ".jpg" or fileFormat == ".JPG" or fileFormat == ".jpeg"  or fileFormat == ".JPEG" or fileFormat == ".PNG" or fileFormat == ".png" or fileFormat == ".tiff"):
 			return True, fileFormat
 		else:
 			return False, None
