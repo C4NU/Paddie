@@ -126,6 +126,7 @@ class WindowClass(QMainWindow, formClass) :
 		
 	#################### FUNCTIONS
 	def LoadFile(self, filePath):
+		# ISSUE: 파일 로딩할때 특정 이미지 파일이 누워서 로딩됨 / 혹은 저장할때?
 		icon = QtGui.QIcon(filePath)
 		item = QtWidgets.QListWidgetItem(icon, filePath)
 				
