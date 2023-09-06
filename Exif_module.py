@@ -36,8 +36,11 @@ class Exif():
 				shutterSpeed = self.dumpData
 
 			if lensModel is None:
+				print("Model: "+model)
 				resultModel = model
 			else:
+				print("Model: "+model)
+				print("Lens: "+lensModel)
 				resultModel = model + " | " + lensModel
 
 			if focalLength is None:
@@ -53,8 +56,13 @@ class Exif():
 				print("조리개 데이터가 없습니다.")
 				fNumber = self.dumpData	# 디버그 테스트용 예외처리
 
-			print("Model: "+model)
-			print("Lens: "+lensModel)
+			if iso is None:
+				print("ISO 데이터가 없습니다.")
+				iso = self.dumpData
+
+			if shutterSpeed is None:
+				print("셔터스피드 데이터가 없습니다.")
+				shutterSpeed = self.dumpData
 
 			print("FocalLength: "+focalLength)
 			print("fNumber: "+fNumber)
