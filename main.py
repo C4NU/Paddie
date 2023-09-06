@@ -28,12 +28,19 @@ class WindowClass(QMainWindow, formClass) :
 		super().__init__()
 		self.converter = webp.Converter()
 		self.fileName = []
-		self.loselessOpt = True
-		self.imageQualityOpt = 120
-		self.exifOpt = True
+
+		self.loselessOpt = False
+		self.imageQualityOpt = 80
+		self.exifOpt = False
 		self.iccProfileOpt = False
 		self.exactOpt = False
-		self.conversionOption = True	# webp 변환하는지 선택
+		
+		self.conversionOption = False	# webp 변환하는지 선택
+		
+		# Exif Options 관련 변수
+		self.exifPaddingOpt = False	# Exif Padding 을 enable 할 지에 대한 변수
+		self.saveFormatIndex = 0	# JPG, PNG, WebP 파일 형식중 고른 값에 대한 변수
+		
 		#self.watermark = []
 
 		self.setupUi(self)
@@ -60,6 +67,7 @@ class WindowClass(QMainWindow, formClass) :
 
 		# ExifView 옵션
 		self.EnableExifPadding.stateChanged.connect(self.ExifPaddingOption)
+		self.SaveFormatBox.currentIndexChanged.connect(self.ExifSaveFormatOption)
 		self.InitOptions()
 
 	#################### PyQt5 FUNCTIONS
@@ -77,6 +85,7 @@ class WindowClass(QMainWindow, formClass) :
 		#self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
 		####################	하단 EXIF 삽입 관련 옵션
 		self.exifPaddingOpt = self.EnableExifPadding.isChecked()
+		self.saveFormatIndex = self.SaveFormatBox.currentIndex()
 
 	def dragEnterEvent(self, event):
 		if event.mimeData().hasUrls():
@@ -138,13 +147,23 @@ class WindowClass(QMainWindow, formClass) :
 		if savePath[0]:
 			strSavePath = savePath[0]
 			strSavePath = strSavePath[:strSavePath.rfind("/")]
+			
+			# 01 WebP 이미지로만 변환할 때
+			if self.conversionOption == True:
+				for index in range(self.listWidget.count()):
+					self.converter.ConvertImageToWebP(self.listWidget.item(index).text(), strSavePath+'/', 
+					self.fileName[index], self.loselessOpt, self.imageQualityOpt, exifOpt=self.exifOpt, iccProfileOpt=self.iccProfileOpt, exactOpt=self.exactOpt, watermarkText="", exifViewOpt=self.exifPaddingOpt,
+					conversionOpt = self.conversionOption)
 
-			#self.watermark#
-			for index in range(self.listWidget.count()):
-				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', 
-				self.fileName[index], self.loselessOpt, self.imageQualityOpt, exifOpt=self.exifOpt, iccProfileOpt=self.iccProfileOpt, exactOpt=self.exactOpt, watermarkText="", exifViewOpt=self.exifPaddingOpt,
-				conversionOpt = self.conversionOption)
-		
+			# 02 Exif Padding 이미지로만 변환할때
+			elif self.exifPaddingOpt == True:
+				for index in range(self.listWidget.count()):
+					self.converter.ConvertExifImage(filePath=self.listWidget.item(index).text(), savePath=strSavePath+'/', 
+					saveName=self.fileName[index], fileFormatOpt=self.saveFormatIndex)
+
+			else:
+				print("옵션 선택 에러 / 다시 선택해주세요")
+
 			if(platform.system() == "Windows"):	#Windows
 				os.startfile(strSavePath)
 			elif(platform.system() == "Darwin"):	#macOS
@@ -152,7 +171,6 @@ class WindowClass(QMainWindow, formClass) :
 
 			self.listWidget.clear()
 			self.fileName.clear()
-		
 		else:
 			return
 
@@ -176,7 +194,7 @@ class WindowClass(QMainWindow, formClass) :
 			self.loselessOpt = False
 
 	def ImageQualityOption(self):
-		self.imageQualityOpt = self.imageQualityOpt = self.ImageQualityBox.value()
+		self.imageQualityOpt = self.ImageQualityBox.value()
 
 	def ExifOption(self, state):
 		if state == Qt.Checked:
@@ -197,11 +215,15 @@ class WindowClass(QMainWindow, formClass) :
 		else:
 			self.watermarkOption = False
 
+	# Exif Padding 옵션
 	def ExifPaddingOption(self, state):
 		if state == Qt.Checked:
 			self.exifPaddingOpt = True
 		else:
 			self.exifPaddingOpt = False
+	
+	def ExifSaveFormatOption(self):
+		self.saveFormatIndex = self.SaveFormatBox.currentIndex()
 
 def main():
 	try:
