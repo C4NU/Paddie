@@ -11,6 +11,9 @@ class Exif():
 		# 폰트 (초기)
 		self.font = ImageFont.truetype("Barlow-Light.ttf", self.fontSize)
 
+	def Debugger(self, debugType):
+		pass
+
 	def GetExifData(self, image):
 		exifData = image._getexif()
 		
@@ -36,13 +39,21 @@ class Exif():
 				resultModel = model + " | " + lensModel
 
 			if focalLength is None:
-				focalLength = exifData[37386]
+				focalLength = str(exifData[37386])
 				
 				if model.find("X100") != -1:
 					focalLength = round(focalLength * 1.5 + 0.1)
 					focalLength = str(focalLength)
 			else:
 				pass
+
+			if fNumber is None:
+				fNumber = "0.1"	# 디버그 테스트용 예외처리
+
+			print("focalLength: "+focalLength)
+			print("fNumber: "+fNumber)
+			print("ISO: "+iso)
+			print("ShutterSpeed: "+shutterSpeed)
 
 			resultExif = focalLength + "mm | F/" + fNumber + " | " + "ISO " + iso + " | " + shutterSpeed
 
@@ -83,6 +94,7 @@ class Exif():
 		draw.text(xy = (x,y + self.fontSize), text = exifData,font=self.font, fill=(0,0,0), anchor="ms")
 		
 		return image
+	
 	
 def main():
 	exifTest = Exif()
