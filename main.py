@@ -144,34 +144,36 @@ class WindowClass(QMainWindow, formClass) :
 		#self.watermarkOption()
 		savePath = QFileDialog.getSaveFileName(None, 'Save File', self.fileName[0])
 		
-		if savePath[0]:
-			strSavePath = savePath[0]
-			strSavePath = strSavePath[:strSavePath.rfind("/")]
+		try:
+			if savePath[0]:
+				strSavePath = savePath[0]
+				strSavePath = strSavePath[:strSavePath.rfind("/")]
 			
-			# 01 WebP 이미지로만 변환할 때
-			if self.conversionOption == True:
-				for index in range(self.listWidget.count()):
-					self.converter.ConvertImageToWebP(self.listWidget.item(index).text(), strSavePath+'/', 
-					self.fileName[index], self.loselessOpt, self.imageQualityOpt, exifOpt=self.exifOpt, iccProfileOpt=self.iccProfileOpt, exactOpt=self.exactOpt, watermarkText="", exifViewOpt=self.exifPaddingOpt,
-					conversionOpt = self.conversionOption)
+				# 01 WebP 이미지로만 변환할 때
+				if self.conversionOption == True:
+					for index in range(self.listWidget.count()):
+						self.converter.ConvertImageToWebP(self.listWidget.item(index).text(), strSavePath+'/', 
+						self.fileName[index], self.loselessOpt, self.imageQualityOpt, exifOpt=self.exifOpt, iccProfileOpt=self.iccProfileOpt, exactOpt=self.exactOpt, watermarkText="", exifViewOpt=self.exifPaddingOpt,
+						conversionOpt = self.conversionOption)
 
-			# 02 Exif Padding 이미지로만 변환할때
-			elif self.exifPaddingOpt == True:
-				for index in range(self.listWidget.count()):
-					self.converter.ConvertExifImage(filePath=self.listWidget.item(index).text(), savePath=strSavePath+'/', 
-					saveName=self.fileName[index], fileFormatOpt=self.saveFormatIndex)
+				# 02 Exif Padding 이미지로만 변환할때
+				elif self.exifPaddingOpt == True:
+					for index in range(self.listWidget.count()):
+						self.converter.ConvertExifImage(filePath=self.listWidget.item(index).text(), savePath=strSavePath+'/', 
+						saveName=self.fileName[index], fileFormatOpt=self.saveFormatIndex)
 
-			else:
-				print("옵션 선택 에러 / 다시 선택해주세요")
+				else:
+					print("옵션 선택 에러 / 다시 선택해주세요")
 
-			if(platform.system() == "Windows"):	#Windows
-				os.startfile(strSavePath)
-			elif(platform.system() == "Darwin"):	#macOS
-				os.system("open "+'"'+strSavePath+'"')
+				if(platform.system() == "Windows"):	#Windows
+					os.startfile(strSavePath)
+				elif(platform.system() == "Darwin"):	#macOS
+					os.system("open "+'"'+strSavePath+'"')
 
-			self.listWidget.clear()
-			self.fileName.clear()
-		else:
+				self.listWidget.clear()
+				self.fileName.clear()
+		except:
+			os.system('pause')
 			return
 
 	def ConvsersionState(self, state):

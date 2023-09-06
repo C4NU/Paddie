@@ -10,6 +10,7 @@ class Exif():
 		self.fontSize = 50
 		# 폰트 (초기)
 		self.font = ImageFont.truetype("Barlow-Light.ttf", self.fontSize)
+		self.dumpData = "NONEDATA"
 
 	def Debugger(self, debugType):
 		pass
@@ -20,6 +21,7 @@ class Exif():
 		if exifData is None:
 			print('Sorry, image has no exif data.')
 		else:
+			# 데이터 읽어오기
 			model = str(exifData[272]) if 272 in exifData else None
 			lensModel = str(exifData[42036]) if 42036 in exifData else None
 			fNumber = str(exifData[33437]) if 33437 in exifData else None
@@ -31,7 +33,7 @@ class Exif():
 				shutterSpeed = f"1/{int(round(1/shutterSpeedValue))}s"
 			
 			except KeyError:
-				shutterSpeed = " "
+				shutterSpeed = self.dumpData
 
 			if lensModel is None:
 				resultModel = model
@@ -39,25 +41,30 @@ class Exif():
 				resultModel = model + " | " + lensModel
 
 			if focalLength is None:
-				focalLength = str(exifData[37386])
-				
-				if model.find("X100") != -1:
-					focalLength = round(focalLength * 1.5 + 0.1)
-					focalLength = str(focalLength)
+				focalLength = str(exifData[37386])	#소수점
+
+				if focalLength is None:
+					print("Focal Length 데이터가 없습니다.")
+					focalLength = self.dumpData
 			else:
 				pass
 
 			if fNumber is None:
-				fNumber = "0.1"	# 디버그 테스트용 예외처리
+				print("조리개 데이터가 없습니다.")
+				fNumber = self.dumpData	# 디버그 테스트용 예외처리
 
-			print("focalLength: "+focalLength)
+			print("Model: "+model)
+			print("Lens: "+lensModel)
+
+			print("FocalLength: "+focalLength)
 			print("fNumber: "+fNumber)
 			print("ISO: "+iso)
 			print("ShutterSpeed: "+shutterSpeed)
 
-			resultExif = focalLength + "mm | F/" + fNumber + " | " + "ISO " + iso + " | " + shutterSpeed
-
-			print(resultExif)
+			try:
+				resultExif = focalLength + "mm | F/" + fNumber + " | " + "ISO " + iso + " | " + shutterSpeed
+			except:
+				print("데이터 불량, 콘솔 창의 기록을 댓글로 남겨주세요.")
 
 			return resultModel, resultExif
 

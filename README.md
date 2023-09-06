@@ -25,6 +25,10 @@ pyinstaller -w -F 'main.py 경로' --icon=.\Resources\Icon@64X64_02.ico -n='빌�
 pyinstaller -w -F 'C:\Users\canu1\Documents\Development\#1 Python Projects\WebPConverterGUI\main.py' --icon=.\Resources\Icon@64X64_02.ico -n='WebP Converter'
 ```
 
+#### Sample (Debug)
+pyinstaller --onefile --icon=.\Resources\Icon@64X64_02.ico -n='WebP Converter' 'C:\Users\canu1\Documents\Development\#1 Python Projects\WebPConverterGUI\main.py'
+'''
+
 ### 2. .spec 파일 수정
 ```
 ...
