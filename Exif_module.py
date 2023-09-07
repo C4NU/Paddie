@@ -24,22 +24,28 @@ class Exif():
 			print('Sorry, image has no exif data.')
 		else:
 			# 데이터 읽어오기
-			model = str(exifData[272]) if 272 in exifData else None
-			lensModel = str(exifData[42036]) if 42036 in exifData else None
-			fNumber = str(exifData[33437]) if 33437 in exifData else None
-			focalLength = str(exifData[41989]) if 41989 in exifData else None
-			iso = str(exifData[34855]) if 34855 in exifData else None
+			model = str(exifData[272]) if 272 in exifData else self.dumpData
+			lensModel = str(exifData[42036]) if 42036 in exifData else self.dumpData
+			fNumber = str(exifData[33437]) if 33437 in exifData else self.dumpData
+			focalLength = str(exifData[41989]) if 41989 in exifData else self.dumpData
+			iso = str(exifData[34855]) if 34855 in exifData else self.dumpData
 			
 			try:
+<<<<<<< HEAD
 				shutter_fraction = Fraction(exifData[33434])
 				shutterSpeed = f"{shutter_fraction.numerator}/{shutter_fraction.denominator}s"
 				#shutterSpeedValue = 1 / (2 ** exifData[37377])
 				#shutterSpeed = f"1/{int(round(1/shutterSpeedValue))}s"
+=======
+				print(exifData[37377])
+				shutterSpeedValue = 1 / (2 ** exifData[37377])
+				shutterSpeed = f"1/{int(round(1/shutterSpeedValue))}s"
+>>>>>>> 8c5653608952891d6223178016a1450ed627ba98
 			
 			except KeyError:
 				shutterSpeed = self.dumpData
 
-			if lensModel is None:
+			if lensModel is self.dumpData:
 				print("Model: "+model)
 				resultModel = model
 			else:
@@ -47,26 +53,28 @@ class Exif():
 				print("Lens: "+lensModel)
 				resultModel = model + " | " + lensModel
 
+<<<<<<< HEAD
 			if focalLength is None:
 				focalLength = str(int(exifData[37386]))	#소수점
+=======
+			if focalLength is self.dumpData:
+				focalLength = str(exifData[37386])	#소수점
+>>>>>>> 8c5653608952891d6223178016a1450ed627ba98
 
-				if focalLength is None:
+				if focalLength is self.dumpData:
 					print("Focal Length 데이터가 없습니다.")
 					focalLength = self.dumpData
 			else:
 				pass
 
-			if fNumber is None:
+			if fNumber is self.dumpData:
 				print("조리개 데이터가 없습니다.")
-				fNumber = self.dumpData	# 디버그 테스트용 예외처리
 
-			if iso is None:
+			if iso is self.dumpData:
 				print("ISO 데이터가 없습니다.")
-				iso = self.dumpData
 
-			if shutterSpeed is None:
+			if shutterSpeed is self.dumpData:
 				print("셔터스피드 데이터가 없습니다.")
-				shutterSpeed = self.dumpData
 
 			print("FocalLength: "+focalLength)
 			print("fNumber: "+fNumber)
