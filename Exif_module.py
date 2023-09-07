@@ -2,6 +2,8 @@
 
 from PIL import Image, ImageDraw, ImageFont
 
+from fractions import Fraction
+
 # 폰트 vs padding 비율은 1:4?
 # 이미지파일 vs padding 비율은 10:1
 class Exif():
@@ -29,8 +31,10 @@ class Exif():
 			iso = str(exifData[34855]) if 34855 in exifData else None
 			
 			try:
-				shutterSpeedValue = 1 / (2 ** exifData[37377])
-				shutterSpeed = f"1/{int(round(1/shutterSpeedValue))}s"
+				shutter_fraction = Fraction(exifData[33434])
+				shutterSpeed = f"{shutter_fraction.numerator}/{shutter_fraction.denominator}s"
+				#shutterSpeedValue = 1 / (2 ** exifData[37377])
+				#shutterSpeed = f"1/{int(round(1/shutterSpeedValue))}s"
 			
 			except KeyError:
 				shutterSpeed = self.dumpData
@@ -44,7 +48,7 @@ class Exif():
 				resultModel = model + " | " + lensModel
 
 			if focalLength is None:
-				focalLength = str(exifData[37386])	#소수점
+				focalLength = str(int(exifData[37386]))	#소수점
 
 				if focalLength is None:
 					print("Focal Length 데이터가 없습니다.")
