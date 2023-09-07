@@ -31,16 +31,10 @@ class Exif():
 			iso = str(exifData[34855]) if 34855 in exifData else self.dumpData
 			
 			try:
-<<<<<<< HEAD
 				shutter_fraction = Fraction(exifData[33434])
 				shutterSpeed = f"{shutter_fraction.numerator}/{shutter_fraction.denominator}s"
 				#shutterSpeedValue = 1 / (2 ** exifData[37377])
 				#shutterSpeed = f"1/{int(round(1/shutterSpeedValue))}s"
-=======
-				print(exifData[37377])
-				shutterSpeedValue = 1 / (2 ** exifData[37377])
-				shutterSpeed = f"1/{int(round(1/shutterSpeedValue))}s"
->>>>>>> 8c5653608952891d6223178016a1450ed627ba98
 			
 			except KeyError:
 				shutterSpeed = self.dumpData
@@ -53,15 +47,10 @@ class Exif():
 				print("Lens: "+lensModel)
 				resultModel = model + " | " + lensModel
 
-<<<<<<< HEAD
-			if focalLength is None:
-				focalLength = str(int(exifData[37386]))	#소수점
-=======
 			if focalLength is self.dumpData:
-				focalLength = str(exifData[37386])	#소수점
->>>>>>> 8c5653608952891d6223178016a1450ed627ba98
-
-				if focalLength is self.dumpData:
+				try:
+					focalLength = str(exifData[37386])	#소수점
+				except KeyError:
 					print("Focal Length 데이터가 없습니다.")
 					focalLength = self.dumpData
 			else:
@@ -126,7 +115,7 @@ class Exif():
 def main():
 	exifTest = Exif()
 
-	img = Image.open("Error-Test/01.jpg")
+	img = Image.open("Error-Test/M10R-02.jpg")
 
 	longerLength = img.width if img.width >= img.height else img.height
 	padding = int(longerLength / 10)
@@ -137,7 +126,7 @@ def main():
 	img = exifTest.SetImageText(img, modelData=modelData, exifData=exifData, length = padding)
 	img.show()
 
-	img.save("01_a.jpg")
+	img.save("M10R-02.jpg")
 	
 
 if __name__=="__main__":

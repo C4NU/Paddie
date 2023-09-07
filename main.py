@@ -174,7 +174,7 @@ class WindowClass(QMainWindow, formClass) :
 				self.fileName.clear()
 		except:
 			if(platform.system() == "Windows"):
-				os.system('pause')
+				pass#os.system('pause')
 			elif(platform.system() == "Darwin"):
 				input("엔터를 눌러 진행...")
 			return
