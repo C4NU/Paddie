@@ -31,10 +31,11 @@ class Exif():
 			iso = str(exifData[34855]) if 34855 in exifData else self.dumpData
 			
 			try:
-				shutter_fraction = Fraction(exifData[33434])
-				shutterSpeed = f"{shutter_fraction.numerator}/{shutter_fraction.denominator}s"
-				#shutterSpeedValue = 1 / (2 ** exifData[37377])
-				#shutterSpeed = f"1/{int(round(1/shutterSpeedValue))}s"
+				#shutter_fraction = Fraction(exifData[33434])
+				#shutterSpeed = f"{shutter_fraction.numerator}/{shutter_fraction.denominator}s"
+				shutterSpeedValue = 1 / (2 ** exifData[37377])
+				print(shutterSpeedValue)
+				shutterSpeed = f"1/{int(round(1/shutterSpeedValue))}s"
 			
 			except KeyError:
 				shutterSpeed = self.dumpData
