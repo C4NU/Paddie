@@ -21,7 +21,7 @@
     <normaloff>Resources/Icon@64X64_02.ico</normaloff>Resources/Icon@64X64_02.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QListWidget" name="FileListWidget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -141,7 +141,7 @@
       <string>ICC Profile</string>
      </property>
     </widget>
-    <widget class="QCheckBox" name="ExactOptionBox">
+    <widget class="QCheckBox" name="TransparentRGBBox">
      <property name="geometry">
       <rect>
        <x>10</x>
