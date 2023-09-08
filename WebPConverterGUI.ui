@@ -185,12 +185,25 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>91</width>
+       <width>121</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>White Font</string>
+      <string>Enable Watermark</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>30</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Options..</string>
      </property>
     </widget>
    </widget>
@@ -224,12 +237,50 @@
       <rect>
        <x>10</x>
        <y>30</y>
-       <width>91</width>
+       <width>151</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Enabled</string>
+      <string>Enabled Exif Padding</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="SaveFormatBox">
+     <property name="geometry">
+      <rect>
+       <x>350</x>
+       <y>30</y>
+       <width>76</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>JPEG</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>PNG</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>WebP</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="SaveFormatLabel">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>30</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>File Format</string>
      </property>
     </widget>
    </widget>
