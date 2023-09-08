@@ -1,6 +1,6 @@
 # Copyright 2023 Hyo Jae Jeon (CANU) canu1832@gmail.com
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps, ExifTags
 
 import os
 #import Watermark_module
@@ -11,13 +11,33 @@ class Converter():
 		#self.watermark = Watermark_module.Watermark()
 		self.exif = Exif_module.Exif()
 
+	def FixOrientation(self, image):
+		exif = image._getexif()
+		try:
+			if exif:
+				orientation = exif.get(274)
+
+				if orientation == 3:
+					new_image = image.rotate(180, expand=True)
+				elif orientation == 6:
+					new_image = image.rotate(270, expand=True)
+				elif orientation == 8:
+					new_image = image.rotate(90, expand=True)
+				
+				new_image.info = image.info()
+		except Exception as e:
+			print(e)
+	
+		return new_image
+
 	def ConvertImageToWebP(self, filePath, savePath, saveName, loselessOpt, imageQualityOpt, exifOpt, iccProfileOpt, exactOpt, watermarkText, exifViewOpt, conversionOpt):
 		condition, fileFormat = self.SearchFileFormat(filePath)
 
 		if condition:
 			# 01 일반 WebP 형식 Image로 변환할 때
 			if conversionOpt == True:
-				image = Image.open(filePath).convert('RGB')
+				image = Image.open(filePath).convert("RGB")
+				#image = self.FixOrientation(image)
 
 				filePath = filePath.replace(fileFormat, '.webp')
 				dest = savePath+saveName+".webp"
@@ -32,6 +52,8 @@ class Converter():
 				iccProfile = image.info['icc_profile']
 			
 				#image = self.watermark.InsertWatermark(image=image, fontColor=watermarkColor, watermarkText=watermarkText)
+
+				image = image.convert("RGB")
 
 				if exifOpt == True:
 					if iccProfileOpt == True:
@@ -56,6 +78,8 @@ class Converter():
 			padding = int(longerLength / 10)
 
 			modelData, exifData = self.exif.GetExifData(image)
+
+			image = self.FixOrientation(image)
 
 			image = self.exif.SetImagePadding2(image, top=int(padding/2), side=int(padding/2), bottom=padding, color=(255,255,255))
 			image = self.exif.SetImageText(image, modelData=modelData, exifData=exifData, length = padding)

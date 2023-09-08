@@ -34,7 +34,7 @@ class Exif():
 				#shutter_fraction = Fraction(exifData[33434])
 				#shutterSpeed = f"{shutter_fraction.numerator}/{shutter_fraction.denominator}s"
 				shutterSpeedValue = 1 / (2 ** exifData[37377])
-				print(shutterSpeedValue)
+				#print(shutterSpeedValue)
 				shutterSpeed = f"1/{int(round(1/shutterSpeedValue))}s"
 			
 			except KeyError:
