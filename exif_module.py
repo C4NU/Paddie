@@ -109,13 +109,13 @@ class Exif:
 
         return result
 
-    def set_image_text(self, image, model_data, exif_data, length):
+    def set_image_text(self, image, model_data, exif_data, length, font_path):
         draw = ImageDraw.Draw(image)
         x = image.width / 2
         y = image.height - (length / 2)
 
         self.font_size = length / 4.5
-        self.font = ImageFont.truetype("Barlow-Light.ttf", self.font_size)
+        self.font = ImageFont.truetype(font_path, self.font_size)
 
         draw.text(xy=(x, y - self.font_size / 2), text=model_data, font=self.font, fill=(0, 0, 0), anchor="ms")
         draw.text(xy=(x, y + self.font_size), text=exif_data, font=self.font, fill=(0, 0, 0), anchor="ms")

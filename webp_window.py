@@ -1,6 +1,7 @@
 import os
 import platform
 import sys
+import pathlib
 
 from PyQt5 import QtGui, QtWidgets, QtCore
 from PyQt5.QtCore import Qt
@@ -8,11 +9,14 @@ from PyQt5.QtWidgets import QMainWindow, QFileDialog
 
 import webp_module as webp
 from main import formClass
+from utils import resource_path
 
 
 class WebpWindow(QMainWindow, formClass):
     def __init__(self):
         super().__init__()
+        self.__selected_font = None
+        self.font_index = 0
         self.watermakr_option = None
         self.watermark_text = None
         self.converter = webp.Converter()
@@ -33,8 +37,27 @@ class WebpWindow(QMainWindow, formClass):
         # self.watermark = []
 
         self.setupUi(self)
+        self.setup_ui_internal()
         self.bind_ui()
         self.init_options()
+
+    def setup_ui_internal(self):
+        font_asset_path = resource_path('Resources/Fonts')
+        fonts = pathlib.Path(font_asset_path)
+        for item in fonts.iterdir():
+            if item.is_file():
+                continue
+
+            for font_item in os.listdir(item):
+                self.__add_font_combobox(item, font_item)
+
+    def __add_font_combobox(self, dir_path, file_name):
+        font_name = os.path.splitext(file_name)[0]
+        item_ext = os.path.splitext(file_name)[1][1:]
+        if item_ext != 'ttf':
+            return
+        fullpath = os.path.join(dir_path, file_name)
+        self.FontComboBox.addItem(font_name, userData=fullpath)
 
     def bind_ui(self):
         # 실행 버튼 함수 링킹
@@ -56,6 +79,7 @@ class WebpWindow(QMainWindow, formClass):
         # self.watermarkFontColorBox.stateChanged.connect(self.WatermarkColorOption)
         # ExifView 옵션
         self.EnableExifPadding.stateChanged.connect(self.on_toggle_exif_padding_enable)
+        self.FontComboBox.currentIndexChanged.connect(self.on_change_font)
         self.SaveFormatBox.currentIndexChanged.connect(self.on_change_save_format)
 
     #################### PyQt5 FUNCTIONS
@@ -74,6 +98,7 @@ class WebpWindow(QMainWindow, formClass):
         ####################	하단 EXIF 삽입 관련 옵션
         self.exif_padding_option = self.EnableExifPadding.isChecked()
         self.save_format_index = self.SaveFormatBox.currentIndex()
+        self.font_index = self.FontComboBox.currentIndex()
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -148,7 +173,8 @@ class WebpWindow(QMainWindow, formClass):
                                                              icc_profile_option=self.icc_profile_option,
                                                              exact_option=self.exact_option, watermark_text="",
                                                              exif_view_option=self.exif_padding_option,
-                                                             conversion_option=self.conversion_option)
+                                                             conversion_option=self.conversion_option,
+                                                             font_path=self.__selected_font)
 
                 # 02 Exif Padding 이미지로만 변환할때
                 elif self.exif_padding_option:
@@ -156,7 +182,8 @@ class WebpWindow(QMainWindow, formClass):
                         self.converter.convert_exif_image(file_path=self.listWidget.item(index).text(),
                                                           save_path=str_save_path + '/',
                                                           save_name=self.file_name[index],
-                                                          file_format_option=self.save_format_index)
+                                                          file_format_option=self.save_format_index,
+                                                          font_path=self.__selected_font)
 
                 else:
                     print("옵션 선택 에러 / 다시 선택해주세요")
@@ -203,3 +230,7 @@ class WebpWindow(QMainWindow, formClass):
 
     def on_change_save_format(self):
         self.save_format_index = self.SaveFormatBox.currentIndex()
+
+    def on_change_font(self):
+        self.font_index = self.FontComboBox.currentIndex()
+        self.__selected_font = self.FontComboBox.itemData(self.font_index)

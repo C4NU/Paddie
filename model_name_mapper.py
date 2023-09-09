@@ -1,7 +1,7 @@
 # Copyright 2023 Eugene Kim (komastar) komastar.photo@gmail.com
 
 import csv
-from main import resource_path
+from utils import resource_path
 
 
 class ModelNameMapper:

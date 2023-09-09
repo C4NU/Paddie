@@ -39,7 +39,7 @@ class Converter:
     @staticmethod
     def convert_image_to_webp(file_path, save_path, save_name, loseless_option, image_quality_option,
                               exif_option, icc_profile_option, exact_option, watermark_text, exif_view_option,
-                              conversion_option):
+                              conversion_option, font_path):
         condition, file_format = Converter.search_file_format(file_path)
         # note(komastar) : file_format : 'jpg', 'png'...
 
@@ -80,7 +80,7 @@ class Converter:
                         image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
                                    exact=exact_option)
 
-    def convert_exif_image(self, file_path, save_path, save_name, file_format_option):
+    def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path):
         file_format = Converter.search_file_format(file_path)
 
         if file_format == '':
@@ -99,7 +99,7 @@ class Converter:
         image = Converter.fix_orientation(image)
         image = self.exif.set_image_padding2(image, top=half_padding, side=half_padding, bottom=padding,
                                              color=(255, 255, 255))
-        image = self.exif.set_image_text(image, model_data=model_data, exif_data=exif_data, length=padding)
+        image = self.exif.set_image_text(image, model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path)
 
         # 파일 형식 선택
         export_extension = Converter.FILE_FORMAT_EXTENSION[file_format_option]
