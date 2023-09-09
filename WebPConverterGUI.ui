@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
-    <height>772</height>
+    <width>481</width>
+    <height>815</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -211,7 +211,7 @@
     <property name="geometry">
      <rect>
       <x>380</x>
-      <y>700</y>
+      <y>730</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -226,7 +226,7 @@
       <x>20</x>
       <y>640</y>
       <width>441</width>
-      <height>61</height>
+      <height>91</height>
      </rect>
     </property>
     <property name="title">
@@ -243,6 +243,16 @@
      </property>
      <property name="text">
       <string>Enabled Exif Padding</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="FontComboBox">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>60</y>
+       <width>151</width>
+       <height>20</height>
+      </rect>
      </property>
     </widget>
     <widget class="QComboBox" name="SaveFormatBox">
@@ -290,7 +300,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>480</width>
+     <width>481</width>
      <height>21</height>
     </rect>
    </property>
@@ -299,6 +309,7 @@
      <string>Options</string>
     </property>
     <addaction name="actionAdd_Files"/>
+    <addaction name="actionClear_List"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menuOptions"/>
@@ -320,6 +331,11 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit ...</string>
+   </property>
+  </action>
+  <action name="actionClear_List">
+   <property name="text">
+    <string>Clear List</string>
    </property>
   </action>
  </widget>
