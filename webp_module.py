@@ -8,6 +8,9 @@ import exif_module
 
 
 class Converter:
+    FILE_FORMAT_EXTENSION = {0: 'jpeg', 1: 'png', 2: 'webp'}
+    FILE_FORMAT_QUALITY_PRESET = {0: 100, 1: 100, 2: 92}
+
     def __init__(self) -> None:
         # self.watermark = Watermark_module.Watermark()
         self.exif = exif_module.Exif()
@@ -28,8 +31,6 @@ class Converter:
                     new_image = image.rotate(90, expand=True)
                 else:
                     new_image = image.rotate(0, expand=True)
-
-                new_image.info = image.info()
         except Exception as e:
             print(e)
 
@@ -80,48 +81,38 @@ class Converter:
                                    exact=exact_option)
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option):
-        condition, file_format = self.search_file_format(file_path)
+        file_format = Converter.search_file_format(file_path)
 
-        if condition:
-            # 02 EXIF Padding Image로 변환할 때
-            image = Image.open(file_path)
-
-            longer_length = image.width if image.width >= image.height else image.height
-            padding = int(longer_length / 10)
-
-            model_data, exif_data = self.exif.get_exif_data(image)
-
-            image = Converter.fix_orientation(image)
-
-            image = self.exif.set_image_padding2(image, top=int(padding / 2), side=int(padding / 2), bottom=padding,
-                                                 color=(255, 255, 255))
-            image = self.exif.set_image_text(image, model_data=model_data, exif_data=exif_data, length=padding)
-
-            # 파일 형식 선택
-            if file_format_option == 0:
-                dest = save_path + save_name + '.jpeg'
-                image.save(dest, format='jpeg')
-            elif file_format_option == 1:
-                dest = save_path + save_name + '.png'
-                image.save(dest, format='png')
-            elif file_format_option == 2:
-                dest = save_path + save_name + '.webp'
-                image.save(dest, format='webp', quality=92)
-            else:
-                print("잘못된 파일 변환 선택지 입니다.")
-                return
-
-        else:
+        if file_format == '':
             print("잘못된 파일 형식 입니다.")
             return
 
+        # 02 EXIF Padding Image로 변환할 때
+        image = Image.open(file_path)
+
+        longer_length = image.width if image.width >= image.height else image.height
+        padding = int(longer_length / 10)
+        half_padding = int(padding * 0.5)
+
+        model_data, exif_data = self.exif.get_exif_data(image)
+
+        image = Converter.fix_orientation(image)
+        image = self.exif.set_image_padding2(image, top=half_padding, side=half_padding, bottom=padding,
+                                             color=(255, 255, 255))
+        image = self.exif.set_image_text(image, model_data=model_data, exif_data=exif_data, length=padding)
+
+        # 파일 형식 선택
+        export_extension = Converter.FILE_FORMAT_EXTENSION[file_format_option]
+        export_quality = Converter.FILE_FORMAT_QUALITY_PRESET[file_format_option]
+        fullpath = os.path.join(save_path, save_name) + '.' + export_extension
+        image.save(fullpath, format=export_extension, quality=export_quality)
+
     @staticmethod
-    def search_file_format(file_path):
+    def search_file_format(file_path) -> str:
         file_format = os.path.splitext(file_path)[1][1:]
         file_format = file_format.lower()
 
         support_format = {'jpg', 'jpeg', 'png', 'tiff', 'webp'}
         if file_format in support_format:
-            return True, file_format
-        else:
-            return False, None
+            return file_format
+        return ''

@@ -33,16 +33,10 @@ class Exif:
             f_number = str(exif_data[33437]) if 33437 in exif_data else self.dump_data
             focal_length = str(exif_data[41989]) if 41989 in exif_data else self.dump_data
             iso = str(exif_data[34855]) if 34855 in exif_data else self.dump_data
-
-            try:
-                # shutter_fraction = Fraction(exifData[33434])
-                # shutterSpeed = f"{shutter_fraction.numerator}/{shutter_fraction.denominator}s"
-                shutter_speed_value = 1 / (2 ** exif_data[37377])
-                # print(shutterSpeedValue)
-                shutter_speed = f"1/{int(round(1 / shutter_speed_value))}s"
-
-            except KeyError:
-                shutter_speed = self.dump_data
+            shutter_speed_value = exif_data.get(33434, None)
+            shutter_speed = self.dump_data
+            if shutter_speed_value:
+                shutter_speed = f"1/{int(round(1.0 / shutter_speed_value))}s"
 
             if lens_model is self.dump_data:
                 print("Model: " + model)
