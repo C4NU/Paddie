@@ -41,7 +41,12 @@ class Exif:
             shutter_speed_value = exif_data.get(33434, None)
             shutter_speed = self.dump_data
             if shutter_speed_value:
-                shutter_speed = f"1/{int(round(1.0 / shutter_speed_value))}s"
+                if shutter_speed_value < 1.0:
+                    # note(komastar) : 1/1000s, 1/4000s ...
+                    shutter_speed = f'1/{int(round(1.0 / shutter_speed_value))}s'
+                else:
+                    # note(komastar) : 1.0s, 30.0s ...
+                    shutter_speed = f'{format(round(shutter_speed_value, 2), ".1f")}s'
 
             if lens_model is self.dump_data:
                 print("Model: " + model)
