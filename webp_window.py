@@ -13,8 +13,12 @@ from utils import resource_path
 
 
 class WebpWindow(QMainWindow, formClass):
+    default_font = 'Barlow-Light'
+
     def __init__(self):
         super().__init__()
+        self.FontComboBox = None
+
         self.__selected_font = None
         self.font_index = 0
         self.watermakr_option = None
@@ -99,6 +103,8 @@ class WebpWindow(QMainWindow, formClass):
         self.exif_padding_option = self.EnableExifPadding.isChecked()
         self.save_format_index = self.SaveFormatBox.currentIndex()
         self.font_index = self.FontComboBox.currentIndex()
+        default_font_index = self.FontComboBox.findText(WebpWindow.default_font)
+        self.FontComboBox.setCurrentIndex(default_font_index)
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
