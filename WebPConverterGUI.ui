@@ -309,6 +309,7 @@
      <string>Options</string>
     </property>
     <addaction name="actionAdd_Files"/>
+    <addaction name="actionClear_List"/>
     <addaction name="actionExit"/>
    </widget>
    <addaction name="menuOptions"/>
@@ -330,6 +331,11 @@
   <action name="actionExit">
    <property name="text">
     <string>Exit ...</string>
+   </property>
+  </action>
+  <action name="actionClear_List">
+   <property name="text">
+    <string>Clear List</string>
    </property>
   </action>
  </widget>

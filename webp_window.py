@@ -18,6 +18,8 @@ class WebpWindow(QMainWindow, formClass):
     def __init__(self):
         super().__init__()
         self.FontComboBox = None
+        self.listWidget = None
+        self.actionClear_List = None
 
         self.__selected_font = None
         self.font_index = 0
@@ -68,6 +70,7 @@ class WebpWindow(QMainWindow, formClass):
         self.SaveButton.clicked.connect(self.on_click_save)
         # 파일 추가 버튼 함수 링킹
         self.actionAdd_Files.triggered.connect(self.on_trigger_add_files)
+        self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
         # 종료 버튼 함수 링킹
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
         self.ConversionEnableBox.stateChanged.connect(self.on_toggle_conversion_enable)
@@ -135,6 +138,9 @@ class WebpWindow(QMainWindow, formClass):
         else:
             for name in file_name_list[0]:
                 self.load_file(name)
+
+    def on_trigger_clear_files(self):
+        self.listWidget.clear()
 
     @staticmethod
     def on_trigger_exit():
