@@ -17,7 +17,7 @@ class ModelNameMapper:
                     new_model_name = model_name.replace(find_string, replace_string)
                     print(f'{model_name} -> {new_model_name}')
                     return new_model_name
-        return ''
+        return model_name
 
 
 # ModelNameMapper.replace_model_name('ILCE-7RM3')

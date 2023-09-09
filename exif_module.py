@@ -4,6 +4,8 @@ from PIL import Image, ImageDraw, ImageFont
 
 from fractions import Fraction
 
+from model_name_mapper import ModelNameMapper
+
 
 # 폰트 vs padding 비율은 1:4?
 # 이미지파일 vs padding 비율은 10:1
@@ -28,11 +30,14 @@ class Exif:
             print('Sorry, image has no exif data.')
         else:
             # 데이터 읽어오기
-            model = str(exif_data[272]) if 272 in exif_data else self.dump_data
-            lens_model = str(exif_data[42036]) if 42036 in exif_data else self.dump_data
-            f_number = str(exif_data[33437]) if 33437 in exif_data else self.dump_data
-            focal_length = str(exif_data[41989]) if 41989 in exif_data else self.dump_data
-            iso = str(exif_data[34855]) if 34855 in exif_data else self.dump_data
+            model = str(exif_data.get(272, self.dump_data))
+            model = ModelNameMapper.replace_model_name(model)
+
+            lens_model = str(exif_data.get(42036, self.dump_data))
+            f_number = str(exif_data.get(33437, self.dump_data))
+            focal_length = str(exif_data.get(41989, self.dump_data))
+            iso = str(exif_data.get(34855, self.dump_data))
+
             shutter_speed_value = exif_data.get(33434, None)
             shutter_speed = self.dump_data
             if shutter_speed_value:
