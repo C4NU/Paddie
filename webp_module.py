@@ -99,6 +99,7 @@ class Converter:
         image = Converter.fix_orientation(image)
         image = self.exif.set_image_padding2(image, top=half_padding, side=half_padding, bottom=padding,
                                              color=(255, 255, 255))
+        #image = self.exif.set_image_padding(image, length=padding, color=(255,255,255))
         image = self.exif.set_image_text(image, model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path)
 
         # 파일 형식 선택
