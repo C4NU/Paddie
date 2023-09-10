@@ -168,18 +168,15 @@ class WebpWindow(QMainWindow, formClass):
     def save_file(self):
         # 변환 실행 버튼 callback 함수
         # self.watermarkOption()
-        save_path = QFileDialog.getSaveFileName(None, 'Save File', self.file_name[0])
-        #save_path = QFileDialog.getExistingDirectory(None, 'Save Directory')
-        print(save_path)
+        
+        save_path = QFileDialog.getExistingDirectory(None, 'Save Directory')
+        
         try:
-            if save_path[0]:
-                str_save_path = save_path[0]
-                str_save_path = str_save_path[:str_save_path.rfind("/")]
-
+            if save_path:
                 # 01 WebP 이미지로만 변환할 때
                 if self.conversion_option:
                     for index in range(self.listWidget.count()):
-                        self.converter.convert_image_to_webp(self.listWidget.item(index).text(), str_save_path + '/',
+                        self.converter.convert_image_to_webp(self.listWidget.item(index).text(), save_path + '/',
                                                              self.file_name[index], self.loseless_option,
                                                              self.image_quality_option,
                                                              exif_option=self.exif_option,
@@ -193,7 +190,7 @@ class WebpWindow(QMainWindow, formClass):
                 elif self.exif_padding_option:
                     for index in range(self.listWidget.count()):
                         self.converter.convert_exif_image(file_path=self.listWidget.item(index).text(),
-                                                          save_path=str_save_path + '/',
+                                                          save_path=save_path + '/',
                                                           save_name=self.file_name[index],
                                                           file_format_option=self.save_format_index,
                                                           font_path=self.__selected_font)
@@ -202,9 +199,9 @@ class WebpWindow(QMainWindow, formClass):
                     print("옵션 선택 에러 / 다시 선택해주세요")
 
                 if platform.system() == "Windows":  # Windows
-                    os.startfile(str_save_path)
+                    os.startfile(save_path)
                 elif platform.system() == "Darwin":  # macOS
-                    os.system("open " + '"' + str_save_path + '"')
+                    os.system("open " + '"' + save_path + '"')
 
                 self.listWidget.clear()
                 self.file_name.clear()
