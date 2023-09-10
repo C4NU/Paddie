@@ -169,7 +169,8 @@ class WebpWindow(QMainWindow, formClass):
         # 변환 실행 버튼 callback 함수
         # self.watermarkOption()
         save_path = QFileDialog.getSaveFileName(None, 'Save File', self.file_name[0])
-
+        #save_path = QFileDialog.getExistingDirectory(None, 'Save Directory')
+        print(save_path)
         try:
             if save_path[0]:
                 str_save_path = save_path[0]
