@@ -60,7 +60,8 @@ class WindowClass(QMainWindow, formClass) :
 
 		# ExifView 옵션
 		self.EnableExifPadding.stateChanged.connect(self.ExifPaddingOption)
-		self.EnableInstaMode.stateChanged.connect(self.InstaModeOption)
+		self.EnableInstaMode.stateChanged.connect(self.InstaModeOption)		
+		self.EnableDarkMode.stateChanged.connect(self.DarkModeOption)
 		self.InitOptions()
 
 
@@ -80,6 +81,7 @@ class WindowClass(QMainWindow, formClass) :
 		####################	하단 EXIF 삽입 관련 옵션
 		self.exifPaddingOpt = self.EnableExifPadding.isChecked()
 		self.instaModeOpt = self.EnableInstaMode.isChecked()
+		self.darkModeOpt = self.EnableDarkMode.isChecked()
 
 	def dragEnterEvent(self, event):
 		if event.mimeData().hasUrls():
@@ -146,7 +148,7 @@ class WindowClass(QMainWindow, formClass) :
 			for index in range(self.listWidget.count()):
 				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', 
 				self.fileName[index], self.loselessOpt, self.imageQualityOpt, exifOpt=self.exifOpt, iccProfileOpt=self.iccProfileOpt, exactOpt=self.exactOpt, watermarkText="", exifViewOpt=self.exifPaddingOpt,
-				instaResizeOpt = self.instaModeOpt ,conversionOpt = self.conversionOption)
+				instaResizeOpt = self.instaModeOpt, darkOpt = self.darkModeOpt, conversionOpt = self.conversionOption)
 
 			if(platform.system() == "Windows"):	#Windows
 				os.startfile(strSavePath)
@@ -211,6 +213,12 @@ class WindowClass(QMainWindow, formClass) :
 			self.instaModeOpt = True
 		else:
 			self.instaModeOpt = False
+			
+	def DarkModeOption(self, state):
+		if state == Qt.Checked:
+			self.darkModeOpt = True
+		else:
+			self.darkModeOpt = False
 
 
 def main():

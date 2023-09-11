@@ -71,7 +71,7 @@ class Exif():
 
 		return result
 	
-	def SetImageText(self, image, modelData, exifData, length):
+	def SetImageText(self, image, modelData, exifData, color, length):
 		draw = ImageDraw.Draw(image)
 		x = image.width / 2
 		y = image.height - (length / 2)
@@ -79,15 +79,15 @@ class Exif():
 		self.fontSize = length / 4.5
 		self.font = ImageFont.truetype("Barlow-Light.ttf", self.fontSize)
 
-		draw.text(xy = (x,y - self.fontSize / 2), text = modelData,font=self.font, fill=(0,0,0), anchor="ms")
-		draw.text(xy = (x,y + self.fontSize), text = exifData,font=self.font, fill=(0,0,0), anchor="ms")
+		draw.text(xy = (x,y - self.fontSize / 2), text = modelData,font=self.font, fill=color, anchor="ms")
+		draw.text(xy = (x,y + self.fontSize), text = exifData,font=self.font, fill=color, anchor="ms")
 		
 		return image
 
 	
-	def SetInstaPadding(self, image, gap, color,horizontalImage):
+	def SetInstaPadding(self, image, gap, color, horizontalImage):
 		width, height = image.size
-		instaSize = 1080
+		instaSize = 1440
 		ratio = width / height
 
 		newWidth = 0
@@ -123,9 +123,9 @@ class Exif():
 
 		return result	
 
-	def SetInstaText(self, image, modelData, exifData, horizontalImage):
+	def SetInstaText(self, image, modelData, exifData, color, horizontalImage):
 
-		self.fontSize = 32
+		self.fontSize = 46
 		self.font = ImageFont.truetype("Barlow-Light.ttf", self.fontSize)
 
 		if(horizontalImage) : 
@@ -139,8 +139,8 @@ class Exif():
 		x = image.width / 2
 		y = image.height - self.fontSize*3
 
-		draw.text(xy = (x,y - self.fontSize / 2), text = modelData,font=self.font, fill=(0,0,0), anchor="ms")
-		draw.text(xy = (x,y + self.fontSize), text = exifData,font=self.font, fill=(0,0,0), anchor="ms")
+		draw.text(xy = (x,y - self.fontSize / 2), text = modelData,font=self.font, fill=color, anchor="ms")
+		draw.text(xy = (x,y + self.fontSize), text = exifData,font=self.font, fill=color, anchor="ms")
 
 		if(horizontalImage) : 
 			image = rotateImage
