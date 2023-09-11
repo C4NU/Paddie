@@ -10,15 +10,16 @@ from PyQt5 import QtGui, QtWidgets, QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 
-print(os.path.dirname(sys.executable))
-
 if platform.system() == "Windows":
     form = os.path.join(os.getcwd(), "WebPConverterGUI.ui")
 else:
+    # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
     form = os.path.join(os.path.dirname(sys.executable), "WebPConverterGUI.ui")
 
-formClass = uic.loadUiType(form)[0]
-
+try:
+    formClass = uic.loadUiType(form)[0]
+except:
+    formClass = uic.loadUiType(os.path.join(os.getcwd(), "WebPConverterGUI.ui"))[0]
 
 class WebpApp:
     def __init__(self):
@@ -70,17 +71,28 @@ class WebpWindow(QMainWindow, formClass):
 
     def setup_ui_internal(self):
         if platform.system() == "Windows":
-            font_asset_path = os.path.join(os.getcwd(), "Resources/Font")
+            font_asset_path = os.path.join(os.getcwd(), "Resources/Fonts")
         else:
             font_asset_path = os.path.join(os.path.dirname(sys.executable), "Resources/Fonts")
 
         fonts = pathlib.Path(font_asset_path)
-        for item in fonts.iterdir():
-            if item.is_file():
-                continue
+        
+        try:
+            for item in fonts.iterdir():
+                if item.is_file():
+                    continue
 
-            for font_item in os.listdir(item):
-                self.__add_font_combobox(item, font_item)
+                for font_item in os.listdir(item):
+                    self.__add_font_combobox(item, font_item)
+        except:
+            # py 형식으로 실행할 때 macOS 오류 처리용 경로 설정
+            fonts = pathlib.Path(os.path.join(os.getcwd(), "Resources/Fonts"))
+            for item in fonts.iterdir():
+                if item.is_file():
+                    continue
+
+                for font_item in os.listdir(item):
+                    self.__add_font_combobox(item, font_item)
 
     def __add_font_combobox(self, dir_path, file_name):
         font_name = os.path.splitext(file_name)[0]

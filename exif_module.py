@@ -22,7 +22,10 @@ class Exif:
         if platform.system() == "Windows":
             self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Barlow-Light.ttf'), self.font_size)
         else:
-            self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "Barlow-Light.ttf"), self.font_size)
+            try:
+                self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "Barlow-Light.ttf"), self.font_size)
+            except:
+                self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Barlow-Light.ttf'), self.font_size)
         self.dump_data = "NONEDATA"
 
     def debugger(self, debug_type):
@@ -132,7 +135,7 @@ class Exif:
 def main():
     exif_test = Exif()
 
-    img = Image.open("Error-Test/M10R-02.jpg")
+    img = Image.open("Error-Test/P2080300.jpg")
 
     longer_length = img.width if img.width >= img.height else img.height
     padding = int(longer_length / 10)
@@ -143,7 +146,7 @@ def main():
     img = exif_test.set_image_text(img, model_data=model_data, exif_data=exif_data, length=padding)
     img.show()
 
-    img.save("M10R-02.jpg")
+    img.save("Test.jpg")
 
 
 if __name__ == "__main__":
