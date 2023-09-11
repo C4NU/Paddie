@@ -94,23 +94,17 @@ class Exif():
 		newHeight = 0
 		newX = 0
 		newY = 0
-		print("insta")
-
-		print(horizontalImage)
 
 		if (horizontalImage) : 			
 			newWidth = instaSize - 2*gap
 			newHeight = math.floor(newWidth / ratio)
-			print("insta1")
 
 			if (newHeight>=instaSize-10*gap) :
 				newHeight = instaSize-10*gap
 				newWidth= math.floor(newHeight*ratio)
-				print("insta2")
 			 
 			newX = math.floor((instaSize - newWidth )/2) 
 			newY = math.floor((instaSize - newHeight)/2)
-			print("insta3")
 		
 		else :
 			newHeight = instaSize - 2*gap
@@ -153,7 +147,6 @@ class Exif():
 
 		else :
 			image = rotateImage.rotate(90)
-			print("Vert Text")
 
 		return image
 	

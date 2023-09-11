@@ -21,19 +21,14 @@ class Converter():
 			if exifViewOpt == True:
 				longerLength = image.width if image.width >= image.height else image.height
 				padding = int(longerLength / 10)
-							
-				print("exifTrue")
+
 				modelData, exifData = self.exif.GetExifData(image)
 				horizontalImage = True if image.width>=image.height else False
 				if instaResizeOpt==True:
-					print("instaTrue")
 					image = self.exif.SetInstaPadding(image, gap = 40, color=(255,255,255), horizontalImage= horizontalImage)
-					print("instaimage")
 					image = self.exif.SetInstaText(image, modelData=modelData, exifData=exifData, horizontalImage= horizontalImage)
-					print("instatext")
 					
 				else : 
-					print("instaFalse")
 					image = self.exif.SetImagePadding2(image, top=int(padding/2), side=int(padding/2), bottom=padding, color=(255,255,255))
 					image = self.exif.SetImageText(image, modelData=modelData, exifData=exifData, length = padding)
 			# jpg, jpeg, png, tiff 등 지원하는 파일 형식일 때
