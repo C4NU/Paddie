@@ -150,6 +150,7 @@ class WebpWindow(QMainWindow, formClass):
         self.font_index = self.FontComboBox.currentIndex()
         default_font_index = self.FontComboBox.findText(WebpWindow.default_font)
         self.FontComboBox.setCurrentIndex(default_font_index)
+        self.__selected_font = self.FontComboBox.itemData(self.font_index)
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -212,7 +213,7 @@ class WebpWindow(QMainWindow, formClass):
         # self.watermarkOption()
         
         save_path = QFileDialog.getExistingDirectory(None, 'Save Directory')
-        
+
         if save_path:
             # 01 WebP 이미지로만 변환할 때
             print(self.__selected_font) # macOS exec 빌드시 None
