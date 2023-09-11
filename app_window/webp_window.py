@@ -10,7 +10,13 @@ from PyQt5 import QtGui, QtWidgets, QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 
-form = os.path.join(os.getcwd(), "WebPConverterGUI.ui")
+print(os.path.dirname(sys.executable))
+
+if platform.system() == "Windows":
+    form = os.path.join(os.getcwd(), "WebPConverterGUI.ui")
+else:
+    form = os.path.join(os.path.dirname(sys.executable), "WebPConverterGUI.ui")
+
 formClass = uic.loadUiType(form)[0]
 
 
@@ -63,7 +69,11 @@ class WebpWindow(QMainWindow, formClass):
         self.init_options()
 
     def setup_ui_internal(self):
-        font_asset_path = os.path.join(os.getcwd(), 'Resources/Fonts')
+        if platform.system() == "Windows":
+            font_asset_path = os.path.join(os.getcwd(), "Resources/Font")
+        else:
+            font_asset_path = os.path.join(os.path.dirname(sys.executable), "Resources/Fonts")
+
         fonts = pathlib.Path(font_asset_path)
         for item in fonts.iterdir():
             if item.is_file():

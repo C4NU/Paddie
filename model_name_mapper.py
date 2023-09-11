@@ -2,12 +2,20 @@
 
 import csv
 import os
+import sys
+import platform
 
 
 class ModelNameMapper:
     @staticmethod
     def replace_model_name(model_name) -> str:
-        path = os.path.join(os.getcwd(), 'Resources/model_map.csv')
+
+        if platform.system() == "Windows":
+            path = os.path.join(os.getcwd(), 'Resources/model_map.csv')
+        else:
+            path = os.path.join(os.path.dirname(sys.executable), "Resources/model_map.csv")
+
+
         with open(path, newline='') as csv_file:
             map_reader = csv.DictReader(csv_file)
             for row in map_reader:

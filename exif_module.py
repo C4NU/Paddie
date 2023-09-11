@@ -1,5 +1,7 @@
 # Copyright 2023 Hyo Jae Jeon (CANU) canu1832@gmail.com
 import os
+import sys
+import platform
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -17,7 +19,10 @@ class Exif:
         # 폰트 사이즈 (초기)
         self.font_size = 50
         # 폰트 (초기)
-        self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Barlow-Light.ttf'), self.font_size)
+        if platform.system() == "Windows":
+            self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Barlow-Light.ttf'), self.font_size)
+        else:
+            self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "Barlow-Light.ttf"), self.font_size)
         self.dump_data = "NONEDATA"
 
     def debugger(self, debug_type):

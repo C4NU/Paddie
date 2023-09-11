@@ -10,6 +10,7 @@ def main():
     app = app_window.WebpApp()
     app.show()
     app.exec()
+
     # t = test_module.test.TestClass()
 
 
