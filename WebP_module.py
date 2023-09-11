@@ -11,7 +11,7 @@ class Converter():
 		#self.watermark = Watermark_module.Watermark()
 		self.exif = Exif_module.Exif()
 
-	def ConvertImage(self, filePath, savePath, saveName, loselessOpt, imageQualityOpt, exifOpt, iccProfileOpt, exactOpt, watermarkText, exifViewOpt, instaResizeOpt, conversionOpt):
+	def ConvertImage(self, filePath, savePath, saveName, loselessOpt, imageQualityOpt, exifOpt, iccProfileOpt, exactOpt, watermarkText, exifViewOpt, conversionOpt):
 		# 확장자명 탐색
 		condition, fileFormat = self.SearchFileFormat(filePath)
 
@@ -23,14 +23,8 @@ class Converter():
 				padding = int(longerLength / 10)
 
 				modelData, exifData = self.exif.GetExifData(image)
-				horizontalImage = True if image.width>=image.height else False
-				if instaResizeOpt==True:
-					image = self.exif.SetInstaPadding(image, gap = 40, color=(255,255,255), horizontalImage= horizontalImage)
-					image = self.exif.SetInstaText(image, modelData=modelData, exifData=exifData, horizontalImage= horizontalImage)
-					
-				else : 
-					image = self.exif.SetImagePadding2(image, top=int(padding/2), side=int(padding/2), bottom=padding, color=(255,255,255))
-					image = self.exif.SetImageText(image, modelData=modelData, exifData=exifData, length = padding)
+				image = self.exif.SetImagePadding2(image, top=int(padding/2), side=int(padding/2), bottom=padding, color=(255,255,255))
+				image = self.exif.SetImageText(image, modelData=modelData, exifData=exifData, length = padding)
 			# jpg, jpeg, png, tiff 등 지원하는 파일 형식일 때
 
 			if conversionOpt == True:
