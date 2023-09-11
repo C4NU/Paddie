@@ -40,47 +40,44 @@ class Converter:
     def convert_image_to_webp(file_path, save_path, save_name, loseless_option, image_quality_option,
                               exif_option, icc_profile_option, exact_option, watermark_text, exif_view_option,
                               conversion_option, font_path):
-        condition, file_format = Converter.search_file_format(file_path)
+        file_format = Converter.search_file_format(file_path)
         # note(komastar) : file_format : 'jpg', 'png'...
+        
+        # 01 일반 WebP 형식 Image로 변환할 때
+        if conversion_option:
+            image = Image.open(file_path).convert("RGB")
+            dest = save_path + save_name + ".webp"
 
-        if condition:
-            # 01 일반 WebP 형식 Image로 변환할 때
-            if conversion_option:
-                image = Image.open(file_path)
-                image = Converter.fix_orientation(image)
-                print("Orientation Complete")
-                dest = save_path + save_name + ".webp"
+            # 여기서 exif 데이터의 특정 값이 존재하지 않으면 바로 실패함 / 옵션을 선택하지 않아도 읽어오기에 무조건적으로 뻗음
+            try:
+                exif_data = image.getexif()
+                print("Get Exif Data")
+            except:
+                print(f'no exif data {save_name}')
+                exif_option = False
+                exif_data = None
 
-                # 여기서 exif 데이터의 특정 값이 존재하지 않으면 바로 실패함 / 옵션을 선택하지 않아도 읽어오기에 무조건적으로 뻗음
-                try:
-                    exif_data = image.getexif()
-                    print("Get Exif Data")
-                except:
-                    print(f'no exif data {save_name}')
-                    exif_option = False
-                    exif_data = None
+            icc_profile = image.info['icc_profile']
+            print("Get Icc profile")
 
-                icc_profile = image.info['icc_profile']
-                print("Get Icc profile")
+            # image = self.watermark.InsertWatermark(image=image, fontColor=watermarkColor, watermarkText=watermarkText)
 
-                # image = self.watermark.InsertWatermark(image=image, fontColor=watermarkColor, watermarkText=watermarkText)
-
-                #image = image.convert("RGB")
-
-                if exif_option:
-                    if icc_profile_option:
-                        image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
-                                   exif=exif_data, exact=exact_option, icc_profile=icc_profile)
-                    else:
-                        image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
-                                   exif=exif_data, exact=exact_option)
+            #image = image.convert("RGB")
+            image = Converter.fix_orientation(image)
+            if exif_option:
+                if icc_profile_option:
+                    image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
+                                exif=exif_data, exact=exact_option, icc_profile=icc_profile)
                 else:
-                    if icc_profile_option:
-                        image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
+                    image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
+                                exif=exif_data, exact=exact_option)
+            else:
+                if icc_profile_option:
+                    image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
                                    exact=exact_option, icc_profile=icc_profile)
-                    else:
-                        image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
-                                   exact=exact_option)
+                else:
+                    image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
+                                exact=exact_option)
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path):
         file_format = Converter.search_file_format(file_path)

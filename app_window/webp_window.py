@@ -210,46 +210,43 @@ class WebpWindow(QMainWindow, formClass):
         
         save_path = QFileDialog.getExistingDirectory(None, 'Save Directory')
         
-        try:
-            if save_path:
-                # 01 WebP 이미지로만 변환할 때
-                if self.conversion_option:
-                    for index in range(self.listWidget.count()):
-                        self.converter.convert_image_to_webp(self.listWidget.item(index).text(), save_path + '/',
-                                                             self.file_name[index], self.loseless_option,
-                                                             self.image_quality_option,
-                                                             exif_option=self.exif_option,
-                                                             icc_profile_option=self.icc_profile_option,
-                                                             exact_option=self.exact_option, watermark_text="",
-                                                             exif_view_option=self.exif_padding_option,
-                                                             conversion_option=self.conversion_option,
-                                                             font_path=self.__selected_font)
 
-                # 02 Exif Padding 이미지로만 변환할때
-                elif self.exif_padding_option:
-                    for index in range(self.listWidget.count()):
-                        self.converter.convert_exif_image(file_path=self.listWidget.item(index).text(),
-                                                          save_path=save_path + '/',
-                                                          save_name=self.file_name[index],
-                                                          file_format_option=self.save_format_index,
-                                                          font_path=self.__selected_font)
+        if save_path:
+            # 01 WebP 이미지로만 변환할 때
+            if self.conversion_option:
+                for index in range(self.listWidget.count()):
+                    self.converter.convert_image_to_webp(file_path=self.listWidget.item(index).text(), 
+                                                            save_path=save_path + '/',
+                                                            save_name=self.file_name[index], 
+                                                            loseless_option=self.loseless_option,
+                                                            image_quality_option=self.image_quality_option,
+                                                            exif_option=self.exif_option,
+                                                            icc_profile_option=self.icc_profile_option,
+                                                            exact_option=self.exact_option, watermark_text="",
+                                                            exif_view_option=self.exif_padding_option,
+                                                            conversion_option=self.conversion_option,
+                                                            font_path=self.__selected_font)
 
-                else:
-                    print("옵션 선택 에러 / 다시 선택해주세요")
+            # 02 Exif Padding 이미지로만 변환할때
+            elif self.exif_padding_option:
+                for index in range(self.listWidget.count()):
+                    self.converter.convert_exif_image(file_path=self.listWidget.item(index).text(),
+                                                        save_path=save_path + '/',
+                                                        save_name=self.file_name[index],
+                                                        file_format_option=self.save_format_index,
+                                                        font_path=self.__selected_font)
 
-                if platform.system() == "Windows":  # Windows
-                    os.startfile(save_path)
-                elif platform.system() == "Darwin":  # macOS
-                    os.system("open " + '"' + save_path + '"')
+            else:
+                print("옵션 선택 에러 / 다시 선택해주세요")
 
-                self.listWidget.clear()
-                self.file_name.clear()
-        except:
-            if platform.system() == "Windows":
-                os.system('pause')
-            elif platform.system() == "Darwin":
-                input("엔터를 눌러 진행...")
-            return
+            if platform.system() == "Windows":  # Windows
+                os.startfile(save_path)
+            elif platform.system() == "Darwin":  # macOS
+                os.system("open " + '"' + save_path + '"')
+
+            self.listWidget.clear()
+            self.file_name.clear()
+
 
     def on_toggle_conversion_enable(self, state):
         self.conversion_option = bool(state == Qt.Checked)
