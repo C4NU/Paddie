@@ -60,7 +60,9 @@ class WindowClass(QMainWindow, formClass) :
 
 		# ExifView 옵션
 		self.EnableExifPadding.stateChanged.connect(self.ExifPaddingOption)
+		self.EnableInstaMode.stateChanged.connect(self.InstaModeOption)
 		self.InitOptions()
+
 
 	#################### PyQt5 FUNCTIONS
 	def InitOptions(self):
@@ -77,6 +79,7 @@ class WindowClass(QMainWindow, formClass) :
 		#self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
 		####################	하단 EXIF 삽입 관련 옵션
 		self.exifPaddingOpt = self.EnableExifPadding.isChecked()
+		self.instaModeOpt = self.EnableInstaMode.isChecked()
 
 	def dragEnterEvent(self, event):
 		if event.mimeData().hasUrls():
@@ -143,8 +146,8 @@ class WindowClass(QMainWindow, formClass) :
 			for index in range(self.listWidget.count()):
 				self.converter.ConvertImage(self.listWidget.item(index).text(), strSavePath+'/', 
 				self.fileName[index], self.loselessOpt, self.imageQualityOpt, exifOpt=self.exifOpt, iccProfileOpt=self.iccProfileOpt, exactOpt=self.exactOpt, watermarkText="", exifViewOpt=self.exifPaddingOpt,
-				conversionOpt = self.conversionOption)
-		
+				instaResizeOpt = self.instaModeOpt ,conversionOpt = self.conversionOption)
+
 			if(platform.system() == "Windows"):	#Windows
 				os.startfile(strSavePath)
 			elif(platform.system() == "Darwin"):	#macOS
@@ -202,6 +205,13 @@ class WindowClass(QMainWindow, formClass) :
 			self.exifPaddingOpt = True
 		else:
 			self.exifPaddingOpt = False
+
+	def InstaModeOption(self, state):
+		if state == Qt.Checked:
+			self.instaModeOpt = True
+		else:
+			self.instaModeOpt = False
+
 
 def main():
 	try:

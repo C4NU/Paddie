@@ -232,6 +232,19 @@
       <string>Enabled</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="EnableInstaMode">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
+       <y>30</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>InstaMode</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
