@@ -63,6 +63,8 @@ class WebpWindow(QMainWindow, formClass):
 
         # Exif Options 관련 변수
         self.exif_padding_option = False  # Exif Padding 을 enable 할 지에 대한 변수
+        self.square_mode_option = False
+        self.dark_mode_option = False
         self.save_format_index = 0  # JPG, PNG, WebP 파일 형식중 고른 값에 대한 변수
         self.__background_color = None
 
@@ -134,6 +136,8 @@ class WebpWindow(QMainWindow, formClass):
         # self.watermarkFontColorBox.stateChanged.connect(self.WatermarkColorOption)
         # Exif Padding 활성화 옵션 링킹
         self.EnableExifPadding.stateChanged.connect(self.on_toggle_exif_padding_enable)
+        self.EnableSquareMode.stateChanged.connect(self.on_change_square_mode)
+        self.EnableDarkMode.stateChanged.connect(self.on_change_dark_mode)
         self.FontComboBox.currentIndexChanged.connect(self.on_change_font)
         self.SaveFormatBox.currentIndexChanged.connect(self.on_change_save_format)
 
@@ -152,6 +156,8 @@ class WebpWindow(QMainWindow, formClass):
         # self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
         ####################	하단 EXIF 삽입 관련 옵션
         self.exif_padding_option = self.EnableExifPadding.isChecked()
+        self.square_mode_option = self.EnableSquareMode.isChecked()
+        self.dark_mode_option = self.EnableDarkMode.isChecked()
         self.save_format_index = self.SaveFormatBox.currentIndex()
         self.font_index = self.FontComboBox.currentIndex()
         default_font_index = self.FontComboBox.findText(WebpWindow.default_font)
@@ -255,7 +261,10 @@ class WebpWindow(QMainWindow, formClass):
                                                       save_name=self.file_name[index],
                                                       file_format_option=self.save_format_index,
                                                       font_path=self.__selected_font,
-                                                      bg_color=self.__background_color)
+                                                      bg_color=self.__background_color,
+                                                      square_padding_option=self.square_mode_option,
+                                                      dark_theme_option=self.dark_mode_option                                                      
+                                                      )
 
             else:
                 print("옵션 선택 에러 / 다시 선택해주세요")
@@ -321,6 +330,15 @@ class WebpWindow(QMainWindow, formClass):
         self.ConversionEnableBox.setChecked(not state)
         print(f"Exif Padding Pushed, Conversion Opt: {self.conversion_option}")
         print(f"Exif Padding Pushed, Exif Padding Opt: {self.exif_padding_option}")
+        
+    def on_change_square_mode(self, state):
+        self.square_mode_option = bool(state == Qt.Checked)        
+        print(f"Square Mode Pushed, Square Mode Opt: {self.square_mode_option}")
+    
+    def on_change_dark_mode(self, state):
+        self.dark_mode_option = bool(state == Qt.Checked)        
+        print(f"Dark Mode Pushed, Dark Mode Opt: {self.dark_mode_option}")
+
 
     def on_change_save_format(self):
         self.save_format_index = self.SaveFormatBox.currentIndex()
