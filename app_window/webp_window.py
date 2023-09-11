@@ -56,7 +56,7 @@ class WebpWindow(QMainWindow, formClass):
         self.icc_profile_option = False
         self.exact_option = False
 
-        self.conversion_option = False  # webp 변환하는지 선택
+        self.conversion_option = True  # webp 변환하는지 선택
 
         # Exif Options 관련 변수
         self.exif_padding_option = False  # Exif Padding 을 enable 할 지에 대한 변수
@@ -110,7 +110,9 @@ class WebpWindow(QMainWindow, formClass):
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
         # 종료 버튼 함수 링킹
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
+        # 변환 활성화 trigger 함수 링킹
         self.ConversionEnableBox.stateChanged.connect(self.on_toggle_conversion_enable)
+        self.ConversionEnableBox.toggle()
         # Loseless 옵션 링킹
         self.LoselessOptionBox.stateChanged.connect(self.on_toggle_loseless_option)
         # 이미지 퀄리티 옵션 링킹
@@ -121,7 +123,7 @@ class WebpWindow(QMainWindow, formClass):
         self.ICCProfileOptionBox.stateChanged.connect(self.on_toggle_icc_profile_option)
         # Watermark 옵션
         # self.watermarkFontColorBox.stateChanged.connect(self.WatermarkColorOption)
-        # ExifView 옵션
+        # Exif Padding 활성화 옵션 링킹
         self.EnableExifPadding.stateChanged.connect(self.on_toggle_exif_padding_enable)
         self.FontComboBox.currentIndexChanged.connect(self.on_change_font)
         self.SaveFormatBox.currentIndexChanged.connect(self.on_change_save_format)
@@ -244,13 +246,35 @@ class WebpWindow(QMainWindow, formClass):
                 self.file_name.clear()
         except:
             if platform.system() == "Windows":
-                pass  # os.system('pause')
+                os.system('pause')
             elif platform.system() == "Darwin":
                 input("엔터를 눌러 진행...")
             return
 
     def on_toggle_conversion_enable(self, state):
         self.conversion_option = bool(state == Qt.Checked)
+        self.EnableExifPadding.setChecked(not state)
+
+        print(f"Conversion Pushed, Conversion Opt: {self.conversion_option}")
+        print(f"Conversion Pushed, Exif Padding Opt: {self.exif_padding_option}")
+
+        if self.conversion_option == False:
+            if self.icc_profile_option == True:
+                self.icc_profile_option = False
+                self.ICCProfileOptionBox.toggle()
+
+            if self.loseless_option == True:
+                self.loseless_option = False
+                self.LoselessOptionBox.toggle()
+
+            if self.exif_option == True:
+                self.exif_option = False
+                self.ExifOptionBox.toggle()
+
+            if self.exact_option == True:
+                self.exact_option = False
+                self.ExactOptionBox.toggle()
+            
 
     def on_toggle_icc_profile_option(self, state):
         self.icc_profile_option = bool(state == Qt.Checked)
@@ -274,6 +298,9 @@ class WebpWindow(QMainWindow, formClass):
     # Exif Padding 옵션
     def on_toggle_exif_padding_enable(self, state):
         self.exif_padding_option = bool(state == Qt.Checked)
+        self.ConversionEnableBox.setChecked(not state)
+        print(f"Exif Padding Pushed, Conversion Opt: {self.conversion_option}")
+        print(f"Exif Padding Pushed, Exif Padding Opt: {self.exif_padding_option}")
 
     def on_change_save_format(self):
         self.save_format_index = self.SaveFormatBox.currentIndex()

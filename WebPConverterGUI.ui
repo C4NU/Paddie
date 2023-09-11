@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>481</width>
-    <height>815</height>
+    <height>792</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -166,6 +166,12 @@
      <property name="text">
       <string>Enabled</string>
      </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
     </widget>
    </widget>
    <widget class="QGroupBox" name="WatermarkGroupBox">
@@ -301,7 +307,7 @@
      <x>0</x>
      <y>0</y>
      <width>481</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">
