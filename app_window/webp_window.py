@@ -2,14 +2,18 @@ import os
 import platform
 import sys
 import pathlib
+
+import user_config
 import webp
 
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5 import QtGui, QtWidgets, QtCore
-from PyQt5.QtGui import QPalette
+from PyQt5.QtGui import QPalette, QColor
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton
+
+from user_config import UserConfig
 
 if platform.system() == "Windows":
     form = os.path.join(os.getcwd(), "WebPConverterGUI.ui")
@@ -157,6 +161,8 @@ class WebpWindow(QMainWindow, formClass):
         default_font_index = self.FontComboBox.findText(WebpWindow.default_font)
         self.FontComboBox.setCurrentIndex(default_font_index)
         self.__selected_font = self.FontComboBox.itemData(self.font_index)
+        UserConfig.load()
+        self.__background_color = UserConfig.background_color
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -227,8 +233,11 @@ class WebpWindow(QMainWindow, formClass):
     def save_file(self):
         # 변환 실행 버튼 callback 함수
         # self.watermarkOption()
-        
-        save_path = QFileDialog.getExistingDirectory(None, 'Save Directory')
+
+        save_path = QFileDialog.getExistingDirectory(caption='Save Directory',
+                                                     directory=UserConfig.latest_save_path)
+        UserConfig.latest_save_path = save_path
+        UserConfig.save()
 
         if save_path:
             # 01 WebP 이미지로만 변환할 때
@@ -294,7 +303,8 @@ class WebpWindow(QMainWindow, formClass):
                 self.ExactOptionBox.toggle()
 
     def on_trigger_color_picker(self):
-        self.__background_color = QColorDialog.getColor()
+        self.__background_color = QColorDialog.getColor(title='Pick  Background Color')
+        user_config.UserConfig.background_color = self.__background_color
 
     def on_toggle_icc_profile_option(self, state):
         self.icc_profile_option = bool(state == Qt.Checked)
