@@ -2,14 +2,28 @@ import os
 import platform
 import sys
 import pathlib
+import webp
 
+from PyQt5.QtWidgets import *
+from PyQt5 import uic
 from PyQt5 import QtGui, QtWidgets, QtCore
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QMainWindow, QFileDialog
 
-import webp_module as webp
-from main import formClass
-from utils import resource_path
+form = os.path.join(os.getcwd(), "WebPConverterGUI.ui")
+formClass = uic.loadUiType(form)[0]
+
+
+class WebpApp:
+    def __init__(self):
+        self.app = QApplication(sys.argv)
+        self.window = WebpWindow()
+
+    def show(self):
+        self.window.show()
+
+    def exec(self):
+        self.app.exec_()
 
 
 class WebpWindow(QMainWindow, formClass):
@@ -17,6 +31,7 @@ class WebpWindow(QMainWindow, formClass):
 
     def __init__(self):
         super().__init__()
+
         self.FontComboBox = None
         self.listWidget = None
         self.actionClear_List = None
@@ -48,7 +63,7 @@ class WebpWindow(QMainWindow, formClass):
         self.init_options()
 
     def setup_ui_internal(self):
-        font_asset_path = resource_path('Resources/Fonts')
+        font_asset_path = os.path.join(os.getcwd(), 'Resources/Fonts')
         fonts = pathlib.Path(font_asset_path)
         for item in fonts.iterdir():
             if item.is_file():
