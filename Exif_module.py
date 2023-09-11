@@ -1,7 +1,7 @@
 # Copyright 2023 Hyo Jae Jeon (CANU) canu1832@gmail.com
 
 from PIL import Image, ImageDraw, ImageFont
-
+import math
 # 폰트 vs padding 비율은 1:4?
 # 이미지파일 vs padding 비율은 10:1
 class Exif():
@@ -82,6 +82,79 @@ class Exif():
 		draw.text(xy = (x,y - self.fontSize / 2), text = modelData,font=self.font, fill=(0,0,0), anchor="ms")
 		draw.text(xy = (x,y + self.fontSize), text = exifData,font=self.font, fill=(0,0,0), anchor="ms")
 		
+		return image
+
+	
+	def SetInstaPadding(self, image, gap, color,horizontalImage):
+		width, height = image.size
+		instaSize = 1080
+		ratio = width / height
+
+		newWidth = 0
+		newHeight = 0
+		newX = 0
+		newY = 0
+		print("insta")
+
+		print(horizontalImage)
+
+		if (horizontalImage) : 			
+			newWidth = instaSize - 2*gap
+			newHeight = math.floor(newWidth / ratio)
+			print("insta1")
+
+			if (newHeight>=instaSize-10*gap) :
+				newHeight = instaSize-10*gap
+				newWidth= math.floor(newHeight*ratio)
+				print("insta2")
+			 
+			newX = math.floor((instaSize - newWidth )/2) 
+			newY = math.floor((instaSize - newHeight)/2)
+			print("insta3")
+		
+		else :
+			newHeight = instaSize - 2*gap
+			newWidth = math.floor(newHeight*ratio)
+
+			if (newWidth>=instaSize-10*gap) :
+				newWidth = instaSize-10*gap
+				newHeight= math.floor(newWidth/ratio)
+
+			newX = math.floor((instaSize-newWidth)/2)
+			newY = math.floor((instaSize-newHeight)/2)
+
+		result = Image.new(image.mode, (instaSize, instaSize), color)		
+		resizedImage = image.resize((newWidth,newHeight))		
+		result.paste(resizedImage, (newX, newY))
+
+		return result	
+
+	def SetInstaText(self, image, modelData, exifData, horizontalImage):
+
+		self.fontSize = 32
+		self.font = ImageFont.truetype("Barlow-Light.ttf", self.fontSize)
+
+		if(horizontalImage) : 
+			rotateImage = image
+
+		else :
+			rotateImage = image.rotate(-90)
+
+		draw = ImageDraw.Draw(rotateImage)
+
+		x = image.width / 2
+		y = image.height - self.fontSize*3
+
+		draw.text(xy = (x,y - self.fontSize / 2), text = modelData,font=self.font, fill=(0,0,0), anchor="ms")
+		draw.text(xy = (x,y + self.fontSize), text = exifData,font=self.font, fill=(0,0,0), anchor="ms")
+
+		if(horizontalImage) : 
+			image = rotateImage
+
+		else :
+			image = rotateImage.rotate(90)
+			print("Vert Text")
+
 		return image
 	
 def main():
