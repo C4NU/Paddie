@@ -107,6 +107,7 @@ class WebpWindow(QMainWindow, formClass):
 
     def bind_ui(self):
         # 실행 버튼 함수 링킹
+        self.addButton.clicked.connect(self.open_file)
         self.SaveButton.clicked.connect(self.on_click_save)
         # 파일 추가 버튼 함수 링킹
         self.actionAdd_Files.triggered.connect(self.on_trigger_add_files)
@@ -192,6 +193,16 @@ class WebpWindow(QMainWindow, formClass):
     def watermark_option(self):
         self.watermark_text = self.watermarkBox.toPlainText()
         print(self.watermark_text)
+
+    def open_file(self):
+        open_files = QFileDialog.getOpenFileNames(self, "Open File")
+
+        if len(open_files) > 0:
+            for file in open_files[0]:
+                if "" == file: continue
+                if "All Files (*)" == file: continue
+                self.load_file(file)
+
 
     #################### FUNCTIONS
     def load_file(self, filePath):
