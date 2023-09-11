@@ -55,7 +55,8 @@ class Exif:
                     shutter_speed = f'1/{int(round(1.0 / shutter_speed_value))}s'
                 else:
                     # note(komastar) : 1.0s, 30.0s ...
-                    shutter_speed = f'{format(round(shutter_speed_value, 2), ".1f")}s'
+                    # note(canu): ,2 형식으로 변환시 TypeError string to Fraction.__format__ 발생..?
+                    shutter_speed = f'{format(round(shutter_speed_value), ".1f")}s'
 
             if lens_model is self.dump_data:
                 print("Model: " + model)
@@ -143,7 +144,7 @@ def main():
     model_data, exif_data = exif_test.get_exif_data(img)
     img = Exif.set_image_padding2(img, top=int(padding / 2), side=int(padding / 2), bottom=padding,
                                   color=(255, 255, 255))
-    img = exif_test.set_image_text(img, model_data=model_data, exif_data=exif_data, length=padding)
+    img = exif_test.set_image_text(img, model_data=model_data, exif_data=exif_data, length=padding, font_path="Resources/Fonts/Barlow/Barlow-Light.ttf")
     img.show()
 
     img.save("Test.jpg")
