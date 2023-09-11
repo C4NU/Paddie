@@ -46,24 +46,26 @@ class Converter:
         if condition:
             # 01 일반 WebP 형식 Image로 변환할 때
             if conversion_option:
-                image = Image.open(file_path).convert("RGB")
-                # image = self.FixOrientation(image)
-
+                image = Image.open(file_path)
+                image = Converter.fix_orientation(image)
+                print("Orientation Complete")
                 dest = save_path + save_name + ".webp"
 
                 # 여기서 exif 데이터의 특정 값이 존재하지 않으면 바로 실패함 / 옵션을 선택하지 않아도 읽어오기에 무조건적으로 뻗음
-                # exifData = getattr(image.info, 'exif', None)
-                # if not exifData:
-                #	print(f'no exif data {saveName}')
-                #	exifOpt = False
-                exif_option = False
-                exif_data = None
+                try:
+                    exif_data = image.getexif()
+                    print("Get Exif Data")
+                except:
+                    print(f'no exif data {save_name}')
+                    exif_option = False
+                    exif_data = None
 
                 icc_profile = image.info['icc_profile']
+                print("Get Icc profile")
 
                 # image = self.watermark.InsertWatermark(image=image, fontColor=watermarkColor, watermarkText=watermarkText)
 
-                image = image.convert("RGB")
+                #image = image.convert("RGB")
 
                 if exif_option:
                     if icc_profile_option:
@@ -117,3 +119,21 @@ class Converter:
         if file_format in support_format:
             return file_format
         return ''
+
+
+def main():
+    conv = Converter()
+
+    conv.convert_image_to_webp(file_path="Error-Test/P2080300.jpg", 
+                                save_path="Error-Test", 
+                                save_name="P2080300",
+                                loseless_option=True,
+                                image_quality_option=80,
+                                exif_option=True,
+                                icc_profile_option=True,
+                                exact_option=True
+                               )
+
+
+if __name__ == "__main__":
+    main()
