@@ -1,13 +1,13 @@
 # Copyright 2023 Eugene Kim (komastar) komastar.photo@gmail.com
 
 import csv
-from utils import resource_path
+import os
 
 
 class ModelNameMapper:
     @staticmethod
     def replace_model_name(model_name) -> str:
-        path = resource_path('Resources/model_map.csv')
+        path = os.path.join(os.getcwd(), 'Resources/model_map.csv')
         with open(path, newline='') as csv_file:
             map_reader = csv.DictReader(csv_file)
             for row in map_reader:

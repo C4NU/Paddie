@@ -1,4 +1,5 @@
 # Copyright 2023 Hyo Jae Jeon (CANU) canu1832@gmail.com
+import os
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -16,7 +17,7 @@ class Exif:
         # 폰트 사이즈 (초기)
         self.font_size = 50
         # 폰트 (초기)
-        self.font = ImageFont.truetype("Barlow-Light.ttf", self.font_size)
+        self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Barlow-Light.ttf'), self.font_size)
         self.dump_data = "NONEDATA"
 
     def debugger(self, debug_type):
