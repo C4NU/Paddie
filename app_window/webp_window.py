@@ -75,7 +75,9 @@ class WebpWindow(QMainWindow, formClass):
         else:
             font_asset_path = os.path.join(os.path.dirname(sys.executable), "Resources/Fonts")
 
+        print(f"Font_asset: {font_asset_path}")
         fonts = pathlib.Path(font_asset_path)
+        print(f"Fonts: {fonts}")
         
         try:
             for item in fonts.iterdir():
@@ -83,6 +85,7 @@ class WebpWindow(QMainWindow, formClass):
                     continue
 
                 for font_item in os.listdir(item):
+                    print(f"Fonts Item: {font_item}")
                     self.__add_font_combobox(item, font_item)
         except:
             # py 형식으로 실행할 때 macOS 오류 처리용 경로 설정
@@ -210,9 +213,9 @@ class WebpWindow(QMainWindow, formClass):
         
         save_path = QFileDialog.getExistingDirectory(None, 'Save Directory')
         
-
         if save_path:
             # 01 WebP 이미지로만 변환할 때
+            print(self.__selected_font) # macOS exec 빌드시 None
             if self.conversion_option:
                 for index in range(self.listWidget.count()):
                     self.converter.convert_image_to_webp(file_path=self.listWidget.item(index).text(), 
@@ -304,4 +307,6 @@ class WebpWindow(QMainWindow, formClass):
 
     def on_change_font(self):
         self.font_index = self.FontComboBox.currentIndex()
+        print(f"Font Index: {self.font_index}")
         self.__selected_font = self.FontComboBox.itemData(self.font_index)
+        print(f"Selected Font: {self.__selected_font}")
