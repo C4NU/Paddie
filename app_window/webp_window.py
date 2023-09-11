@@ -6,12 +6,12 @@ import pathlib
 import user_config
 import webp
 
-from PyQt5.QtWidgets import *
-from PyQt5 import uic
-from PyQt5 import QtGui, QtWidgets, QtCore
-from PyQt5.QtGui import QPalette, QColor
-from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton
+from PyQt6.QtWidgets import *
+from PyQt6 import uic
+from PyQt6 import QtGui, QtWidgets, QtCore
+from PyQt6.QtGui import QPalette, QColor
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton
 
 from user_config import UserConfig
 
@@ -36,7 +36,7 @@ class WebpApp:
         self.window.show()
 
     def exec(self):
-        self.app.exec_()
+        self.app.exec()
 
 
 class WebpWindow(QMainWindow, formClass):
@@ -86,7 +86,7 @@ class WebpWindow(QMainWindow, formClass):
         print(f"Font_asset: {font_asset_path}")
         fonts = pathlib.Path(font_asset_path)
         print(f"Fonts: {fonts}")
-        
+
         try:
             for item in fonts.iterdir():
                 if item.is_file():
@@ -141,7 +141,7 @@ class WebpWindow(QMainWindow, formClass):
         self.FontComboBox.currentIndexChanged.connect(self.on_change_font)
         self.SaveFormatBox.currentIndexChanged.connect(self.on_change_save_format)
 
-    #################### PyQt5 FUNCTIONS
+    #################### PyQt FUNCTIONS
     def init_options(self):
         ####################	이미지 품질 관련 옵션
         self.conversion_option = self.ConversionEnableBox.isChecked()
@@ -172,7 +172,7 @@ class WebpWindow(QMainWindow, formClass):
 
     def dropEvent(self, event):
         if event.mimeData().hasUrls():
-            event.setDropAction(Qt.CopyAction)
+            event.setDropAction(Qt.DropAction.CopyAction)
             event.accept()
 
             # 드래그 드롭시 파일 추가되는 코드
@@ -214,7 +214,6 @@ class WebpWindow(QMainWindow, formClass):
                 if "All Files (*)" == file: continue
                 self.load_file(file)
 
-
     #################### FUNCTIONS
     def load_file(self, filePath):
         # ISSUE: 파일 로딩할때 특정 이미지 파일이 누워서 로딩됨 / 혹은 저장할때?
@@ -241,20 +240,20 @@ class WebpWindow(QMainWindow, formClass):
 
         if save_path:
             # 01 WebP 이미지로만 변환할 때
-            print(self.__selected_font) # macOS exec 빌드시 None
+            print(self.__selected_font)  # macOS exec 빌드시 None
             if self.conversion_option:
                 for index in range(self.listWidget.count()):
-                    self.converter.convert_image_to_webp(file_path=self.listWidget.item(index).text(), 
-                                                            save_path=save_path + '/',
-                                                            save_name=self.file_name[index], 
-                                                            loseless_option=self.loseless_option,
-                                                            image_quality_option=self.image_quality_option,
-                                                            exif_option=self.exif_option,
-                                                            icc_profile_option=self.icc_profile_option,
-                                                            exact_option=self.exact_option, watermark_text="",
-                                                            exif_view_option=self.exif_padding_option,
-                                                            conversion_option=self.conversion_option,
-                                                            font_path=self.__selected_font)
+                    self.converter.convert_image_to_webp(file_path=self.listWidget.item(index).text(),
+                                                         save_path=save_path + '/',
+                                                         save_name=self.file_name[index],
+                                                         loseless_option=self.loseless_option,
+                                                         image_quality_option=self.image_quality_option,
+                                                         exif_option=self.exif_option,
+                                                         icc_profile_option=self.icc_profile_option,
+                                                         exact_option=self.exact_option, watermark_text="",
+                                                         exif_view_option=self.exif_padding_option,
+                                                         conversion_option=self.conversion_option,
+                                                         font_path=self.__selected_font)
 
             # 02 Exif Padding 이미지로만 변환할때
             elif self.exif_padding_option:
@@ -277,28 +276,27 @@ class WebpWindow(QMainWindow, formClass):
             self.listWidget.clear()
             self.file_name.clear()
 
-
     def on_toggle_conversion_enable(self, state):
-        self.conversion_option = bool(state == Qt.Checked)
+        self.conversion_option = bool(state == Qt.CheckState.Checked.value)
         self.EnableExifPadding.setChecked(not state)
 
         print(f"Conversion Pushed, Conversion Opt: {self.conversion_option}")
         print(f"Conversion Pushed, Exif Padding Opt: {self.exif_padding_option}")
 
-        if self.conversion_option == False:
-            if self.icc_profile_option == True:
+        if not self.conversion_option:
+            if self.icc_profile_option:
                 self.icc_profile_option = False
                 self.ICCProfileOptionBox.toggle()
 
-            if self.loseless_option == True:
+            if self.loseless_option:
                 self.loseless_option = False
                 self.LoselessOptionBox.toggle()
 
-            if self.exif_option == True:
+            if self.exif_option:
                 self.exif_option = False
                 self.ExifOptionBox.toggle()
 
-            if self.exact_option == True:
+            if self.exact_option:
                 self.exact_option = False
                 self.ExactOptionBox.toggle()
 
@@ -307,27 +305,27 @@ class WebpWindow(QMainWindow, formClass):
         user_config.UserConfig.background_color = self.__background_color
 
     def on_toggle_icc_profile_option(self, state):
-        self.icc_profile_option = bool(state == Qt.Checked)
+        self.icc_profile_option = bool(state == Qt.CheckState.Checked.value)
 
     def on_toggle_loseless_option(self, state):
-        self.loseless_option = bool(state == Qt.Checked)
+        self.loseless_option = bool(state == Qt.CheckState.Checked.value)
 
     def on_change_image_quality(self):
         self.image_quality_option = self.ImageQualityBox.value()
 
     def on_toggle_exif_option(self, state):
-        self.exif_option = bool(state == Qt.Checked)
+        self.exif_option = bool(state == Qt.CheckState.Checked.value)
 
     def on_toggle_exact_option(self, state):
-        self.exact_option = bool(state == Qt.Checked)
+        self.exact_option = bool(state == Qt.CheckState.Checked.value)
 
     # 워터마크 옵션
     def WatermarkColorOption(self, state):
-        self.watermakr_option = bool(state == Qt.Checked)
+        self.watermakr_option = bool(state == Qt.CheckState.Checked.value)
 
     # Exif Padding 옵션
     def on_toggle_exif_padding_enable(self, state):
-        self.exif_padding_option = bool(state == Qt.Checked)
+        self.exif_padding_option = bool(state == Qt.CheckState.Checked.value)
         self.ConversionEnableBox.setChecked(not state)
         print(f"Exif Padding Pushed, Conversion Opt: {self.conversion_option}")
         print(f"Exif Padding Pushed, Exif Padding Opt: {self.exif_padding_option}")

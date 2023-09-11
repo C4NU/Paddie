@@ -3,7 +3,7 @@
 import json
 import os.path
 
-from PyQt5.QtGui import QColor
+from PyQt6.QtGui import QColor
 
 
 class UserConfigKey:
