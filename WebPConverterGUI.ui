@@ -60,15 +60,15 @@
    </widget>
    <widget class="QPushButton" name="addButton">
     <property name="geometry">
-    <rect>
+     <rect>
       <x>10</x>
       <y>380</y>
       <width>36</width>
       <height>36</height>
-    </rect>
+     </rect>
     </property>
     <property name="text">
-    <string>+</string>
+     <string>+</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="groupBox">
@@ -312,6 +312,19 @@
       <string>File Format</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="open_color_picker_button">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>60</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>ColorPicker</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -320,7 +333,7 @@
      <x>0</x>
      <y>0</y>
      <width>481</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">

@@ -7,8 +7,9 @@ import webp
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from PyQt5 import QtGui, QtWidgets, QtCore
+from PyQt5.QtGui import QPalette
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMainWindow, QFileDialog
+from PyQt5.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton
 
 if platform.system() == "Windows":
     form = os.path.join(os.getcwd(), "WebPConverterGUI.ui")
@@ -20,6 +21,7 @@ try:
     formClass = uic.loadUiType(form)[0]
 except:
     formClass = uic.loadUiType(os.path.join(os.getcwd(), "WebPConverterGUI.ui"))[0]
+
 
 class WebpApp:
     def __init__(self):
@@ -42,6 +44,7 @@ class WebpWindow(QMainWindow, formClass):
         self.FontComboBox = None
         self.listWidget = None
         self.actionClear_List = None
+        self.open_color_picker_button: QPushButton
 
         self.__selected_font = None
         self.font_index = 0
@@ -61,6 +64,7 @@ class WebpWindow(QMainWindow, formClass):
         # Exif Options 관련 변수
         self.exif_padding_option = False  # Exif Padding 을 enable 할 지에 대한 변수
         self.save_format_index = 0  # JPG, PNG, WebP 파일 형식중 고른 값에 대한 변수
+        self.__background_color = None
 
         # self.watermark = []
 
@@ -125,6 +129,7 @@ class WebpWindow(QMainWindow, formClass):
         self.ExifOptionBox.stateChanged.connect(self.on_toggle_exif_option)
         self.ExactOptionBox.stateChanged.connect(self.on_toggle_exact_option)
         self.ICCProfileOptionBox.stateChanged.connect(self.on_toggle_icc_profile_option)
+        self.open_color_picker_button.clicked.connect(self.on_trigger_color_picker)
         # Watermark 옵션
         # self.watermarkFontColorBox.stateChanged.connect(self.WatermarkColorOption)
         # Exif Padding 활성화 옵션 링킹
@@ -246,10 +251,11 @@ class WebpWindow(QMainWindow, formClass):
             elif self.exif_padding_option:
                 for index in range(self.listWidget.count()):
                     self.converter.convert_exif_image(file_path=self.listWidget.item(index).text(),
-                                                        save_path=save_path + '/',
-                                                        save_name=self.file_name[index],
-                                                        file_format_option=self.save_format_index,
-                                                        font_path=self.__selected_font)
+                                                      save_path=save_path + '/',
+                                                      save_name=self.file_name[index],
+                                                      file_format_option=self.save_format_index,
+                                                      font_path=self.__selected_font,
+                                                      bg_color=self.__background_color)
 
             else:
                 print("옵션 선택 에러 / 다시 선택해주세요")
@@ -286,7 +292,9 @@ class WebpWindow(QMainWindow, formClass):
             if self.exact_option == True:
                 self.exact_option = False
                 self.ExactOptionBox.toggle()
-            
+
+    def on_trigger_color_picker(self):
+        self.__background_color = QColorDialog.getColor()
 
     def on_toggle_icc_profile_option(self, state):
         self.icc_profile_option = bool(state == Qt.Checked)
