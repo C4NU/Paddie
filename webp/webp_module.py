@@ -80,7 +80,8 @@ class Converter:
                                 exact=exact_option)
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, 
-                            bg_color, square_padding_option, dark_theme_option, exif_padding_option):
+                            bg_color, square_padding_option, dark_theme_option, exif_padding_option,
+                            one_line_option):
         file_format = Converter.search_file_format(file_path)
 
         if file_format == '':
@@ -111,11 +112,20 @@ class Converter:
             image = self.exif.set_square_text(image, model_data=model_data, exif_data=exif_data, font_path=font_path, color = font_color, horizontalImage= horizontalImage)
 
         elif exif_padding_option==False:
-            image = self.exif.set_image_text(image,model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path, color = font_color)
+            if one_line_option==True:
+                print("oneline")
+                image = self.exif.set_line_text(image,model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path, color = font_color)
+            else:
+                image = self.exif.set_image_text(image,model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path, color = font_color)
 
         else : 
             image = self.exif.set_image_padding2(image, top=half_padding, side=half_padding, bottom=padding, color=background_color)
-            image = self.exif.set_image_text(image,model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path, color = font_color)
+            if one_line_option==True:
+                print("oneline")
+                image = self.exif.set_line_text(image,model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path, color = font_color)
+            else:
+                image = self.exif.set_image_text(image,model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path, color = font_color)
+
 
         # 파일 형식 선택
         export_extension = Converter.FILE_FORMAT_EXTENSION[file_format_option]

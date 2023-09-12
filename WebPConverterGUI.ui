@@ -276,7 +276,7 @@
      <property name="text">
       <string>Padding</string>
      </property>
-    </widget>
+      </widget>
     <widget class="QCheckBox" name="EnableSquareMode">
      <property name="geometry">
       <rect>
@@ -301,6 +301,19 @@
      </property>
      <property name="text">
       <string>White Text</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="EnableLineText">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>60</y>
+       <width>120</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>1 line text</string>
      </property>
     </widget>
     <widget class="QComboBox" name="FontComboBox">
