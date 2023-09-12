@@ -255,13 +255,39 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>20</y>
        <width>151</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
       <string>Enabled Exif Padding</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="EnableSquareMode">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>40</y>
+       <width>100</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Square Mode</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="EnableDarkMode">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>40</y>
+       <width>91</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>White Text</string>
      </property>
     </widget>
     <widget class="QComboBox" name="FontComboBox">
@@ -298,25 +324,12 @@
        <string>WebP</string>
       </property>
      </item>
-    </widget>
-    <widget class="QLabel" name="SaveFormatLabel">
+    </widget>    
+    <widget class="QPushButton" name="open_color_picker_button">
      <property name="geometry">
       <rect>
        <x>270</x>
        <y>30</y>
-       <width>81</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>File Format</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="open_color_picker_button">
-     <property name="geometry">
-      <rect>
-       <x>30</x>
-       <y>60</y>
        <width>75</width>
        <height>23</height>
       </rect>

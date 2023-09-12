@@ -79,7 +79,8 @@ class Converter:
                     image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
                                 exact=exact_option)
 
-    def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, bg_color):
+    def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, 
+                            bg_color, square_padding_option, dark_theme_option):
         file_format = Converter.search_file_format(file_path)
 
         if file_format == '':
@@ -89,17 +90,29 @@ class Converter:
         # 02 EXIF Padding Image로 변환할 때
         image = Image.open(file_path)
 
+        font_color = (0,0,0)
+        background_color = (bg_color.red(), bg_color.green(), bg_color.blue())
+        
+        if dark_theme_option == True:
+            font_color=(255,255,255)
+            
         longer_length = image.width if image.width >= image.height else image.height
         padding = int(longer_length / 10)
         half_padding = int(padding * 0.5)
 
         model_data, exif_data = self.exif.get_exif_data(image)
-
+        
+        horizontalImage = True if image.width>=image.height else False
+        
         image = Converter.fix_orientation(image)
-        image = self.exif.set_image_padding2(image, top=half_padding, side=half_padding, bottom=padding,
-                                             color=(bg_color.red(), bg_color.green(), bg_color.blue()))
-        #image = self.exif.set_image_padding(image, length=padding, color=(255,255,255))
-        image = self.exif.set_image_text(image, model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path)
+        
+        if square_padding_option==True:
+            image = self.exif.set_square_padding(image, gap = 60, color=background_color, horizontalImage= horizontalImage)
+            image = self.exif.set_square_text(image, model_data=model_data, exif_data=exif_data, font_path=font_path, color = font_color, horizontalImage= horizontalImage)
+
+        else : 
+            image = self.exif.set_image_padding2(image, top=half_padding, side=half_padding, bottom=padding, color=background_color)
+            image = self.exif.set_image_text(image,model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path, color = font_color)
 
         # 파일 형식 선택
         export_extension = Converter.FILE_FORMAT_EXTENSION[file_format_option]

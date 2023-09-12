@@ -4,6 +4,7 @@ import sys
 import platform
 
 from PIL import Image, ImageDraw, ImageFont
+import math
 
 from fractions import Fraction
 
@@ -118,8 +119,8 @@ class Exif:
         result.paste(image, (side, top))
 
         return result
-
-    def set_image_text(self, image, model_data, exif_data, length, font_path):
+        
+    def set_image_text(self, image, model_data, exif_data, length, font_path, color):
         draw = ImageDraw.Draw(image)
         x = image.width / 2
         y = image.height - (length / 2)
@@ -127,8 +128,83 @@ class Exif:
         self.font_size = length / 4.5
         self.font = ImageFont.truetype(font_path, self.font_size)
 
-        draw.text(xy=(x, y - self.font_size / 2), text=model_data, font=self.font, fill=(0, 0, 0), anchor="ms")
-        draw.text(xy=(x, y + self.font_size), text=exif_data, font=self.font, fill=(0, 0, 0), anchor="ms")
+        draw.text(xy=(x, y - self.font_size / 2), text=model_data, font=self.font, fill=color, anchor="ms")
+        draw.text(xy=(x, y + self.font_size), text=exif_data, font=self.font, fill=color, anchor="ms")
+
+        return image
+
+    @staticmethod            
+    def set_square_padding(image, gap, color, horizontalImage):
+        width, height = image.size
+        instaSize = 1440
+        ratio = width / height
+        print("square_padding1")        
+
+        newWidth = 0
+        newHeight = 0
+        newX = 0
+        newY = 0
+
+        print("square_padding2")  
+        if (horizontalImage) : 			
+            newWidth = instaSize - 2*gap
+            newHeight = math.floor(newWidth / ratio)
+            
+            print("square_padding3")  
+
+            if (newHeight>=instaSize-10*gap) :
+                newHeight = instaSize-10*gap
+                newWidth= math.floor(newHeight*ratio)
+
+            print("square_padding4")  			 
+            newX = math.floor((instaSize - newWidth )/2) 
+            newY = math.floor((instaSize - newHeight)/2)
+		
+        else :
+            newHeight = instaSize - 2*gap
+            newWidth = math.floor(newHeight*ratio)
+            print("square_padding5")  
+
+            if (newWidth>=instaSize-10*gap) :
+                newWidth = instaSize-10*gap
+                newHeight= math.floor(newWidth/ratio)
+            print("square_padding6")  
+
+            newX = math.floor((instaSize-newWidth)/2)
+            newY = math.floor((instaSize-newHeight)/2)
+
+
+        print("square_padding7")  
+        result = Image.new(image.mode, (instaSize, instaSize), color)		
+        resizedImage = image.resize((newWidth,newHeight))		
+        result.paste(resizedImage, (newX, newY))
+        print("square_padding8")  
+        return result	
+
+    def set_square_text(self, image, model_data, font_path, exif_data, color, horizontalImage):
+        print("square_text1") 
+        self.font_size = 46
+        self.font = ImageFont.truetype(font_path, self.font_size)
+        print("square_text1") 
+        if(horizontalImage) : 
+            rotateImage = image
+
+        else :
+            rotateImage = image.rotate(-90)
+
+        draw = ImageDraw.Draw(rotateImage)
+        print("square_text2") 
+        x = image.width / 2
+        y = image.height - self.font_size*3
+
+        draw.text(xy = (x,y - self.font_size / 2), text = model_data,font=self.font, fill=color, anchor="ms")
+        draw.text(xy = (x,y + self.font_size), text = exif_data,font=self.font, fill=color, anchor="ms")
+        print("square_text3") 
+        if(horizontalImage) : 
+            image = rotateImage
+
+        else :
+            image = rotateImage.rotate(90)
 
         return image
 
