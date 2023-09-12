@@ -251,17 +251,30 @@
     <property name="title">
      <string>EXIF Options</string>
     </property>
-    <widget class="QCheckBox" name="EnableExifPadding">
+    <widget class="QCheckBox" name="EnableExifWriting">
      <property name="geometry">
       <rect>
        <x>10</x>
+       <y>20</y>
+       <width>90</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Enabled Exif</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="EnablePadding">
+     <property name="geometry">
+      <rect>
+       <x>120</x>
        <y>20</y>
        <width>151</width>
        <height>16</height>
       </rect>
      </property>
      <property name="text">
-      <string>Enabled Exif Padding</string>
+      <string>Padding</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="EnableSquareMode">

@@ -66,9 +66,10 @@ class WebpWindow(QMainWindow, formClass):
         self.conversion_option = True  # webp 변환하는지 선택
 
         # Exif Options 관련 변수
-        self.exif_padding_option = False  # Exif Padding 을 enable 할 지에 대한 변수
+        self.exif_writing_option = False  # Exif Padding 을 enable 할 지에 대한 변수
         self.square_mode_option = False
         self.dark_mode_option = False
+        self.padding_option = False        
         self.save_format_index = 0  # JPG, PNG, WebP 파일 형식중 고른 값에 대한 변수
         self.__background_color = None
 
@@ -139,9 +140,10 @@ class WebpWindow(QMainWindow, formClass):
         # Watermark 옵션
         # self.watermarkFontColorBox.stateChanged.connect(self.WatermarkColorOption)
         # Exif Padding 활성화 옵션 링킹
-        self.EnableExifPadding.stateChanged.connect(self.on_toggle_exif_padding_enable)
+        self.EnableExifWriting.stateChanged.connect(self.on_toggle_exif_writing_enable)
         self.EnableSquareMode.stateChanged.connect(self.on_change_square_mode)
         self.EnableDarkMode.stateChanged.connect(self.on_change_dark_mode)
+        self.EnablePadding.stateChanged.connect(self.on_change_padding)
         self.FontComboBox.currentIndexChanged.connect(self.on_change_font)
         self.SaveFormatBox.currentIndexChanged.connect(self.on_change_save_format)
 
@@ -159,9 +161,10 @@ class WebpWindow(QMainWindow, formClass):
         # self.watermark = self.watermarkBox.toPlainText()
         # self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
         ####################	하단 EXIF 삽입 관련 옵션
-        self.exif_padding_option = self.EnableExifPadding.isChecked()
+        self.exif_writing_option = self.EnableExifWriting.isChecked()
         self.square_mode_option = self.EnableSquareMode.isChecked()
         self.dark_mode_option = self.EnableDarkMode.isChecked()
+        self.padding_option = self.EnablePadding.isChecked()
         self.save_format_index = self.SaveFormatBox.currentIndex()
         self.font_index = self.FontComboBox.currentIndex()
         default_font_index = self.FontComboBox.findText(WebpWindow.default_font)
@@ -258,12 +261,12 @@ class WebpWindow(QMainWindow, formClass):
                                                             exif_option=self.exif_option,
                                                             icc_profile_option=self.icc_profile_option,
                                                             exact_option=self.exact_option, watermark_text="",
-                                                            exif_view_option=self.exif_padding_option,
+                                                            exif_view_option=self.exif_writing_option,
                                                             conversion_option=self.conversion_option,
                                                             font_path=self.__selected_font)
 
             # 02 Exif Padding 이미지로만 변환할때
-            elif self.exif_padding_option:
+            elif self.exif_writing_option:
                 for index in range(self.listWidget.count()):
                     self.converter.convert_exif_image(file_path=self.listWidget.item(index).text(),
                                                       save_path=save_path + '/',
@@ -272,7 +275,8 @@ class WebpWindow(QMainWindow, formClass):
                                                       font_path=self.__selected_font,
                                                       bg_color=self.__background_color,
                                                       square_padding_option=self.square_mode_option,
-                                                      dark_theme_option=self.dark_mode_option                                                      
+                                                      dark_theme_option=self.dark_mode_option,
+                                                      exif_padding_option=self.padding_option                                                      
                                                       )
 
             else:
@@ -289,10 +293,10 @@ class WebpWindow(QMainWindow, formClass):
 
     def on_toggle_conversion_enable(self, state):
         self.conversion_option = bool(state == Qt.Checked)
-        self.EnableExifPadding.setChecked(not state)
+        self.EnableExifWriting.setChecked(not state)
 
         print(f"Conversion Pushed, Conversion Opt: {self.conversion_option}")
-        print(f"Conversion Pushed, Exif Padding Opt: {self.exif_padding_option}")
+        print(f"Conversion Pushed, Exif Padding Opt: {self.exif_writing_option}")
 
         if self.conversion_option == False:
             if self.icc_profile_option == True:
@@ -335,11 +339,11 @@ class WebpWindow(QMainWindow, formClass):
         self.watermakr_option = bool(state == Qt.Checked)
 
     # Exif Padding 옵션
-    def on_toggle_exif_padding_enable(self, state):
-        self.exif_padding_option = bool(state == Qt.Checked)
+    def on_toggle_exif_writing_enable(self, state):
+        self.exif_writing_option = bool(state == Qt.Checked)
         self.ConversionEnableBox.setChecked(not state)
         print(f"Exif Padding Pushed, Conversion Opt: {self.conversion_option}")
-        print(f"Exif Padding Pushed, Exif Padding Opt: {self.exif_padding_option}")
+        print(f"Exif Padding Pushed, Exif Padding Opt: {self.exif_writing_option}")
         
     def on_change_square_mode(self, state):
         self.square_mode_option = bool(state == Qt.Checked)        
@@ -349,6 +353,9 @@ class WebpWindow(QMainWindow, formClass):
         self.dark_mode_option = bool(state == Qt.Checked)        
         print(f"Dark Mode Pushed, Dark Mode Opt: {self.dark_mode_option}")
 
+    def on_change_padding(self, state):
+        self.padding_option = bool(state == Qt.Checked)        
+        print(f"Enable Padding Pushed, Padding Opt: {self.padding_option}")
 
     def on_change_save_format(self):
         self.save_format_index = self.SaveFormatBox.currentIndex()
