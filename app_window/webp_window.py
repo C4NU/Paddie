@@ -172,6 +172,12 @@ class WebpWindow(QMainWindow, formClass):
         self.__selected_font = self.FontComboBox.itemData(self.font_index)
         UserConfig.load()
         self.__background_color = UserConfig.background_color
+        
+        self.EnablePadding.setEnabled(False)
+        self.EnableDarkMode.setEnabled(False)
+        self.EnableSquareMode.setEnabled(False)
+
+        
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -292,7 +298,6 @@ class WebpWindow(QMainWindow, formClass):
     def on_toggle_conversion_enable(self, state):
         self.conversion_option = bool(state == Qt.CheckState.Checked.value)
         self.EnableExifWriting.setChecked(not state)
-
         print(f"Conversion Pushed, Conversion Opt: {self.conversion_option}")
         print(f"Conversion Pushed, Exif Padding Opt: {self.exif_writing_option}")
 
@@ -340,19 +345,22 @@ class WebpWindow(QMainWindow, formClass):
     def on_toggle_exif_writing_enable(self, state):
         self.exif_writing_option = bool(state == Qt.CheckState.Checked.value)
         self.ConversionEnableBox.setChecked(not state)
+        self.EnableSquareMode.setEnabled(bool(state))
+        self.EnableDarkMode.setEnabled(bool(state))
+        self.EnablePadding.setEnabled(bool(state))
         print(f"Exif Padding Pushed, Conversion Opt: {self.conversion_option}")
         print(f"Exif Padding Pushed, Exif Padding Opt: {self.exif_writing_option}")
         
     def on_change_square_mode(self, state):
-        self.square_mode_option = bool(state == Qt.Checked)        
+        self.square_mode_option = bool(state == Qt.CheckState.Checked.value)        
         print(f"Square Mode Pushed, Square Mode Opt: {self.square_mode_option}")
     
     def on_change_dark_mode(self, state):
-        self.dark_mode_option = bool(state == Qt.Checked)        
+        self.dark_mode_option = bool(state == Qt.CheckState.Checked.value)        
         print(f"Dark Mode Pushed, Dark Mode Opt: {self.dark_mode_option}")
 
     def on_change_padding(self, state):
-        self.padding_option = bool(state == Qt.Checked)        
+        self.padding_option = bool(state == Qt.CheckState.Checked.value)        
         print(f"Enable Padding Pushed, Padding Opt: {self.padding_option}")
 
     def on_change_save_format(self):
