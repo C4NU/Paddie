@@ -80,7 +80,7 @@ class Converter:
                                 exact=exact_option)
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, 
-                            bg_color, square_padding_option, dark_theme_option):
+                            bg_color, square_padding_option, dark_theme_option, exif_padding_option):
         file_format = Converter.search_file_format(file_path)
 
         if file_format == '':
@@ -109,6 +109,9 @@ class Converter:
         if square_padding_option==True:
             image = self.exif.set_square_padding(image, gap = 60, color=background_color, horizontalImage= horizontalImage)
             image = self.exif.set_square_text(image, model_data=model_data, exif_data=exif_data, font_path=font_path, color = font_color, horizontalImage= horizontalImage)
+
+        elif exif_padding_option==False:
+            image = self.exif.set_image_text(image,model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path, color = font_color)
 
         else : 
             image = self.exif.set_image_padding2(image, top=half_padding, side=half_padding, bottom=padding, color=background_color)
