@@ -69,7 +69,8 @@ class WebpWindow(QMainWindow, formClass):
         self.exif_writing_option = False  # Exif Padding 을 enable 할 지에 대한 변수
         self.square_mode_option = False
         self.dark_mode_option = False
-        self.padding_option = False        
+        self.padding_option = False       
+        self.line_text_option = False 
         self.save_format_index = 0  # JPG, PNG, WebP 파일 형식중 고른 값에 대한 변수
         self.__background_color = None
 
@@ -144,6 +145,7 @@ class WebpWindow(QMainWindow, formClass):
         self.EnableSquareMode.stateChanged.connect(self.on_change_square_mode)
         self.EnableDarkMode.stateChanged.connect(self.on_change_dark_mode)
         self.EnablePadding.stateChanged.connect(self.on_change_padding)
+        self.EnableLineText.stateChanged.connect(self.on_change_line_text)
         self.FontComboBox.currentIndexChanged.connect(self.on_change_font)
         self.SaveFormatBox.currentIndexChanged.connect(self.on_change_save_format)
 
@@ -165,6 +167,7 @@ class WebpWindow(QMainWindow, formClass):
         self.square_mode_option = self.EnableSquareMode.isChecked()
         self.dark_mode_option = self.EnableDarkMode.isChecked()
         self.padding_option = self.EnablePadding.isChecked()
+        self.line_text_option = self.EnableLineText.isChecked()
         self.save_format_index = self.SaveFormatBox.currentIndex()
         self.font_index = self.FontComboBox.currentIndex()
         default_font_index = self.FontComboBox.findText(WebpWindow.default_font)
@@ -176,6 +179,7 @@ class WebpWindow(QMainWindow, formClass):
         self.EnablePadding.setEnabled(False)
         self.EnableDarkMode.setEnabled(False)
         self.EnableSquareMode.setEnabled(False)
+        self.EnableLineText.setEnabled(False)
 
         
 
@@ -281,7 +285,8 @@ class WebpWindow(QMainWindow, formClass):
                                                       bg_color=self.__background_color,
                                                       square_padding_option=self.square_mode_option,
                                                       dark_theme_option=self.dark_mode_option,
-                                                      exif_padding_option=self.padding_option                                                      
+                                                      exif_padding_option=self.padding_option,
+                                                      one_line_option=self.line_text_option                                                      
                                                       )
 
             else:
@@ -348,6 +353,7 @@ class WebpWindow(QMainWindow, formClass):
         self.EnableSquareMode.setEnabled(bool(state))
         self.EnableDarkMode.setEnabled(bool(state))
         self.EnablePadding.setEnabled(bool(state))
+        self.EnableLineText.setEnabled(bool(state))
         print(f"Exif Padding Pushed, Conversion Opt: {self.conversion_option}")
         print(f"Exif Padding Pushed, Exif Padding Opt: {self.exif_writing_option}")
         
@@ -362,6 +368,10 @@ class WebpWindow(QMainWindow, formClass):
     def on_change_padding(self, state):
         self.padding_option = bool(state == Qt.CheckState.Checked.value)        
         print(f"Enable Padding Pushed, Padding Opt: {self.padding_option}")
+        
+    def on_change_line_text(self, state):
+        self.line_text_option = bool(state == Qt.CheckState.Checked.value)        
+        print(f"Enable Line Text Pushed, Line Text Opt: {self.line_text_option}")
 
     def on_change_save_format(self):
         self.save_format_index = self.SaveFormatBox.currentIndex()
