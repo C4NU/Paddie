@@ -18,27 +18,32 @@ class Converter:
     @staticmethod
     def fix_orientation(image):
         exif = image.getexif()
+        
         new_image = None
+        
         try:
             if exif:
                 orientation = exif.get(274)
+
                 print(orientation)
+
                 if orientation == 3:
                     new_image = image.rotate(180, expand=True)
-                    new_image.show()
+                    exif[274] = 1
                 elif orientation == 6:
                     new_image = image.rotate(270, expand=True)
-                    #new_image.show()
+                    exif[274] = 1
                 elif orientation == 8:
                     new_image = image.rotate(90, expand=True)
-                    new_image.show()
+                    exif[274] = 1
                 else:
                     new_image = image.rotate(0, expand=True)
-                    new_image.show()
+
+                return exif, new_image
+
         except Exception as e:
             print(e)
-
-        return new_image
+            return None, new_image
 
     @staticmethod
     def convert_image_to_webp(file_path, save_path, save_name, loseless_option, image_quality_option,
@@ -49,15 +54,26 @@ class Converter:
         
         # 01 일반 WebP 형식 Image로 변환할 때
         if conversion_option:
-            image = Image.open(file_path).convert("RGB")
+            image = Image.open(file_path)
             dest = save_path + save_name + ".webp"
 
+            # comment (CANU)
+            # 단순 enable -> 정상적으로 회전함
+            # exif 데이터 참조해서 새로 저장할때만 덮어씌워지면서 원래 이미지파일의 회전값으로 저장되는것으로 확인
+
+            new_exif_data, image = Converter.fix_orientation(image)
+
             # Exif Option 데이터 읽어오기 / 오류시 except
-            try:
-                exif_data = image.getexif()
-                print("Get Exif Data")
-            except:
-                print(f'No exif data:{save_name}')
+            if new_exif_data is not None:
+                try:
+                    exif_data = new_exif_data
+                    print("Get Exif Data")
+                except:
+                    print(f'No exif data:{save_name}')
+                    exif_option = False
+                    exif_data = None
+            
+            else:
                 exif_option = False
                 exif_data = None
 
@@ -71,8 +87,6 @@ class Converter:
                 icc_profile_option = False
 
             # image = self.watermark.InsertWatermark(image=image, fontColor=watermarkColor, watermarkText=watermarkText)
-
-            image = Converter.fix_orientation(image)
 
             if exif_option:
                 if icc_profile_option:
@@ -115,7 +129,9 @@ class Converter:
         
         horizontalImage = True if image.width>=image.height else False
         
-        image = Converter.fix_orientation(image)
+        new_exif_data, image = Converter.fix_orientation(image)
+
+        print(new_exif_data)
         
         if square_padding_option==True:
             image = self.exif.set_square_padding(image, gap = 60, color=background_color, horizontalImage= horizontalImage)
