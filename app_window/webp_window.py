@@ -16,15 +16,15 @@ from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton
 from user_config import UserConfig
 
 if platform.system() == "Windows":
-    form = os.path.join(os.getcwd(), "WebPConverterGUI.ui")
+    form = os.path.join(os.getcwd(), "Resources/WebPConverterGUI.ui")
 else:
     # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-    form = os.path.join(os.path.dirname(sys.executable), "WebPConverterGUI.ui")
+    form = os.path.join(os.path.dirname(sys.executable), "Resources/WebPConverterGUI.ui")
 
 try:
     formClass = uic.loadUiType(form)[0]
 except:
-    formClass = uic.loadUiType(os.path.join(os.getcwd(), "WebPConverterGUI.ui"))[0]
+    formClass = uic.loadUiType(os.path.join(os.getcwd(), "Resources/WebPConverterGUI.ui"))[0]
 
 
 class WebpApp:

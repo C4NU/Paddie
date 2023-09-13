@@ -21,12 +21,12 @@ class Exif:
         self.font_size = 50
         # 폰트 (초기)
         if platform.system() == "Windows":
-            self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Barlow-Light.ttf'), self.font_size)
+            self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Resources/Barlow-Light.ttf'), self.font_size)
         else:
             try:
-                self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "Barlow-Light.ttf"), self.font_size)
+                self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "Resources/Barlow-Light.ttf"), self.font_size)
             except:
-                self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Barlow-Light.ttf'), self.font_size)
+                self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Resources/Barlow-Light.ttf'), self.font_size)
         self.dump_data = "NONEDATA"
 
     def debugger(self, debug_type):

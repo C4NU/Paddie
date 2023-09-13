@@ -48,6 +48,8 @@ class Converter:
             image = Image.open(file_path).convert("RGB")
             dest = save_path + save_name + ".webp"
 
+            print(image.info)
+
             # 여기서 exif 데이터의 특정 값이 존재하지 않으면 바로 실패함 / 옵션을 선택하지 않아도 읽어오기에 무조건적으로 뻗음
             try:
                 exif_data = image.getexif()
