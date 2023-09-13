@@ -22,15 +22,19 @@ class Converter:
         try:
             if exif:
                 orientation = exif.get(274)
-
+                print(orientation)
                 if orientation == 3:
                     new_image = image.rotate(180, expand=True)
+                    new_image.show()
                 elif orientation == 6:
                     new_image = image.rotate(270, expand=True)
+                    #new_image.show()
                 elif orientation == 8:
                     new_image = image.rotate(90, expand=True)
+                    new_image.show()
                 else:
                     new_image = image.rotate(0, expand=True)
+                    new_image.show()
         except Exception as e:
             print(e)
 
@@ -48,24 +52,28 @@ class Converter:
             image = Image.open(file_path).convert("RGB")
             dest = save_path + save_name + ".webp"
 
-            print(image.info)
-
-            # 여기서 exif 데이터의 특정 값이 존재하지 않으면 바로 실패함 / 옵션을 선택하지 않아도 읽어오기에 무조건적으로 뻗음
+            # Exif Option 데이터 읽어오기 / 오류시 except
             try:
                 exif_data = image.getexif()
                 print("Get Exif Data")
             except:
-                print(f'no exif data {save_name}')
+                print(f'No exif data:{save_name}')
                 exif_option = False
                 exif_data = None
 
-            icc_profile = image.info['icc_profile']
-            print("Get Icc profile")
+            # Icc profile 데이터 읽어오기 / 오류시 Except
+            try:
+                icc_profile = image.info['icc_profile']
+                print("Get ICC Profile")
+            except:
+                print(f'No ICC Profile Data: {save_name}')
+                icc_profile = None
+                icc_profile_option = False
 
             # image = self.watermark.InsertWatermark(image=image, fontColor=watermarkColor, watermarkText=watermarkText)
 
-            #image = image.convert("RGB")
             image = Converter.fix_orientation(image)
+
             if exif_option:
                 if icc_profile_option:
                     image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
