@@ -2,9 +2,10 @@ import os
 import platform
 import sys
 import pathlib
-
+print("Python Package Loaded")
 import user_config
 import webp
+print("User Package Loaded")
 
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
@@ -12,6 +13,7 @@ from PyQt6 import QtGui, QtWidgets, QtCore
 from PyQt6.QtGui import QPalette, QColor
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton
+print("PyQt6 Package Loaded")
 
 from user_config import UserConfig
 
@@ -26,6 +28,7 @@ try:
 except:
     formClass = uic.loadUiType(os.path.join(os.getcwd(), "Resources/WebPConverterGUI.ui"))[0]
 
+print("UI Loaded")
 
 class WebpApp:
     def __init__(self):

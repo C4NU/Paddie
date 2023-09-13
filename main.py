@@ -6,8 +6,11 @@ import os
 ########################################
 
 def main():
+    print(os.system("python3 --version"))
     import app_window
+    print("App Window module Loaded")
     app = app_window.WebpApp()
+    print("Webp App Module Loaded")
     app.show()
     app.exec()
 

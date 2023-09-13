@@ -3,7 +3,10 @@
 import json
 import os.path
 
+print("User_Config Python Package Loaded")
+# comment (CANU): 호호 맥에서 패키지가 어디갓징
 from PyQt6.QtGui import QColor
+print("PyQt6 QColor Loaded")
 
 
 class UserConfigKey:
@@ -30,6 +33,7 @@ class UserConfig:
     @staticmethod
     def load():
         if not os.path.exists('user_data.json'):
+            print("User Data Not loaded")
             return
 
         with open('user_data.json', 'r') as load_data:
