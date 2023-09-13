@@ -148,6 +148,7 @@ class WebpWindow(QMainWindow, formClass):
         self.EnableLineText.stateChanged.connect(self.on_change_line_text)
         self.FontComboBox.currentIndexChanged.connect(self.on_change_font)
         self.SaveFormatBox.currentIndexChanged.connect(self.on_change_save_format)
+        self.SaveExifDataBox.stateChanged.connect(self.on_change_save_exif)
 
     #################### PyQt FUNCTIONS
     def init_options(self):
@@ -172,6 +173,7 @@ class WebpWindow(QMainWindow, formClass):
         self.font_index = self.FontComboBox.currentIndex()
         default_font_index = self.FontComboBox.findText(WebpWindow.default_font)
         self.FontComboBox.setCurrentIndex(default_font_index)
+        self.save_exif_data = self.SaveExifDataBox.isChecked()
         self.__selected_font = self.FontComboBox.itemData(self.font_index)
         UserConfig.load()
         self.__background_color = UserConfig.background_color
@@ -180,6 +182,7 @@ class WebpWindow(QMainWindow, formClass):
         self.EnableDarkMode.setEnabled(False)
         self.EnableSquareMode.setEnabled(False)
         self.EnableLineText.setEnabled(False)
+        self.SaveExifDataBox.setEnabled(False)
 
         
 
@@ -286,7 +289,8 @@ class WebpWindow(QMainWindow, formClass):
                                                       square_padding_option=self.square_mode_option,
                                                       dark_theme_option=self.dark_mode_option,
                                                       exif_padding_option=self.padding_option,
-                                                      one_line_option=self.line_text_option                                                      
+                                                      one_line_option=self.line_text_option,
+                                                      save_exif_data_option=self.save_exif_data                                                      
                                                       )
 
             else:
@@ -307,21 +311,10 @@ class WebpWindow(QMainWindow, formClass):
         print(f"Conversion Pushed, Exif Padding Opt: {self.exif_writing_option}")
 
         if not self.conversion_option:
-            if self.icc_profile_option:
-                self.icc_profile_option = False
-                self.ICCProfileOptionBox.toggle()
-
-            if self.loseless_option:
-                self.loseless_option = False
-                self.LoselessOptionBox.toggle()
-
-            if self.exif_option:
-                self.exif_option = False
-                self.ExifOptionBox.toggle()
-
-            if self.exact_option:
-                self.exact_option = False
-                self.ExactOptionBox.toggle()
+            self.LoselessOptionBox.setEnabled(False)
+            self.ExifOptionBox.setEnabled(False)
+            self.ICCProfileOptionBox.setEnabled(False)
+            self.ExactOptionBox.setEnabled(False)
 
     def on_trigger_color_picker(self):
         self.__background_color = QColorDialog.getColor(title='Pick  Background Color')
@@ -349,11 +342,19 @@ class WebpWindow(QMainWindow, formClass):
     # Exif Padding 옵션
     def on_toggle_exif_writing_enable(self, state):
         self.exif_writing_option = bool(state == Qt.CheckState.Checked.value)
+
         self.ConversionEnableBox.setChecked(not state)
+        self.LoselessOptionBox.setEnabled(not state)
+        self.ExifOptionBox.setEnabled(not state)
+        self.ICCProfileOptionBox.setEnabled(not state)
+        self.ExactOptionBox.setEnabled(not state)
+
         self.EnableSquareMode.setEnabled(bool(state))
         self.EnableDarkMode.setEnabled(bool(state))
         self.EnablePadding.setEnabled(bool(state))
         self.EnableLineText.setEnabled(bool(state))
+        self.SaveExifDataBox.setEnabled(bool(state))
+
         print(f"Exif Padding Pushed, Conversion Opt: {self.conversion_option}")
         print(f"Exif Padding Pushed, Exif Padding Opt: {self.exif_writing_option}")
         
@@ -381,3 +382,6 @@ class WebpWindow(QMainWindow, formClass):
         print(f"Font Index: {self.font_index}")
         self.__selected_font = self.FontComboBox.itemData(self.font_index)
         print(f"Selected Font: {self.__selected_font}")
+
+    def on_change_save_exif(self, state):
+        self.save_exif_data = bool(state == Qt.CheckState.Checked.value)

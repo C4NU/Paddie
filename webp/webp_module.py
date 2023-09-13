@@ -105,7 +105,7 @@ class Converter:
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, 
                             bg_color, square_padding_option, dark_theme_option, exif_padding_option,
-                            one_line_option):
+                            one_line_option, save_exif_data_option):
         file_format = Converter.search_file_format(file_path)
 
         if file_format == '':
@@ -131,8 +131,6 @@ class Converter:
         
         new_exif_data, image = Converter.fix_orientation(image)
 
-        print(new_exif_data)
-        
         if square_padding_option==True:
             image = self.exif.set_square_padding(image, gap = 60, color=background_color, horizontalImage= horizontalImage)
             image = self.exif.set_square_text(image, model_data=model_data, exif_data=exif_data, font_path=font_path, color = font_color, horizontalImage= horizontalImage)
@@ -157,7 +155,11 @@ class Converter:
         export_extension = Converter.FILE_FORMAT_EXTENSION[file_format_option]
         export_quality = Converter.FILE_FORMAT_QUALITY_PRESET[file_format_option]
         fullpath = os.path.join(save_path, save_name) + '.' + export_extension
-        image.save(fullpath, format=export_extension, quality=export_quality)
+
+        if save_exif_data_option is True:
+            image.save(fullpath, format=export_extension, quality=export_quality, exif=new_exif_data)
+        else:
+            image.save(fullpath, format=export_extension, quality=export_quality)
 
     @staticmethod
     def search_file_format(file_path) -> str:
