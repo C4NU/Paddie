@@ -10,9 +10,10 @@ print("User Package Loaded")
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
 from PyQt6 import QtGui, QtWidgets, QtCore
-from PyQt6.QtGui import QPalette, QColor
+from PyQt6.QtGui import QPalette, QColor, QFont
+from PyQt6.QtGui import QFontDatabase
 from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton
+from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit
 print("PyQt6 Package Loaded")
 
 from user_config import UserConfig
@@ -48,10 +49,14 @@ class WebpWindow(QMainWindow, formClass):
     def __init__(self):
         super().__init__()
 
+        self.save_exif_data = None
         self.FontComboBox = None
         self.listWidget = None
         self.actionClear_List = None
         self.open_color_picker_button: QPushButton
+        self.font_preview_line_edit: QPlainTextEdit
+        self.__font_preview_size: int
+        self.__font_preview_size = 24
 
         self.__selected_font = None
         self.font_index = 0
@@ -187,7 +192,16 @@ class WebpWindow(QMainWindow, formClass):
         self.EnableLineText.setEnabled(False)
         self.SaveExifDataBox.setEnabled(False)
 
-        
+        self.__update_font_preview()
+
+    def __update_font_preview(self):
+        font_id = QFontDatabase.addApplicationFont(self.__selected_font)
+        if font_id > 0:
+            families = QFontDatabase.applicationFontFamilies(font_id)
+            font_temp = families[0]
+            self.font_preview_line_edit.setFont(QFont(font_temp, self.__font_preview_size))
+        else:
+            print(f'preview font update failed : {self.__selected_font}')
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -385,6 +399,7 @@ class WebpWindow(QMainWindow, formClass):
         print(f"Font Index: {self.font_index}")
         self.__selected_font = self.FontComboBox.itemData(self.font_index)
         print(f"Selected Font: {self.__selected_font}")
+        self.__update_font_preview()
 
     def on_change_save_exif(self, state):
         self.save_exif_data = bool(state == Qt.CheckState.Checked.value)
