@@ -38,6 +38,7 @@ class Exif:
 
         if exif_data is None:
             print('Sorry, image has no exif data.')
+            return
         else:
             # 데이터 읽어오기
             model = str(exif_data.get(272, self.dump_data))

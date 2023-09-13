@@ -5,6 +5,7 @@ import os.path
 
 print("User_Config Python Package Loaded")
 # comment (CANU): 호호 맥에서 패키지가 어디갓징
+from PyQt6 import QtGui
 from PyQt6.QtGui import QColor
 print("PyQt6 QColor Loaded")
 
