@@ -2,6 +2,9 @@ import os
 import platform
 import sys
 import pathlib
+
+from option_window import ResizeOptionWindow
+
 print("Python Package Loaded")
 import user_config
 import webp
@@ -49,12 +52,15 @@ class WebpWindow(QMainWindow, formClass):
     def __init__(self):
         super().__init__()
 
+        self.resize_option_window = ResizeOptionWindow()
+
         self.save_exif_data = None
         self.FontComboBox = None
         self.listWidget = None
         self.actionClear_List = None
         self.open_color_picker_button: QPushButton
         self.font_preview_line_edit: QPlainTextEdit
+        self.open_resize_option_button: QPushButton
         self.__font_preview_size: int
         self.__font_preview_size = 24
 
@@ -129,6 +135,7 @@ class WebpWindow(QMainWindow, formClass):
         # 실행 버튼 함수 링킹
         self.addButton.clicked.connect(self.open_file)
         self.SaveButton.clicked.connect(self.on_click_save)
+        self.open_resize_option_button.clicked.connect(self.on_click_open_resize_option)
         # 파일 추가 버튼 함수 링킹
         self.actionAdd_Files.triggered.connect(self.on_trigger_add_files)
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
@@ -224,6 +231,18 @@ class WebpWindow(QMainWindow, formClass):
     def on_click_save(self):
         if self.listWidget.count() != 0:
             self.save_file()
+
+    def on_click_open_resize_option(self):
+        def on_accepted_resize_option(width, height):
+            # note(komastar) : 리사이즈 정보 쿼리 방법 1. callback
+            # accept 된 경우에만 실행
+            print(f'width : {width}, height : {height}')
+
+        self.resize_option_window.on_accepted = on_accepted_resize_option
+        self.resize_option_window.show()
+        # note(komastar) : 리사이즈 정보 쿼리 방법 2. access public property
+        # accept 되기 전에 호출하면 제대로 된 값을 불러오지 못 할 수 있음
+        # print(f'w:{self.resize_option_window.width}, h:{self.resize_option_window.height}')
 
     def on_trigger_add_files(self):
         file_name_list = QFileDialog.getOpenFileNames(self, 'Open Files...', './')
