@@ -196,10 +196,20 @@ class WebpWindow(QMainWindow, formClass):
 
     def __update_font_preview(self):
         font_id = QFontDatabase.addApplicationFont(self.__selected_font)
+        font_file_name = os.path.basename(self.__selected_font)
         if font_id > 0:
             families = QFontDatabase.applicationFontFamilies(font_id)
-            font_temp = families[0]
-            self.font_preview_line_edit.setFont(QFont(font_temp, self.__font_preview_size))
+            styles = QFontDatabase.styles(families[0])
+            style = None
+            for item in styles:
+                if item in font_file_name:
+                    style = item
+
+            if style:
+                font = QFontDatabase.font(families[0], style, self.__font_preview_size)
+                self.font_preview_line_edit.setFont(font)
+            else:
+                self.font_preview_line_edit.setFont(QFont(families[0], self.__font_preview_size))
         else:
             print(f'preview font update failed : {self.__selected_font}')
 
