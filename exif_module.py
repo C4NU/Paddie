@@ -60,7 +60,7 @@ class Exif:
                     # note(canu): ,2 형식으로 변환시 TypeError string to Fraction.__format__ 발생..?
                     shutter_speed = f'{format(round(shutter_speed_value), ".1f")}s'
 
-            if lens_model is self.dump_data:
+            if lens_model is self.dump_data or 'iPhone' in model:
                 print("Model: " + model)
                 result_model = model
             else:
@@ -212,7 +212,7 @@ class Exif:
 def main():
     exif_test = Exif()
 
-    img = Image.open("Error-Test/P2080300.jpg")
+    img = Image.open("Error-Test/IMG_0058.jpeg")
 
     longer_length = img.width if img.width >= img.height else img.height
     padding = int(longer_length / 10)
@@ -220,7 +220,7 @@ def main():
     model_data, exif_data = exif_test.get_exif_data(img)
     img = Exif.set_image_padding2(img, top=int(padding / 2), side=int(padding / 2), bottom=padding,
                                   color=(255, 255, 255))
-    img = exif_test.set_image_text(img, model_data=model_data, exif_data=exif_data, length=padding, font_path="Resources/Fonts/Barlow/Barlow-Light.ttf")
+    img = exif_test.set_image_text(img, model_data=model_data, exif_data=exif_data, length=padding, font_path="Resources/Barlow-Light.ttf", color=(0,0,0))
     img.show()
 
     img.save("Test.jpg")
