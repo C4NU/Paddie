@@ -86,7 +86,7 @@ class WebpWindow(QMainWindow, formClass):
         self.padding_option = False       
         self.line_text_option = False 
         self.save_format_index = 0  # JPG, PNG, WebP 파일 형식중 고른 값에 대한 변수
-        self.__background_color = None
+        self.__background_color = QColor(255, 255, 255)
 
         # self.watermark = []
 
@@ -191,7 +191,8 @@ class WebpWindow(QMainWindow, formClass):
         self.save_exif_data = self.SaveExifDataBox.isChecked()
         self.__selected_font = self.FontComboBox.itemData(self.font_index)
         UserConfig.load()
-        self.__background_color = UserConfig.background_color
+        if UserConfig.background_color:
+            self.__background_color = UserConfig.background_color
         
         self.EnablePadding.setEnabled(False)
         self.EnableDarkMode.setEnabled(False)
@@ -336,8 +337,7 @@ class WebpWindow(QMainWindow, formClass):
                                                       dark_theme_option=self.dark_mode_option,
                                                       exif_padding_option=self.padding_option,
                                                       one_line_option=self.line_text_option,
-                                                      save_exif_data_option=self.save_exif_data                                                      
-                                                      )
+                                                      save_exif_data_option=self.save_exif_data)
 
             else:
                 print("옵션 선택 에러 / 다시 선택해주세요")
