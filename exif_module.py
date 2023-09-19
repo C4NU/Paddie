@@ -143,7 +143,7 @@ class Exif:
         self.font_size = length / 6
         self.font = ImageFont.truetype(font_path, self.font_size)
 
-        draw.text(xy=(x, y), text=merged_text, font=self.font, fill=color, anchor="ms")
+        draw.text(xy=(x, y), text=merged_text, font=self.font, fill=color, anchor="mm")
 
         return image
 
