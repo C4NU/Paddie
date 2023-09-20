@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>481</width>
-    <height>867</height>
+    <height>792</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -228,9 +228,9 @@
     <widget class="QPushButton" name="pushButton">
      <property name="geometry">
       <rect>
-       <x>350</x>
+       <x>344</x>
        <y>30</y>
-       <width>75</width>
+       <width>81</width>
        <height>23</height>
       </rect>
      </property>
@@ -354,9 +354,9 @@
     <widget class="QPushButton" name="open_color_picker_button">
      <property name="geometry">
       <rect>
-       <x>250</x>
+       <x>239</x>
        <y>19</y>
-       <width>90</width>
+       <width>101</width>
        <height>31</height>
       </rect>
      </property>
@@ -377,39 +377,39 @@
       <string>Save Exif Data</string>
      </property>
     </widget>
-    <widget class="QPlainTextEdit" name="font_preview_line_edit">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>411</width>
-       <height>61</height>
-      </rect>
-     </property>
-     <property name="font">
-      <font>
-       <pointsize>24</pointsize>
-      </font>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="plainText">
-      <string>Canon EOS 1D X Mark III</string>
-     </property>
-    </widget>
    </widget>
    <widget class="QDialogButtonBox" name="SaveButton">
     <property name="geometry">
      <rect>
       <x>380</x>
-      <y>790</y>
+      <y>710</y>
       <width>81</width>
       <height>31</height>
      </rect>
     </property>
     <property name="standardButtons">
      <set>QDialogButtonBox::Save</set>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="font_preview_line_edit">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>360</y>
+      <width>411</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="plainText">
+     <string>Canon EOS 1D X Mark III</string>
     </property>
    </widget>
   </widget>
@@ -419,7 +419,7 @@
      <x>0</x>
      <y>0</y>
      <width>481</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">
