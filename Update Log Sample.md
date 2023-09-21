@@ -1,4 +1,4 @@
-# WebP Converter (버전)-stable
+# WebP Converter (버전)-stable/nightly
 
 ## 🥹유의사항🥹
 
@@ -11,25 +11,16 @@
 
 ## 🥹버그 해결 사항🥹
 
-1. 프로그램 첫 시작시, ColorPicker 관련 색 지정을 하지 않아 오류가 나오는 사항을 개선했습니다.
+1. 
 
 
 
 ## 😎업데이트 된 사항😎
 
-1. iPhone 사진으로 exif padding을 선택하면 iPhone 제품명만 나오고, 렌즈 명은 나오지 않도록 하였습니다.
-2. ......... 기억 안남
+1. 
 
 
 
 ## 👀앞으로의 업데이트 예정 사항👀
 
-보정작업 하느라 바빠서 일주일 정도 유기했는데 이제 다시 만져봐야겟음니다
-
-
-
-1. UI 리워크
-   1. ![https://user-images.githubusercontent.com/9432240/267860897-c6a0675d-4ea6-423e-a037-43eeac4cda3f.png](https://user-images.githubusercontent.com/9432240/267860897-c6a0675d-4ea6-423e-a037-43eeac4cda3f.png)
-   2. 대충 이런 형태로 UI 기능을 빼내는 작업을 할 예정
-2. 한글화
-   1. 프로그램 첫 시작 시 / 설정 UI에서 프로그램 언어 변경을 가능..하게..할..예정..?
+1. 
