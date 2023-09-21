@@ -58,7 +58,7 @@
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="addButton">
+   <widget class="QPushButton" name="add_button">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -102,7 +102,7 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_3">
+    <widget class="QPushButton" name="conversion_option_setting_button">
      <property name="geometry">
       <rect>
        <x>340</x>
@@ -128,7 +128,7 @@
     <property name="title">
      <string>Watermark Options</string>
     </property>
-    <widget class="QCheckBox" name="watermarkFontColorBox">
+    <widget class="QCheckBox" name="enable_watermark_option_box">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -141,7 +141,7 @@
       <string>Enable</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="watermark_option_setting_button">
      <property name="geometry">
       <rect>
        <x>340</x>
@@ -167,7 +167,7 @@
     <property name="title">
      <string>EXIF Options</string>
     </property>
-    <widget class="QCheckBox" name="checkBox">
+    <widget class="QCheckBox" name="enable_exif_padding_option_box">
      <property name="geometry">
       <rect>
        <x>10</x>
@@ -180,7 +180,7 @@
       <string>Enable</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton_2">
+    <widget class="QPushButton" name="exif_option_setting_button">
      <property name="geometry">
       <rect>
        <x>340</x>
@@ -207,7 +207,7 @@
      <set>QDialogButtonBox::Save</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="addButton_2">
+   <widget class="QPushButton" name="minus_button">
     <property name="geometry">
      <rect>
       <x>50</x>

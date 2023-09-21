@@ -3,7 +3,7 @@ import platform
 import sys
 import pathlib
 
-from option_window import ResizeOptionWindow
+from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow
 
 print("Python Package Loaded")
 import user_config
@@ -51,8 +51,9 @@ class WebpWindow(QMainWindow, formClass):
 
     def __init__(self):
         super().__init__()
-
-        self.resize_option_window = ResizeOptionWindow()
+        
+        self.webp_conversion_option_window = WebPOptionWindow()
+        self.exif_padding_option_window = ExifOptionWindow()
 
         self.save_exif_data = None
         self.FontComboBox = None
@@ -70,14 +71,6 @@ class WebpWindow(QMainWindow, formClass):
         self.watermark_text = None
         self.converter = webp.Converter()
         self.file_name = []
-
-        self.loseless_option = False
-        self.image_quality_option = 80
-        self.exif_option = False
-        self.icc_profile_option = False
-        self.exact_option = False
-
-        self.conversion_option = True  # webp 변환하는지 선택
 
         # Exif Options 관련 변수
         self.exif_writing_option = False  # Exif Padding 을 enable 할 지에 대한 변수
