@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>456</width>
-    <height>141</height>
+    <height>169</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -131,7 +131,7 @@
    <widget class="QPushButton" name="open_resize_option_button">
     <property name="geometry">
      <rect>
-      <x>324</x>
+      <x>330</x>
       <y>50</y>
       <width>101</width>
       <height>23</height>
@@ -141,6 +141,19 @@
      <string>Resize Option</string>
     </property>
    </widget>
+  </widget>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>140</y>
+     <width>156</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
   </widget>
  </widget>
  <resources/>
