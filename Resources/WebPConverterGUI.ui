@@ -377,6 +377,19 @@
       <string>Save Exif Data</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>70</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>PushButton</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QDialogButtonBox" name="SaveButton">
     <property name="geometry">
@@ -419,23 +432,30 @@
      <x>0</x>
      <y>0</y>
      <width>481</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
      <string>Options</string>
     </property>
-    <addaction name="actionAdd_Files"/>
-    <addaction name="actionClear_List"/>
+    <addaction name="actionPreferences"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuFiles">
+    <property name="title">
+     <string>Files</string>
+    </property>
+    <addaction name="actionAdd_Files"/>
+    <addaction name="actionClear_List"/>
+   </widget>
    <addaction name="menuOptions"/>
+   <addaction name="menuFiles"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAdd_Files">
    <property name="text">
-    <string>Add Files ...</string>
+    <string>Add Files</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -448,12 +468,17 @@
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Exit ...</string>
+    <string>Exit</string>
    </property>
   </action>
   <action name="actionClear_List">
    <property name="text">
     <string>Clear List</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>Preferences</string>
    </property>
   </action>
  </widget>
