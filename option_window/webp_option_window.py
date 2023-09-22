@@ -142,6 +142,7 @@ class WebPOptionWindow(QDialog, formClass):
 		self.backup_exact_option = self.exact_option
 		self.backup_image_quality_option = self.image_quality_option
 		self.debug_log(0)
+		self.accept()
 	
 	def on_cancel_close(self):
 		self.loseless_option = self.backup_loseless_option
@@ -150,3 +151,4 @@ class WebPOptionWindow(QDialog, formClass):
 		self.exact_option = self.backup_exact_option
 		self.image_quality_option = self.backup_image_quality_option
 		self.debug_log(0)
+		self.reject()

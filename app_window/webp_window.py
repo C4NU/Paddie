@@ -189,20 +189,8 @@ class WebpWindow(QMainWindow, formClass):
     def on_click_conversion_option(self):
         self.webp_conversion_option_window.on_call()
 
-        self.loseless_option = self.webp_conversion_option_window.loseless_option
-        self.exif_option = self.webp_conversion_option_window.exif_option
-        self.icc_profile_option = self.webp_conversion_option_window.icc_profile_option
-        self.exact_option = self.webp_conversion_option_window.exact_option
-        self.image_quality_option = self.webp_conversion_option_window.image_quality_option
-
-        print(f"Loseless Option (main): {self.loseless_option}")
-        print(f"Exif Option (main): {self.exif_option}")
-        print(f"Icc Profile Option (main): {self.icc_profile_option}")
-        print(f"Transparent RGB Option (main): {self.exact_option}")
-        print(f"Image Quality (main): {self.image_quality_option}")
-
     def on_click_exif_padding_option(self):
-        self.exif_padding_option_window.show()
+        self.exif_padding_option_window.on_call()
     
     def on_trigger_add_files(self):
         file_name_list = QFileDialog.getOpenFileNames(self, 'Open Files...', './')
@@ -233,6 +221,25 @@ class WebpWindow(QMainWindow, formClass):
                 self.load_file(file)
 
     #################### FUNCTIONS
+    def update_options(self):
+        # note(CANU): on_call() 로 호출 후 convert ui close 시 데이터 업데이트가 안되는 문제
+        # 다시 click을 호출해야 데이터가 업데이트되는 관계로, 창을 close 시 호출되는 함수를 찾아봐야겠음
+
+        # save 버튼 클릭 후 호출할 때 option을 마지막으로 업데이트하는 형식으로 변경
+        # 어짜피 마지막 선택한 옵션만 필요한거 아닐까?
+        
+        self.loseless_option = self.webp_conversion_option_window.loseless_option
+        self.exif_option = self.webp_conversion_option_window.exif_option
+        self.icc_profile_option = self.webp_conversion_option_window.icc_profile_option
+        self.exact_option = self.webp_conversion_option_window.exact_option
+        self.image_quality_option = self.webp_conversion_option_window.image_quality_option
+            
+        print(f"Loseless Option (main): {self.loseless_option}")
+        print(f"Exif Option (main): {self.exif_option}")
+        print(f"Icc Profile Option (main): {self.icc_profile_option}")
+        print(f"Transparent RGB Option (main): {self.exact_option}")
+        print(f"Image Quality (main): {self.image_quality_option}")
+
     def load_file(self, filePath):
         icon = QtGui.QIcon(filePath)
         item = QtWidgets.QListWidgetItem(icon, filePath)
@@ -254,6 +261,8 @@ class WebpWindow(QMainWindow, formClass):
                                                      directory=UserConfig.latest_save_path)
         UserConfig.latest_save_path = save_path
         UserConfig.save()
+
+        self.update_options()
 
         if save_path:
             # 01 WebP 이미지로만 변환할 때

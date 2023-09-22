@@ -57,10 +57,6 @@ class Converter:
             image = Image.open(file_path)
             dest = save_path + save_name + ".webp"
 
-            # comment (CANU)
-            # 단순 enable -> 정상적으로 회전함
-            # exif 데이터 참조해서 새로 저장할때만 덮어씌워지면서 원래 이미지파일의 회전값으로 저장되는것으로 확인
-
             new_exif_data, image = Converter.fix_orientation(image)
 
             # Exif Option 데이터 읽어오기 / 오류시 except
@@ -85,8 +81,6 @@ class Converter:
                 print(f'No ICC Profile Data: {save_name}')
                 icc_profile = None
                 icc_profile_option = False
-
-            # image = self.watermark.InsertWatermark(image=image, fontColor=watermarkColor, watermarkText=watermarkText)
 
             if exif_option:
                 if icc_profile_option:
