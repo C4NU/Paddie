@@ -108,8 +108,10 @@ class WebpWindow(QMainWindow, formClass):
     def bind_ui(self):
         # 실행 버튼 함수 링킹
         self.add_button.clicked.connect(self.open_file)
+        self.add_button.setToolTip("파일 선택하기")
         #self.delete_button.clicked.connect(None)
         self.save_button.clicked.connect(self.on_click_save)
+        self.save_button.setToolTip("파일 저장하기")
         # 파일 추가 버튼 함수 링킹
         self.actionAdd_Files.triggered.connect(self.on_trigger_add_files)
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
@@ -213,7 +215,7 @@ class WebpWindow(QMainWindow, formClass):
 
     #################### FUNCTIONS
     def load_file(self, filePath):
-        # ISSUE: 파일 로딩할때 특정 이미지 파일이 누워서 로딩됨 / 혹은 저장할때?
+
         icon = QtGui.QIcon(filePath)
         item = QtWidgets.Qimage_list_widgetItem(icon, filePath)
 

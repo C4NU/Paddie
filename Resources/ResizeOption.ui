@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Resize Option</string>
+   <string>Resize Options</string>
   </property>
   <widget class="QDialogButtonBox" name="resize_option_button_box">
    <property name="geometry">

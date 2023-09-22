@@ -3,6 +3,7 @@ import sys
 import platform
 
 from PyQt6 import uic
+from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton
 
 if platform.system() == "Windows":
@@ -21,7 +22,7 @@ class WebPOptionWindow(QDialog, formClass):
 		super().__init__()
 
 		# UI 링킹 설정
-		self.webp_option_button_box: QDialogButtonBox
+		self.webp_option_button_box: QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
 		self.loseless_option_box: QCheckBox
 		self.exif_option_box: QCheckBox
 		self.icc_profile_option_box: QCheckBox
@@ -29,8 +30,7 @@ class WebPOptionWindow(QDialog, formClass):
 
 		self.image_quality_spinbox: QSpinBox
 		self.open_resize_option_button: QPushButton
-		self.setupUi(self)
-		
+
 		# boolean 옵션 값 설정
 		self.conversion_option = True  # webp 변환하는지 선택
 		self.loseless_option = False
@@ -39,10 +39,75 @@ class WebPOptionWindow(QDialog, formClass):
 		self.icc_profile_option = False
 		self.exact_option = False
 
-	def __update_option_info(self):
-		self.loseless_option = self.loseless_option.isChecked()
-		self.exif_option = self.exact_option_box.isChecked()
-		self.icc_profile_option = self.icc_profile_option_box.isChecked()
-		self.exact_option = self.exact_option_box.isChecked()
+		self.setupUi(self)
+		self.bind_ui()
 
-		self.image_quality_option = int(self.image_quality_spinbox.value())
+	def bind_ui(self):
+		self.webp_option_button_box.accepted.connect(self.on_save_close)
+		self.webp_option_button_box.rejected.connect(self.on_cancel_close)
+
+		self.loseless_option_box.stateChanged.connect(self.on_toggle_loseless_option)
+		self.loseless_option_box.setToolTip("무손실 저장 옵션")
+
+		self.exif_option_box.stateChanged.connect(self.on_toggle_exif_option)
+		self.exif_option_box.setToolTip("Exif 저장 옵션")
+
+		self.icc_profile_option_box.stateChanged.connect(self.on_toggle_icc_profile_option)
+		self.icc_profile_option_box.setToolTip("ICC Profile 저장 옵션")
+
+		self.exact_option_box.stateChanged.connect(self.on_toggle_exact_option)
+		self.exact_option_box.setToolTip("몰?루... 저장 옵션")
+
+		self.image_quality_spinbox.valueChanged.connect(self.on_change_image_quality)
+		self.image_quality_spinbox.setToolTip("이미지 품질 저장 옵션 \n 92 정도가 web에서 사용하기 제일 좋습니다.")
+
+	# DEBUG LOGGER FUNCTIONS
+	def debug_log(self, options=int):
+		if options == 0:
+			print(f"Conversion Option: {self.conversion_option}")
+			print(f"Loseless Option: {self.loseless_option}")
+			print(f"Exif Option: {self.exif_option}")
+			print(f"Icc Profile Option: {self.icc_profile_option}")
+			print(f"Transparent RGB Option : {self.exact_option}")
+			print(f"Image Quality : {self.image_quality_option}")
+		elif options == 1:
+			print(f"Loseless Option: {self.loseless_option}")
+		elif options == 2:
+			print(f"Exif Option: {self.exif_option}")
+		elif options == 3:
+			print(f"Icc Profile Option: {self.icc_profile_option}")
+		elif options == 4:
+			print(f"Transparent RGB Option : {self.exact_option}")
+		elif options == 5:
+			print(f"Image Quality : {self.image_quality_option}")
+		else:
+			print("Wrong Debug Mode")
+
+	# UI INTERACTION FUNCTIONS
+	def on_toggle_loseless_option(self, state):
+
+		self.loseless_option = bool(state == Qt.CheckState.Checked.value)
+		self.debug_log(1)
+
+	def on_toggle_exif_option(self, state):
+		self.exif_option = bool(state == Qt.CheckState.Checked.value)
+		self.debug_log(2)
+
+	def on_toggle_icc_profile_option(self, state):
+		self.icc_profile_option = bool(state == Qt.CheckState.Checked.value)
+		self.debug_log(3)
+
+	def on_toggle_exact_option(self, state):
+		self.exact_option = bool(state == Qt.CheckState.Checked.value)
+		self.debug_log(4)
+
+	def on_change_image_quality(self):
+		self.image_quality_option = self.image_quality_spinbox.value()
+		self.debug_log(5)
+	
+	def on_save_close(self):
+		# 
+		self.debug_log(0)
+	
+	def on_cancel_close(self):
+		self.debug_log(0)

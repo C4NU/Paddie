@@ -3,7 +3,7 @@
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
   <property name="windowModality">
-   <enum>Qt::NonModal</enum>
+   <enum>Qt::ApplicationModal</enum>
   </property>
   <property name="geometry">
    <rect>
@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>WebP Conversion Options</string>
   </property>
   <widget class="QDialogButtonBox" name="webp_option_button_box">
    <property name="geometry">
@@ -25,11 +25,29 @@
      <height>32</height>
     </rect>
    </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>441</width>
+     <height>32</height>
+    </size>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>441</width>
+     <height>32</height>
+    </size>
+   </property>
    <property name="orientation">
     <enum>Qt::Horizontal</enum>
    </property>
    <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Save</set>
    </property>
   </widget>
   <widget class="QGroupBox" name="groupBox">
@@ -53,11 +71,14 @@
       <height>16</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string extracomment="무압축으로 저장하는 옵션입니다."/>
+    </property>
     <property name="text">
      <string>Loseless</string>
     </property>
    </widget>
-   <widget class="QSpinBox" name="image_quality_box">
+   <widget class="QSpinBox" name="image_quality_spinbox">
     <property name="geometry">
      <rect>
       <x>350</x>
@@ -98,6 +119,9 @@
       <height>16</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string extracomment="EXIF 데이터를 파일에 같이 저장하는 옵션입니다."/>
+    </property>
     <property name="text">
      <string>Exif Data</string>
     </property>
@@ -110,6 +134,9 @@
       <width>101</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string extracomment="ICC 프로파일을 같이 저장하는 옵션입니다."/>
     </property>
     <property name="text">
      <string>ICC Profile</string>

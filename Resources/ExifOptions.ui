@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Exif Frame Options</string>
   </property>
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
