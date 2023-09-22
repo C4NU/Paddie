@@ -43,6 +43,8 @@ class ExifOptionWindow(QDialog, formClass):
 		
 		# 옵션 값 설정 (FONT)
 		
+		self.show()
+		
 		def __update_option_info(self):
 			self.enable_padding = self.enable_padding_box.isChecked()
 			self.enable_dark_mode = self.enable_dark_mode_box.isChecked()

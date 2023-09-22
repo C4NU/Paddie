@@ -3,10 +3,9 @@
 뱃지인가 뭐시긴가... 랑 stable 버전 뭐 이런거 표시?
 
 
+현재 최신 버전: WebP Converter v2.1.1-stable
 
-현재 최신 버전: WebP Converter v2.0.5-nightly
-
-현재 stable 최신 버전: 몰?루 2.1.0 버전 예정
+현재 stable 최신 버전: WebP Converter v2.1.1-stable
 
 ## Package Version
 

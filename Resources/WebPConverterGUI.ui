@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>461</width>
-    <height>682</height>
+    <height>694</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -21,7 +21,7 @@
     <normaloff>Resources/Icon@64X64_02.ico</normaloff>Resources/Icon@64X64_02.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QListWidget" name="image_list_widget">
     <property name="geometry">
      <rect>
       <x>0</x>
@@ -71,25 +71,25 @@
      <string>+</string>
     </property>
    </widget>
-   <widget class="QGroupBox" name="groupBox">
+   <widget class="QGroupBox" name="conversion_option_group">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>440</y>
       <width>441</width>
-      <height>51</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="title">
      <string>Conversion Options</string>
     </property>
-    <widget class="QCheckBox" name="ConversionEnableBox">
+    <widget class="QCheckBox" name="enable_conversion_option_box">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>20</y>
        <width>81</width>
-       <height>16</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
@@ -102,13 +102,13 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="conversion_option_setting_button">
+    <widget class="QPushButton" name="open_conversion_option_button">
      <property name="geometry">
       <rect>
        <x>340</x>
        <y>20</y>
        <width>91</width>
-       <height>23</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
@@ -116,13 +116,13 @@
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="WatermarkGroupBox">
+   <widget class="QGroupBox" name="watermark_option_group_box">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>500</y>
       <width>441</width>
-      <height>51</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="title">
@@ -133,21 +133,21 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>141</width>
-       <height>16</height>
+       <width>71</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
       <string>Enable</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="watermark_option_setting_button">
+    <widget class="QPushButton" name="open_watermark_option_button">
      <property name="geometry">
       <rect>
        <x>340</x>
        <y>20</y>
        <width>91</width>
-       <height>23</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
@@ -155,13 +155,13 @@
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="ExifOptionBox_2">
+   <widget class="QGroupBox" name="exif_option_group_box">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>560</y>
       <width>441</width>
-      <height>51</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="title">
@@ -173,20 +173,20 @@
        <x>10</x>
        <y>20</y>
        <width>151</width>
-       <height>16</height>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
       <string>Enable</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="exif_option_setting_button">
+    <widget class="QPushButton" name="open_exif_option_button">
      <property name="geometry">
       <rect>
        <x>340</x>
        <y>20</y>
        <width>91</width>
-       <height>23</height>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
@@ -194,11 +194,11 @@
      </property>
     </widget>
    </widget>
-   <widget class="QDialogButtonBox" name="SaveButton">
+   <widget class="QDialogButtonBox" name="save_button">
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>610</y>
+      <y>620</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -207,7 +207,7 @@
      <set>QDialogButtonBox::Save</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="minus_button">
+   <widget class="QPushButton" name="delete_button">
     <property name="geometry">
      <rect>
       <x>50</x>
@@ -227,7 +227,7 @@
      <x>0</x>
      <y>0</y>
      <width>461</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">

@@ -45,46 +45,27 @@ class WebpApp:
     def exec(self):
         self.app.exec()
 
-
 class WebpWindow(QMainWindow, formClass):
     default_font = 'Barlow-Light'
 
     def __init__(self):
         super().__init__()
+
+        # Converter 모듈 initialize
+        self.converter = webp.Converter()
         
+        # Conversion UI initialize
         self.webp_conversion_option_window = WebPOptionWindow()
+        # Watermark UI initialize
+
+        # Exif Frame UI initialize
         self.exif_padding_option_window = ExifOptionWindow()
 
-        self.save_exif_data = None
-        self.FontComboBox = None
-        self.listWidget = None
-        self.actionClear_List = None
-        self.open_color_picker_button: QPushButton
-        self.font_preview_line_edit: QPlainTextEdit
-        self.open_resize_option_button: QPushButton
-        self.__font_preview_size: int
-        self.__font_preview_size = 24
-
-        self.__selected_font = None
-        self.font_index = 0
-        self.watermakr_option = None
-        self.watermark_text = None
-        self.converter = webp.Converter()
+        # 파일 이름 변수
         self.file_name = []
 
-        # Exif Options 관련 변수
-        self.exif_writing_option = False  # Exif Padding 을 enable 할 지에 대한 변수
-        self.square_mode_option = False
-        self.dark_mode_option = False
-        self.padding_option = False       
-        self.line_text_option = False 
-        self.save_format_index = 0  # JPG, PNG, WebP 파일 형식중 고른 값에 대한 변수
-        self.__background_color = QColor(255, 255, 255)
-
-        # self.watermark = []
-
         self.setupUi(self)
-        self.setup_ui_internal()
+        #self.setup_ui_internal()
         self.bind_ui()
         self.init_options()
 
@@ -126,93 +107,41 @@ class WebpWindow(QMainWindow, formClass):
 
     def bind_ui(self):
         # 실행 버튼 함수 링킹
-        self.addButton.clicked.connect(self.open_file)
-        self.SaveButton.clicked.connect(self.on_click_save)
-        self.open_resize_option_button.clicked.connect(self.on_click_open_resize_option)
+        self.add_button.clicked.connect(self.open_file)
+        #self.delete_button.clicked.connect(None)
+        self.save_button.clicked.connect(self.on_click_save)
         # 파일 추가 버튼 함수 링킹
         self.actionAdd_Files.triggered.connect(self.on_trigger_add_files)
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
         # 종료 버튼 함수 링킹
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
-        # 변환 활성화 trigger 함수 링킹
-        self.ConversionEnableBox.stateChanged.connect(self.on_toggle_conversion_enable)
-        self.ConversionEnableBox.toggle()
-        # Loseless 옵션 링킹
-        self.LoselessOptionBox.stateChanged.connect(self.on_toggle_loseless_option)
-        # 이미지 퀄리티 옵션 링킹
-        self.ImageQualityBox.valueChanged.connect(self.on_change_image_quality)
-        # Exif 정보 저장 옵션 링킹
-        self.ExifOptionBox.stateChanged.connect(self.on_toggle_exif_option)
-        self.ExactOptionBox.stateChanged.connect(self.on_toggle_exact_option)
-        self.ICCProfileOptionBox.stateChanged.connect(self.on_toggle_icc_profile_option)
-        self.open_color_picker_button.clicked.connect(self.on_trigger_color_picker)
-        # Watermark 옵션
-        # self.watermarkFontColorBox.stateChanged.connect(self.WatermarkColorOption)
+        # Conversion 활성화 옵션 링킹
+        self.enable_conversion_option_box.stateChanged.connect(self.on_toggle_conversion_enable)
+        self.enable_conversion_option_box.toggle()
+
+        self.open_conversion_option_button.clicked.connect(self.on_click_conversion_option)
+        # Watermark 활성화 옵션 링킹
+        #self.enable_watermark_option_box.stateChanged.connect(None)
         # Exif Padding 활성화 옵션 링킹
-        self.EnableExifWriting.stateChanged.connect(self.on_toggle_exif_writing_enable)
-        self.EnableSquareMode.stateChanged.connect(self.on_change_square_mode)
-        self.EnableDarkMode.stateChanged.connect(self.on_change_dark_mode)
-        self.EnablePadding.stateChanged.connect(self.on_change_padding)
-        self.EnableLineText.stateChanged.connect(self.on_change_line_text)
-        self.FontComboBox.currentIndexChanged.connect(self.on_change_font)
-        self.SaveFormatBox.currentIndexChanged.connect(self.on_change_save_format)
-        self.SaveExifDataBox.stateChanged.connect(self.on_change_save_exif)
+        self.enable_exif_padding_option_box.stateChanged.connect(self.on_toggle_exif_writing_enable)
+
+        self.open_exif_option_button.clicked.connect(self.on_click_exif_padding_option)
+        #
 
     #################### PyQt FUNCTIONS
     def init_options(self):
         ####################	이미지 품질 관련 옵션
-        self.conversion_option = self.ConversionEnableBox.isChecked()
-        ####################	이미지 품질 관련 옵션
-        self.loseless_option = self.LoselessOptionBox.isChecked()
-        self.image_quality_option = self.ImageQualityBox.value()
-        self.exif_option = self.ExifOptionBox.isChecked()
-        self.icc_profile_option = self.ICCProfileOptionBox.isChecked()
-        self.exact_option = self.ExactOptionBox.isChecked()
+        self.conversion_option = self.enable_conversion_option_box.isChecked()
+        #self.conversion_option_box = self.conversion_option_setting_button.
         ####################	워터마크 관련 옵션
         # self.watermark = self.watermarkBox.toPlainText()
         # self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
         ####################	하단 EXIF 삽입 관련 옵션
-        self.exif_writing_option = self.EnableExifWriting.isChecked()
-        self.square_mode_option = self.EnableSquareMode.isChecked()
-        self.dark_mode_option = self.EnableDarkMode.isChecked()
-        self.padding_option = self.EnablePadding.isChecked()
-        self.line_text_option = self.EnableLineText.isChecked()
-        self.save_format_index = self.SaveFormatBox.currentIndex()
-        self.font_index = self.FontComboBox.currentIndex()
-        default_font_index = self.FontComboBox.findText(WebpWindow.default_font)
-        self.FontComboBox.setCurrentIndex(default_font_index)
-        self.save_exif_data = self.SaveExifDataBox.isChecked()
-        self.__selected_font = self.FontComboBox.itemData(self.font_index)
+        self.exif_writing_option = self.enable_exif_padding_option_box.isChecked()
+
         UserConfig.load()
         if UserConfig.background_color:
             self.__background_color = UserConfig.background_color
-        
-        self.EnablePadding.setEnabled(False)
-        self.EnableDarkMode.setEnabled(False)
-        self.EnableSquareMode.setEnabled(False)
-        self.EnableLineText.setEnabled(False)
-        self.SaveExifDataBox.setEnabled(False)
-
-        self.__update_font_preview()
-
-    def __update_font_preview(self):
-        font_id = QFontDatabase.addApplicationFont(self.__selected_font)
-        font_file_name = os.path.basename(self.__selected_font)
-        if font_id > 0:
-            families = QFontDatabase.applicationFontFamilies(font_id)
-            styles = QFontDatabase.styles(families[0])
-            style = None
-            for item in styles:
-                if item in font_file_name:
-                    style = item
-
-            if style:
-                font = QFontDatabase.font(families[0], style, self.__font_preview_size)
-                self.font_preview_line_edit.setFont(font)
-            else:
-                self.font_preview_line_edit.setFont(QFont(families[0], self.__font_preview_size))
-        else:
-            print(f'preview font update failed : {self.__selected_font}')
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -233,7 +162,7 @@ class WebpWindow(QMainWindow, formClass):
             event.ignore()
 
     def on_click_save(self):
-        if self.listWidget.count() != 0:
+        if self.image_list_widget.count() != 0:
             self.save_file()
 
     def on_click_open_resize_option(self):
@@ -248,6 +177,12 @@ class WebpWindow(QMainWindow, formClass):
         # accept 되기 전에 호출하면 제대로 된 값을 불러오지 못 할 수 있음
         # print(f'w:{self.resize_option_window.width}, h:{self.resize_option_window.height}')
 
+    def on_click_conversion_option(self):
+        self.webp_conversion_option_window.show()
+
+    def on_click_exif_padding_option(self):
+        self.exif_padding_option_window.show()
+    
     def on_trigger_add_files(self):
         file_name_list = QFileDialog.getOpenFileNames(self, 'Open Files...', './')
         if file_name_list is None:
@@ -257,7 +192,7 @@ class WebpWindow(QMainWindow, formClass):
                 self.load_file(name)
 
     def on_trigger_clear_files(self):
-        self.listWidget.clear()
+        self.image_list_widget.clear()
 
     @staticmethod
     def on_trigger_exit():
@@ -280,7 +215,7 @@ class WebpWindow(QMainWindow, formClass):
     def load_file(self, filePath):
         # ISSUE: 파일 로딩할때 특정 이미지 파일이 누워서 로딩됨 / 혹은 저장할때?
         icon = QtGui.QIcon(filePath)
-        item = QtWidgets.QListWidgetItem(icon, filePath)
+        item = QtWidgets.Qimage_list_widgetItem(icon, filePath)
 
         size = QtCore.QSize()
         size.setHeight(128)
@@ -289,7 +224,7 @@ class WebpWindow(QMainWindow, formClass):
         item.setSizeHint(size)
         file_name = os.path.splitext(filePath)[0]
         self.file_name.append(file_name.split(sep='/')[-1])
-        self.listWidget.addItem(item)
+        self.image_list_widget.addItem(item)
 
     def save_file(self):
         # 변환 실행 버튼 callback 함수
@@ -304,8 +239,8 @@ class WebpWindow(QMainWindow, formClass):
             # 01 WebP 이미지로만 변환할 때
             print(self.__selected_font)  # macOS exec 빌드시 None
             if self.conversion_option:
-                for index in range(self.listWidget.count()):
-                    self.converter.convert_image_to_webp(file_path=self.listWidget.item(index).text(),
+                for index in range(self.image_list_widget.count()):
+                    self.converter.convert_image_to_webp(file_path=self.image_list_widget.item(index).text(),
                                                          save_path=save_path + '/',
                                                          save_name=self.file_name[index],
                                                          loseless_option=self.loseless_option,
@@ -319,8 +254,8 @@ class WebpWindow(QMainWindow, formClass):
 
             # 02 Exif Padding 이미지로만 변환할때
             elif self.exif_writing_option:
-                for index in range(self.listWidget.count()):
-                    self.converter.convert_exif_image(file_path=self.listWidget.item(index).text(),
+                for index in range(self.image_list_widget.count()):
+                    self.converter.convert_exif_image(file_path=self.image_list_widget.item(index).text(),
                                                       save_path=save_path + '/',
                                                       save_name=self.file_name[index],
                                                       file_format_option=self.save_format_index,
@@ -340,20 +275,15 @@ class WebpWindow(QMainWindow, formClass):
             elif platform.system() == "Darwin":  # macOS
                 os.system("open " + '"' + save_path + '"')
 
-            self.listWidget.clear()
+            self.image_list_widget.clear()
             self.file_name.clear()
 
     def on_toggle_conversion_enable(self, state):
         self.conversion_option = bool(state == Qt.CheckState.Checked.value)
-        self.EnableExifWriting.setChecked(not state)
+        self.enable_exif_padding_option_box.setChecked(not state)
         print(f"Conversion Pushed, Conversion Opt: {self.conversion_option}")
-        print(f"Conversion Pushed, Exif Padding Opt: {self.exif_writing_option}")
+        #print(f"Conversion Pushed, Exif Padding Opt: {self.exif_writing_option}")
 
-        if not self.conversion_option:
-            self.LoselessOptionBox.setEnabled(False)
-            self.ExifOptionBox.setEnabled(False)
-            self.ICCProfileOptionBox.setEnabled(False)
-            self.ExactOptionBox.setEnabled(False)
 
     def on_trigger_color_picker(self):
         self.__background_color = QColorDialog.getColor(title='Pick  Background Color')
@@ -382,20 +312,10 @@ class WebpWindow(QMainWindow, formClass):
     def on_toggle_exif_writing_enable(self, state):
         self.exif_writing_option = bool(state == Qt.CheckState.Checked.value)
 
-        self.ConversionEnableBox.setChecked(not state)
-        self.LoselessOptionBox.setEnabled(not state)
-        self.ExifOptionBox.setEnabled(not state)
-        self.ICCProfileOptionBox.setEnabled(not state)
-        self.ExactOptionBox.setEnabled(not state)
-
-        self.EnableSquareMode.setEnabled(bool(state))
-        self.EnableDarkMode.setEnabled(bool(state))
-        self.EnablePadding.setEnabled(bool(state))
-        self.EnableLineText.setEnabled(bool(state))
-        self.SaveExifDataBox.setEnabled(bool(state))
+        self.enable_conversion_option_box.setChecked(not state)
 
         print(f"Exif Padding Pushed, Conversion Opt: {self.conversion_option}")
-        print(f"Exif Padding Pushed, Exif Padding Opt: {self.exif_writing_option}")
+        #print(f"Exif Padding Pushed, Exif Padding Opt: {self.exif_writing_option}")
         
     def on_change_square_mode(self, state):
         self.square_mode_option = bool(state == Qt.CheckState.Checked.value)        
