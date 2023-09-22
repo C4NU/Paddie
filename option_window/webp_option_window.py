@@ -32,12 +32,18 @@ class WebPOptionWindow(QDialog, formClass):
 		self.open_resize_option_button: QPushButton
 
 		# boolean 옵션 값 설정
-		self.conversion_option = True  # webp 변환하는지 선택
 		self.loseless_option = False
-		self.image_quality_option = 80
 		self.exif_option = False
 		self.icc_profile_option = False
 		self.exact_option = False
+		self.image_quality_option = 80
+
+		# Cancel 시 revert 시킬 옵션 값 backup
+		self.backup_loseless_option = False
+		self.backup_exif_option = False
+		self.backup_icc_profile_option = False
+		self.backup_exact_option = False
+		self.backup_image_quality_option = 80
 
 		self.setupUi(self)
 		self.bind_ui()
@@ -64,7 +70,6 @@ class WebPOptionWindow(QDialog, formClass):
 	# DEBUG LOGGER FUNCTIONS
 	def debug_log(self, options=int):
 		if options == 0:
-			print(f"Conversion Option: {self.conversion_option}")
 			print(f"Loseless Option: {self.loseless_option}")
 			print(f"Exif Option: {self.exif_option}")
 			print(f"Icc Profile Option: {self.icc_profile_option}")
@@ -80,12 +85,17 @@ class WebPOptionWindow(QDialog, formClass):
 			print(f"Transparent RGB Option : {self.exact_option}")
 		elif options == 5:
 			print(f"Image Quality : {self.image_quality_option}")
+		elif options == 6:
+			print(f"Backup Loseless Option: {self.backup_loseless_option}")
+			print(f"Backup Exif Option: {self.backup_exif_option}")
+			print(f"Backup Icc Profile Option: {self.backup_icc_profile_option}")
+			print(f"Backup Transparent RGB Option : {self.backup_exact_option}")
+			print(f"Backup Image Quality : {self.backup_image_quality_option}")
 		else:
 			print("Wrong Debug Mode")
 
 	# UI INTERACTION FUNCTIONS
 	def on_toggle_loseless_option(self, state):
-
 		self.loseless_option = bool(state == Qt.CheckState.Checked.value)
 		self.debug_log(1)
 
@@ -105,9 +115,38 @@ class WebPOptionWindow(QDialog, formClass):
 		self.image_quality_option = self.image_quality_spinbox.value()
 		self.debug_log(5)
 	
+	def __update_ui(self):
+		if self.loseless_option_box.isChecked() != self.loseless_option:
+			self.loseless_option_box.toggle()
+
+		if self.exif_option_box.isChecked() != self.exif_option:
+			self.exif_option_box.toggle()
+
+		if self.icc_profile_option_box.isChecked() != self.icc_profile_option:
+			self.icc_profile_option_box.toggle()
+
+		if self.exact_option_box.isChecked() != self.exact_option:
+			self.exact_option_box.toggle()
+
+		if self.image_quality_spinbox.value() != self.image_quality_option:
+			self.image_quality_spinbox.setValue(self.image_quality_option)
+
+	def on_call(self):
+		self.__update_ui()
+		self.show()
+
 	def on_save_close(self):
-		# 
+		self.backup_loseless_option = self.loseless_option
+		self.backup_exif_option = self.exif_option
+		self.backup_icc_profile_option = self.icc_profile_option
+		self.backup_exact_option = self.exact_option
+		self.backup_image_quality_option = self.image_quality_option
 		self.debug_log(0)
 	
 	def on_cancel_close(self):
+		self.loseless_option = self.backup_loseless_option
+		self.exif_option = self.backup_exif_option
+		self.icc_profile_option = self.backup_icc_profile_option
+		self.exact_option = self.backup_exact_option
+		self.image_quality_option = self.backup_image_quality_option
 		self.debug_log(0)

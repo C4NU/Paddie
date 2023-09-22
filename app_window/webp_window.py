@@ -64,6 +64,13 @@ class WebpWindow(QMainWindow, formClass):
         # 파일 이름 변수
         self.file_name = []
 
+        # Conversion 관련 Flag 변수 초기화
+        self.loseless_option = self.webp_conversion_option_window.loseless_option
+        self.exif_option = self.webp_conversion_option_window.exif_option
+        self.icc_profile_option = self.webp_conversion_option_window.icc_profile_option
+        self.exact_option = self.webp_conversion_option_window.exact_option
+        self.image_quality_option = self.webp_conversion_option_window.image_quality_option
+
         self.setupUi(self)
         #self.setup_ui_internal()
         self.bind_ui()
@@ -180,7 +187,19 @@ class WebpWindow(QMainWindow, formClass):
         # print(f'w:{self.resize_option_window.width}, h:{self.resize_option_window.height}')
 
     def on_click_conversion_option(self):
-        self.webp_conversion_option_window.show()
+        self.webp_conversion_option_window.on_call()
+
+        self.loseless_option = self.webp_conversion_option_window.loseless_option
+        self.exif_option = self.webp_conversion_option_window.exif_option
+        self.icc_profile_option = self.webp_conversion_option_window.icc_profile_option
+        self.exact_option = self.webp_conversion_option_window.exact_option
+        self.image_quality_option = self.webp_conversion_option_window.image_quality_option
+
+        print(f"Loseless Option (main): {self.loseless_option}")
+        print(f"Exif Option (main): {self.exif_option}")
+        print(f"Icc Profile Option (main): {self.icc_profile_option}")
+        print(f"Transparent RGB Option (main): {self.exact_option}")
+        print(f"Image Quality (main): {self.image_quality_option}")
 
     def on_click_exif_padding_option(self):
         self.exif_padding_option_window.show()
@@ -290,21 +309,6 @@ class WebpWindow(QMainWindow, formClass):
     def on_trigger_color_picker(self):
         self.__background_color = QColorDialog.getColor(title='Pick  Background Color')
         user_config.UserConfig.background_color = self.__background_color
-
-    def on_toggle_icc_profile_option(self, state):
-        self.icc_profile_option = bool(state == Qt.CheckState.Checked.value)
-
-    def on_toggle_loseless_option(self, state):
-        self.loseless_option = bool(state == Qt.CheckState.Checked.value)
-
-    def on_change_image_quality(self):
-        self.image_quality_option = self.ImageQualityBox.value()
-
-    def on_toggle_exif_option(self, state):
-        self.exif_option = bool(state == Qt.CheckState.Checked.value)
-
-    def on_toggle_exact_option(self, state):
-        self.exact_option = bool(state == Qt.CheckState.Checked.value)
 
     # 워터마크 옵션
     def WatermarkColorOption(self, state):
