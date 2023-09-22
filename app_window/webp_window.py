@@ -1,14 +1,11 @@
 import os
 import platform
 import sys
-import pathlib
 
 from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow
 
 print("Python Package Loaded")
-import user_config
 import webp
-print("User Package Loaded")
 
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
@@ -72,45 +69,10 @@ class WebpWindow(QMainWindow, formClass):
         self.image_quality_option = self.webp_conversion_option_window.image_quality_option
 
         self.setupUi(self)
-        #self.setup_ui_internal()
         self.bind_ui()
         self.init_options()
 
-    def setup_ui_internal(self):
-        if platform.system() == "Windows":
-            font_asset_path = os.path.join(os.getcwd(), "Resources/Fonts")
-        else:
-            font_asset_path = os.path.join(os.path.dirname(sys.executable), "Resources/Fonts")
-
-        print(f"Font_asset: {font_asset_path}")
-        fonts = pathlib.Path(font_asset_path)
-        print(f"Fonts: {fonts}")
-
-        try:
-            for item in fonts.iterdir():
-                if item.is_file():
-                    continue
-
-                for font_item in os.listdir(item):
-                    print(f"Fonts Item: {font_item}")
-                    self.__add_font_combobox(item, font_item)
-        except:
-            # py 형식으로 실행할 때 macOS 오류 처리용 경로 설정
-            fonts = pathlib.Path(os.path.join(os.getcwd(), "Resources/Fonts"))
-            for item in fonts.iterdir():
-                if item.is_file():
-                    continue
-
-                for font_item in os.listdir(item):
-                    self.__add_font_combobox(item, font_item)
-
-    def __add_font_combobox(self, dir_path, file_name):
-        font_name = os.path.splitext(file_name)[0]
-        item_ext = os.path.splitext(file_name)[1][1:]
-        if item_ext != 'ttf':
-            return
-        fullpath = os.path.join(dir_path, file_name)
-        self.FontComboBox.addItem(font_name, userData=fullpath)
+    
 
     def bind_ui(self):
         # 실행 버튼 함수 링킹
@@ -127,21 +89,17 @@ class WebpWindow(QMainWindow, formClass):
         # Conversion 활성화 옵션 링킹
         self.enable_conversion_option_box.stateChanged.connect(self.on_toggle_conversion_enable)
         self.enable_conversion_option_box.toggle()
-
         self.open_conversion_option_button.clicked.connect(self.on_click_conversion_option)
         # Watermark 활성화 옵션 링킹
         #self.enable_watermark_option_box.stateChanged.connect(None)
         # Exif Padding 활성화 옵션 링킹
         self.enable_exif_padding_option_box.stateChanged.connect(self.on_toggle_exif_writing_enable)
-
         self.open_exif_option_button.clicked.connect(self.on_click_exif_padding_option)
-        #
 
     #################### PyQt FUNCTIONS
     def init_options(self):
         ####################	이미지 품질 관련 옵션
         self.conversion_option = self.enable_conversion_option_box.isChecked()
-        #self.conversion_option_box = self.conversion_option_setting_button.
         ####################	워터마크 관련 옵션
         # self.watermark = self.watermarkBox.toPlainText()
         # self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
@@ -206,10 +164,6 @@ class WebpWindow(QMainWindow, formClass):
     @staticmethod
     def on_trigger_exit():
         sys.exit()
-
-    def watermark_option(self):
-        self.watermark_text = self.watermarkBox.toPlainText()
-        print(self.watermark_text)
 
     def open_file(self):
         open_files = QFileDialog.getOpenFileNames(self, "Open File")
@@ -311,49 +265,10 @@ class WebpWindow(QMainWindow, formClass):
         print(f"Conversion Pushed, Conversion Opt: {self.conversion_option}")
         #print(f"Conversion Pushed, Exif Padding Opt: {self.exif_writing_option}")
 
-
-    def on_trigger_color_picker(self):
-        self.__background_color = QColorDialog.getColor(title='Pick  Background Color')
-        user_config.UserConfig.background_color = self.__background_color
-
     # 워터마크 옵션
     def WatermarkColorOption(self, state):
         self.watermakr_option = bool(state == Qt.CheckState.Checked.value)
 
-    # Exif Padding 옵션
     def on_toggle_exif_writing_enable(self, state):
         self.exif_writing_option = bool(state == Qt.CheckState.Checked.value)
 
-        self.enable_conversion_option_box.setChecked(not state)
-
-        print(f"Exif Padding Pushed, Conversion Opt: {self.conversion_option}")
-        #print(f"Exif Padding Pushed, Exif Padding Opt: {self.exif_writing_option}")
-        
-    def on_change_square_mode(self, state):
-        self.square_mode_option = bool(state == Qt.CheckState.Checked.value)        
-        print(f"Square Mode Pushed, Square Mode Opt: {self.square_mode_option}")
-    
-    def on_change_dark_mode(self, state):
-        self.dark_mode_option = bool(state == Qt.CheckState.Checked.value)        
-        print(f"Dark Mode Pushed, Dark Mode Opt: {self.dark_mode_option}")
-
-    def on_change_padding(self, state):
-        self.padding_option = bool(state == Qt.CheckState.Checked.value)        
-        print(f"Enable Padding Pushed, Padding Opt: {self.padding_option}")
-        
-    def on_change_line_text(self, state):
-        self.line_text_option = bool(state == Qt.CheckState.Checked.value)        
-        print(f"Enable Line Text Pushed, Line Text Opt: {self.line_text_option}")
-
-    def on_change_save_format(self):
-        self.save_format_index = self.SaveFormatBox.currentIndex()
-
-    def on_change_font(self):
-        self.font_index = self.FontComboBox.currentIndex()
-        print(f"Font Index: {self.font_index}")
-        self.__selected_font = self.FontComboBox.itemData(self.font_index)
-        print(f"Selected Font: {self.__selected_font}")
-        self.__update_font_preview()
-
-    def on_change_save_exif(self, state):
-        self.save_exif_data = bool(state == Qt.CheckState.Checked.value)

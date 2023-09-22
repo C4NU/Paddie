@@ -1,9 +1,13 @@
 import os
 import sys
 import platform
+import pathlib
+
+import user_config
 
 from PyQt6 import uic
-from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton, QComboBox, QPlainTextEdit
+from PyQt6.QtCore import Qt
+from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton, QComboBox, QPlainTextEdit, QColorDialog
 
 if platform.system() == "Windows":
 	form = os.path.join(os.getcwd(), "Resources/ExifOptions.ui")
@@ -54,6 +58,7 @@ class ExifOptionWindow(QDialog, formClass):
 		# UI 불러오기
 		self.setupUi(self)
 		self.bind_ui()
+		self.setup_ui_internal()
 
 	def bind_ui(self):
 		self.exif_option_button_box.accepted.connect(self.on_save_close)
@@ -73,6 +78,42 @@ class ExifOptionWindow(QDialog, formClass):
 
 		#self.save_exif_data_box.stateChanged.connect(self.on_)
 		#self.save_exif_data_box.setToolTip("이미지 품질 저장 옵션 \n 92 정도가 web에서 사용하기 제일 좋습니다.")
+
+	def setup_ui_internal(self):
+		if platform.system() == "Windows":
+			font_asset_path = os.path.join(os.getcwd(), "Resources/Fonts")
+		else:
+			font_asset_path = os.path.join(os.path.dirname(sys.executable), "Resources/Fonts")
+
+		print(f"Font_asset: {font_asset_path}")
+		fonts = pathlib.Path(font_asset_path)
+		print(f"Fonts: {fonts}")
+
+		try:
+			for item in fonts.iterdir():
+				if item.is_file():
+					continue
+
+				for font_item in os.listdir(item):
+					print(f"Fonts Item: {font_item}")
+					self.__add_font_combobox(item, font_item)
+		except:
+			# py 형식으로 실행할 때 macOS 오류 처리용 경로 설정
+			fonts = pathlib.Path(os.path.join(os.getcwd(), "Resources/Fonts"))
+			for item in fonts.iterdir():
+				if item.is_file():
+					continue
+
+				for font_item in os.listdir(item):
+					self.__add_font_combobox(item, font_item)
+
+	def __add_font_combobox(self, dir_path, file_name):
+		font_name = os.path.splitext(file_name)[0]
+		item_ext = os.path.splitext(file_name)[1][1:]
+		if item_ext != 'ttf':
+			return
+		fullpath = os.path.join(dir_path, file_name)
+		self.font_combo_box.addItem(font_name, userData=fullpath)
 
 	# DEBUG LOGGER FUNCTIONS
 	def debug_log(self, options=int):
@@ -106,20 +147,17 @@ class ExifOptionWindow(QDialog, formClass):
 			print("Wrong Debug Mode")
 
 	def __update_ui(self):
-		if self.loseless_option_box.isChecked() != self.loseless_option:
-			self.loseless_option_box.toggle()
+		if self.enable_padding_box.isChecked() != self.enable_padding:
+			self.enable_padding_box.toggle()
 
-		if self.exif_option_box.isChecked() != self.exif_option:
-			self.exif_option_box.toggle()
+		if self.enable_dark_mode_box.isChecked() != self.enable_dark_mode:
+			self.enable_dark_mode_box.toggle()
 
-		if self.icc_profile_option_box.isChecked() != self.icc_profile_option:
-			self.icc_profile_option_box.toggle()
+		if self.enable_one_line_box.isChecked() != self.enable_one_line:
+			self.enable_one_line_box.toggle()
 
-		if self.exact_option_box.isChecked() != self.exact_option:
-			self.exact_option_box.toggle()
-
-		if self.image_quality_spinbox.value() != self.image_quality_option:
-			self.image_quality_spinbox.setValue(self.image_quality_option)
+		if self.enable_square_mode_box.isChecked() != self.enable_square_mode:
+			self.enable_square_mode_box.toggle()
 
 	def on_call(self):
 		self.__update_ui()
@@ -142,3 +180,36 @@ class ExifOptionWindow(QDialog, formClass):
 		self.save_exif = self.backup_save_exif
 		self.save_format = self.backup_save_format
 		self.debug_log(0)
+
+	# Exif Padding 옵션
+	def on_change_square_mode(self, state):
+		self.square_mode_option = bool(state == Qt.CheckState.Checked.value)        
+		print(f"Square Mode Pushed, Square Mode Opt: {self.square_mode_option}")
+
+	def on_change_dark_mode(self, state):
+		self.dark_mode_option = bool(state == Qt.CheckState.Checked.value)        
+		print(f"Dark Mode Pushed, Dark Mode Opt: {self.dark_mode_option}")
+
+	def on_change_padding(self, state):
+		self.padding_option = bool(state == Qt.CheckState.Checked.value)        
+		print(f"Enable Padding Pushed, Padding Opt: {self.padding_option}")
+
+	def on_change_line_text(self, state):
+		self.line_text_option = bool(state == Qt.CheckState.Checked.value)        
+		print(f"Enable Line Text Pushed, Line Text Opt: {self.line_text_option}")
+
+	def on_change_save_format(self):
+		self.save_format_index = self.SaveFormatBox.currentIndex()
+
+	def on_change_font(self):
+		self.font_index = self.FontComboBox.currentIndex()
+		print(f"Font Index: {self.font_index}")
+		self.__selected_font = self.FontComboBox.itemData(self.font_index)
+		print(f"Selected Font: {self.__selected_font}")
+		self.__update_font_preview()
+
+	def on_change_save_exif(self, state):
+		self.save_exif_data = bool(state == Qt.CheckState.Checked.value)
+	def on_trigger_color_picker(self):
+		self.__background_color = QColorDialog.getColor(title='Pick  Background Color')
+		#user_config.UserConfig.background_color = self.__background_color
