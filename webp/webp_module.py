@@ -48,7 +48,7 @@ class Converter:
     @staticmethod
     def convert_image_to_webp(file_path, save_path, save_name, loseless_option, image_quality_option,
                               exif_option, icc_profile_option, exact_option, watermark_text, exif_view_option,
-                              conversion_option, font_path):
+                              conversion_option):
         file_format = Converter.search_file_format(file_path)
         # note(komastar) : file_format : 'jpg', 'png'...
         
@@ -67,13 +67,13 @@ class Converter:
             if new_exif_data is not None:
                 try:
                     exif_data = new_exif_data
-                    print("Get Exif Data")
+                    print(f"Get Exif Data: {exif_data}")
                 except:
                     print(f'No exif data:{save_name}')
                     exif_option = False
                     exif_data = None
-            
             else:
+                print("NO new exif data")
                 exif_option = False
                 exif_data = None
 

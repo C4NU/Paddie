@@ -16,7 +16,7 @@
   <property name="windowTitle">
    <string>Exif Frame Options</string>
   </property>
-  <widget class="QDialogButtonBox" name="buttonBox">
+  <widget class="QDialogButtonBox" name="exif_option_button_box">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -235,7 +235,7 @@
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>exif_option_button_box</sender>
    <signal>accepted()</signal>
    <receiver>Dialog</receiver>
    <slot>accept()</slot>
@@ -251,7 +251,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>exif_option_button_box</sender>
    <signal>rejected()</signal>
    <receiver>Dialog</receiver>
    <slot>reject()</slot>

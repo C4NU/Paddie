@@ -234,9 +234,8 @@ class WebpWindow(QMainWindow, formClass):
 
     #################### FUNCTIONS
     def load_file(self, filePath):
-
         icon = QtGui.QIcon(filePath)
-        item = QtWidgets.Qimage_list_widgetItem(icon, filePath)
+        item = QtWidgets.QListWidgetItem(icon, filePath)
 
         size = QtCore.QSize()
         size.setHeight(128)
@@ -258,7 +257,6 @@ class WebpWindow(QMainWindow, formClass):
 
         if save_path:
             # 01 WebP 이미지로만 변환할 때
-            print(self.__selected_font)  # macOS exec 빌드시 None
             if self.conversion_option:
                 for index in range(self.image_list_widget.count()):
                     self.converter.convert_image_to_webp(file_path=self.image_list_widget.item(index).text(),
@@ -270,8 +268,7 @@ class WebpWindow(QMainWindow, formClass):
                                                          icc_profile_option=self.icc_profile_option,
                                                          exact_option=self.exact_option, watermark_text="",
                                                          exif_view_option=self.exif_writing_option,
-                                                         conversion_option=self.conversion_option,
-                                                         font_path=self.__selected_font)
+                                                         conversion_option=self.conversion_option)
 
             # 02 Exif Padding 이미지로만 변환할때
             elif self.exif_writing_option:
