@@ -1,4 +1,4 @@
-# WebP Converter (버전)-stable/nightly
+# Paddie。(버전)-stable/nightly
 
 ## 🥹유의사항🥹
 

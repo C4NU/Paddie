@@ -14,7 +14,7 @@
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>WebP Converter</string>
+   <string>Paddie。</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -227,7 +227,7 @@
      <x>0</x>
      <y>0</y>
      <width>461</width>
-     <height>24</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">

@@ -21,6 +21,7 @@ class ExifOptionWindow(QDialog, formClass):
 		super().__init__()
 
 		# UI 링킹 설정 (EXIF Options)
+		self.exif_option_button_box: QDialogButtonBox
 		self.enable_padding_box: QCheckBox
 		self.enable_dark_mode_box: QCheckBox
 		self.enable_one_line_box: QCheckBox
@@ -32,6 +33,7 @@ class ExifOptionWindow(QDialog, formClass):
 		# UI 링킹 설정 (Font Options)
 		self.font_combo_box: QComboBox
 		self.font_preview_line_edit: QPlainTextEdit
+		self.setupUi(self)
 
 		# 옵션 값 설정 (EXIF)
 		self.enable_padding = False
@@ -42,8 +44,6 @@ class ExifOptionWindow(QDialog, formClass):
 		self.save_format = None
 		
 		# 옵션 값 설정 (FONT)
-		
-		self.show()
 		
 		def __update_option_info(self):
 			self.enable_padding = self.enable_padding_box.isChecked()

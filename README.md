@@ -1,4 +1,4 @@
-# WebP Converter GUI
+# Paddie。
 
 뱃지인가 뭐시긴가... 랑 stable 버전 뭐 이런거 표시?
 
