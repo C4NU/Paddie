@@ -259,6 +259,7 @@ class WebpWindow(QMainWindow, formClass):
             self.image_list_widget.clear()
             self.file_name.clear()
 
+    # WebP 변환 옵션
     def on_toggle_conversion_enable(self, state):
         self.conversion_option = bool(state == Qt.CheckState.Checked.value)
         self.enable_exif_padding_option_box.setChecked(not state)
@@ -269,6 +270,7 @@ class WebpWindow(QMainWindow, formClass):
     def WatermarkColorOption(self, state):
         self.watermakr_option = bool(state == Qt.CheckState.Checked.value)
 
+    # Exif 표기 옵션
     def on_toggle_exif_writing_enable(self, state):
         self.exif_writing_option = bool(state == Qt.CheckState.Checked.value)
 

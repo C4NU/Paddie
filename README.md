@@ -37,9 +37,10 @@ JPG, PNG등의 이미지 사진을 변환시켜주는 프로그램.
 
 ```python
 # Windows
-pyinstaller -w -F -n=WebpConverter --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py
+pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py       
 
 # macOS
+pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py   
 ```
 
 
