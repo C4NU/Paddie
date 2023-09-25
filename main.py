@@ -14,8 +14,5 @@ def main():
     app.show()
     app.exec()
 
-    # t = test_module.test.TestClass()
-
-
 if __name__ == "__main__":
     main()

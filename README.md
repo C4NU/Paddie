@@ -1,12 +1,11 @@
-# WebP Converter GUI
+# Paddie。
 
 뱃지인가 뭐시긴가... 랑 stable 버전 뭐 이런거 표시?
 
 
+현재 최신 버전: WebP Converter v2.1.1-stable
 
-현재 최신 버전: WebP Converter v2.0.5-nightly
-
-현재 stable 최신 버전: 몰?루 2.1.0 버전 예정
+현재 stable 최신 버전: WebP Converter v2.1.1-stable
 
 ## Package Version
 
@@ -38,9 +37,10 @@ JPG, PNG등의 이미지 사진을 변환시켜주는 프로그램.
 
 ```python
 # Windows
-pyinstaller -w -F -n=WebpConverter --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py
+pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py       
 
 # macOS
+pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py   
 ```
 
 

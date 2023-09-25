@@ -6,29 +6,41 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>481</width>
-    <height>792</height>
+    <width>461</width>
+    <height>694</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
   </property>
   <property name="acceptDrops">
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>WebP Converter</string>
+   <string>Paddie。</string>
   </property>
   <property name="windowIcon">
    <iconset>
     <normaloff>Resources/Icon@64X64_02.ico</normaloff>Resources/Icon@64X64_02.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QListWidget" name="listWidget">
+   <widget class="QListWidget" name="image_list_widget">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>481</width>
+      <width>461</width>
       <height>431</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
     <property name="acceptDrops">
      <bool>true</bool>
@@ -37,7 +49,16 @@
      <string extracomment="이미지 파일을 드래그 앤 드롭 하세요"/>
     </property>
     <property name="toolTipDuration">
-     <number>5</number>
+     <number>-1</number>
+    </property>
+    <property name="statusTip">
+     <string extracomment="이미지 파일을 드래그 앤 드롭 하세요"/>
+    </property>
+    <property name="whatsThis">
+     <string extracomment="이미지 파일을 드래그 앤 드롭 하세요"/>
+    </property>
+    <property name="accessibleDescription">
+     <string extracomment="이미지 파일을 드래그 앤 드롭 하세요"/>
     </property>
     <property name="dragEnabled">
      <bool>true</bool>
@@ -58,7 +79,7 @@
      </size>
     </property>
    </widget>
-   <widget class="QPushButton" name="addButton">
+   <widget class="QPushButton" name="add_button">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -67,117 +88,36 @@
       <height>36</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string notr="true" extracomment="Click to add files"/>
+    </property>
     <property name="text">
      <string>+</string>
     </property>
    </widget>
-   <widget class="QGroupBox" name="groupBox">
+   <widget class="QGroupBox" name="conversion_option_group">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>440</y>
       <width>441</width>
-      <height>121</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="title">
      <string>Conversion Options</string>
     </property>
-    <widget class="QCheckBox" name="LoselessOptionBox">
+    <widget class="QCheckBox" name="enable_conversion_option_box">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
-       <width>81</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Loseless</string>
-     </property>
-    </widget>
-    <widget class="QSpinBox" name="ImageQualityBox">
-     <property name="geometry">
-      <rect>
-       <x>350</x>
        <y>20</y>
        <width>81</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <number>1</number>
-     </property>
-     <property name="maximum">
-      <number>100</number>
-     </property>
-     <property name="value">
-      <number>80</number>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>20</y>
-       <width>91</width>
        <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>Image Quality</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="ExifOptionBox">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>81</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Exif</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="ICCProfileOptionBox">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>101</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>ICC Profile</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="ExactOptionBox">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>100</y>
-       <width>131</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Transparent RGB</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="ConversionEnableBox">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>81</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Enabled</string>
+      <string>Enable</string>
      </property>
      <property name="checked">
       <bool>false</bool>
@@ -186,25 +126,25 @@
       <bool>false</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="open_resize_option_button">
+    <widget class="QPushButton" name="open_conversion_option_button">
      <property name="geometry">
       <rect>
-       <x>324</x>
-       <y>50</y>
-       <width>101</width>
-       <height>23</height>
+       <x>340</x>
+       <y>20</y>
+       <width>91</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
-      <string>Resize Option</string>
+      <string>Options</string>
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="WatermarkGroupBox">
+   <widget class="QGroupBox" name="watermark_option_group_box">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>570</y>
+      <x>10</x>
+      <y>500</y>
       <width>441</width>
       <height>61</height>
      </rect>
@@ -212,217 +152,133 @@
     <property name="title">
      <string>Watermark Options</string>
     </property>
-    <widget class="QCheckBox" name="watermarkFontColorBox">
+    <widget class="QCheckBox" name="enable_watermark_option_box">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
-       <width>141</width>
-       <height>16</height>
+       <y>20</y>
+       <width>71</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>Enable Watermark</string>
+      <string>Enable</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="pushButton">
+    <widget class="QPushButton" name="open_watermark_option_button">
      <property name="geometry">
       <rect>
-       <x>344</x>
-       <y>30</y>
-       <width>81</width>
-       <height>23</height>
+       <x>340</x>
+       <y>20</y>
+       <width>91</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
-      <string>Options..</string>
+      <string>Options</string>
      </property>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="ExifOptionBox_2">
+   <widget class="QGroupBox" name="exif_option_group_box">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>640</y>
+      <x>10</x>
+      <y>560</y>
       <width>441</width>
-      <height>151</height>
+      <height>61</height>
      </rect>
     </property>
     <property name="title">
      <string>EXIF Options</string>
     </property>
-    <widget class="QCheckBox" name="EnableExifWriting">
+    <widget class="QCheckBox" name="enable_exif_padding_option_box">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>101</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Enabled</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="EnablePadding">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>20</y>
-       <width>101</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Padding</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="EnableSquareMode">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>40</y>
-       <width>111</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Square Mode</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="EnableDarkMode">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>91</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>White Text</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="EnableLineText">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>120</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>1 line text</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="FontComboBox">
-     <property name="geometry">
-      <rect>
-       <x>250</x>
-       <y>50</y>
-       <width>171</width>
+       <width>151</width>
        <height>21</height>
       </rect>
      </property>
-    </widget>
-    <widget class="QComboBox" name="SaveFormatBox">
-     <property name="geometry">
-      <rect>
-       <x>345</x>
-       <y>19</y>
-       <width>76</width>
-       <height>31</height>
-      </rect>
+     <property name="text">
+      <string>Enable</string>
      </property>
-     <item>
-      <property name="text">
-       <string>JPEG</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>PNG</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>WebP</string>
-      </property>
-     </item>
     </widget>
-    <widget class="QPushButton" name="open_color_picker_button">
+    <widget class="QPushButton" name="open_exif_option_button">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
-       <x>239</x>
-       <y>19</y>
-       <width>101</width>
+       <x>340</x>
+       <y>20</y>
+       <width>91</width>
        <height>31</height>
       </rect>
      </property>
      <property name="text">
-      <string>ColorPicker</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="SaveExifDataBox">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>60</y>
-       <width>121</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Save Exif Data</string>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="pushButton_2">
-     <property name="geometry">
-      <rect>
-       <x>280</x>
-       <y>70</y>
-       <width>75</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>PushButton</string>
+      <string>Options</string>
      </property>
     </widget>
    </widget>
-   <widget class="QDialogButtonBox" name="SaveButton">
+   <widget class="QDialogButtonBox" name="save_button">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>710</y>
+      <x>370</x>
+      <y>620</y>
       <width>81</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string extracomment="파일 저장하기"/>
     </property>
     <property name="standardButtons">
      <set>QDialogButtonBox::Save</set>
     </property>
    </widget>
-   <widget class="QPlainTextEdit" name="font_preview_line_edit">
+   <widget class="QPushButton" name="delete_button">
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>360</y>
-      <width>411</width>
-      <height>61</height>
+      <y>380</y>
+      <width>36</width>
+      <height>36</height>
      </rect>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>24</pointsize>
-     </font>
+    <property name="toolTip">
+     <string extracomment="파일 제거하기"/>
     </property>
-    <property name="frameShape">
-     <enum>QFrame::NoFrame</enum>
+    <property name="toolTipDuration">
+     <number>10000</number>
     </property>
-    <property name="plainText">
-     <string>Canon EOS 1D X Mark III</string>
+    <property name="whatsThis">
+     <string extracomment="파일 제거하기"/>
+    </property>
+    <property name="text">
+     <string>-</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="preview_button">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>380</y>
+      <width>81</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::NoFocus</enum>
+    </property>
+    <property name="text">
+     <string>Preview</string>
     </property>
    </widget>
   </widget>
@@ -431,7 +287,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>481</width>
+     <width>461</width>
      <height>21</height>
     </rect>
    </property>
