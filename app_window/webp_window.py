@@ -121,6 +121,11 @@ class WebpWindow(QMainWindow, formClass):
         if UserConfig.background_color:
             self.background_color = UserConfig.background_color
 
+    def resizeEvent(self, event):
+        geometry = self.image_list_widget.geometry()
+        width = event.size().width()
+        self.image_list_widget.setGeometry(geometry.x(), geometry.y(), width, geometry.height())
+
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
             event.accept()
