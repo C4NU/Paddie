@@ -68,6 +68,15 @@ class WebpWindow(QMainWindow, formClass):
         self.exact_option = self.webp_conversion_option_window.exact_option
         self.image_quality_option = self.webp_conversion_option_window.image_quality_option
 
+        self.padding_option = self.exif_padding_option_window.enable_padding
+        self.square_mode_option = self.exif_padding_option_window.enable_square_mode
+        self.dark_mode_option = self.exif_padding_option_window.enable_dark_mode
+        self.line_text_option = self.exif_padding_option_window.enable_one_line
+        self.save_exif_data = self.exif_padding_option_window.save_exif
+        self.save_format_index = self.exif_padding_option_window.save_format_index
+        self.selected_font = self.exif_padding_option_window.selected_font
+        self.background_color = self.exif_padding_option_window.background_color
+
         self.setupUi(self)
         self.bind_ui()
         self.init_options()
@@ -110,7 +119,7 @@ class WebpWindow(QMainWindow, formClass):
 
         UserConfig.load()
         if UserConfig.background_color:
-            self.__background_color = UserConfig.background_color
+            self.background_color = UserConfig.background_color
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -207,8 +216,8 @@ class WebpWindow(QMainWindow, formClass):
             self.line_text_option = self.exif_padding_option_window.enable_one_line
             self.save_exif_data = self.exif_padding_option_window.save_exif
             self.save_format_index = self.exif_padding_option_window.save_format_index
-            self.__selected_font = self.exif_padding_option_window.__selected_font
-            self.__background_color = self.exif_padding_option_window.__background_color
+            self.selected_font = self.exif_padding_option_window.selected_font
+            self.background_color = self.exif_padding_option_window.background_color
 
             print(f"Frame Option (main): {self.padding_option}")
             print(f"1:1 Option (main): {self.square_mode_option}")
@@ -216,8 +225,8 @@ class WebpWindow(QMainWindow, formClass):
             print(f"One line Option (main): {self.line_text_option}")
             print(f"Save Exif Option (main): {self.save_exif_data}")
             print(f"Save Format (main): {self.save_format_index}")
-            print(f"Selected Font (main): {self.__selected_font}")
-            print(f"Background Color (main): {self.__background_color}")
+            print(f"Selected Font (main): {self.selected_font}")
+            print(f"Background Color (main): {self.background_color}")
 
     def load_file(self, filePath):
         icon = QtGui.QIcon(filePath)
@@ -265,8 +274,8 @@ class WebpWindow(QMainWindow, formClass):
                                                       save_path=save_path + '/',
                                                       save_name=self.file_name[index],
                                                       file_format_option=self.save_format_index,
-                                                      font_path=self.__selected_font,
-                                                      bg_color=self.__background_color,
+                                                      font_path=self.selected_font,
+                                                      bg_color=self.background_color,
                                                       square_padding_option=self.square_mode_option,
                                                       dark_theme_option=self.dark_mode_option,
                                                       exif_padding_option=self.padding_option,

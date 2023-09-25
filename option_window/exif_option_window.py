@@ -30,7 +30,7 @@ class ExifOptionWindow(QDialog, formClass):
 		# 기타 참조 변수
 		self.default_font = 'Barlow-Light'
 		self.__font_preview_size = 24
-		self.__background_color = QColor(255, 255, 255)
+		self.background_color = QColor(255, 255, 255)
 
 		# UI 링킹 설정 (EXIF Options)
 		self.exif_option_button_box: QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
@@ -46,6 +46,7 @@ class ExifOptionWindow(QDialog, formClass):
 		self.font_combo_box: QComboBox
 		self.font_preview_line_edit: QPlainTextEdit
 		self.__font_preview_size: int
+		self.selected_font: str
 		
 		# UI 불러오기
 		self.setupUi(self)
@@ -130,13 +131,13 @@ class ExifOptionWindow(QDialog, formClass):
 		self.default_font_index = self.font_combo_box.findText(self.default_font)
 		self.font_combo_box.setCurrentIndex(self.default_font_index)
 		self.font_index = self.font_combo_box.currentIndex()
-		self.__selected_font = self.font_combo_box.itemData(self.font_index)
+		self.selected_font = self.font_combo_box.itemData(self.font_index)
 		self.__update_font_preview()
 		
 		# COLORPICKER OPTIONS
 		UserConfig.load()
 		if UserConfig.background_color:
-			self.__background_color = UserConfig.background_color
+			self.background_color = UserConfig.background_color
 
 		# BACKUP EXIF OPTIONS
 		self.backup_enable_padding = self.enable_padding
@@ -201,6 +202,7 @@ class ExifOptionWindow(QDialog, formClass):
 
 		if self.font_combo_box.currentIndex() != self.font_index:
 			self.font_combo_box.setCurrentIndex(self.font_index)
+			self.selected_font = self.font_combo_box.itemData(self.font_index)
 			
 			
 	def on_call(self):
@@ -217,6 +219,7 @@ class ExifOptionWindow(QDialog, formClass):
 		self.backup_save_format_index = self.save_format_index
 		# BACKUP FONT OPTIONS
 		self.backup_font_index = self.font_index
+		self.selected_font = self.font_combo_box.itemData(self.font_index)
 		# BACKUP COLORPICKER OPTIONS
 
 		self.debug_log(0)
@@ -231,6 +234,7 @@ class ExifOptionWindow(QDialog, formClass):
 		self.save_format_index = self.backup_save_format_index
 		# RESTORE FONT OPTIONS
 		self.font_index = self.backup_font_index
+		self.selected_font = self.font_combo_box.itemData(self.backup_font_index)
 		# RESTORE COLORPICKER OPTIONS
 		self.debug_log(0)
 
@@ -257,19 +261,19 @@ class ExifOptionWindow(QDialog, formClass):
 		self.save_format_index = self.save_format_box.currentIndex()
 
 	def on_toggle_color_picker(self):
-		self.__background_color = QColorDialog.getColor(title='Pick  Background Color')
-		user_config.UserConfig.background_color = self.__background_color
+		self.background_color = QColorDialog.getColor(title='Pick  Background Color')
+		user_config.UserConfig.background_color = self.background_color
 
 	def on_change_font(self):
 		self.font_index = self.font_combo_box.currentIndex()
 		print(f"Font Index: {self.font_index}")
-		self.__selected_font = self.font_combo_box.itemData(self.font_index)
-		print(f"Selected Font: {self.__selected_font}")
+		self.selected_font = self.font_combo_box.itemData(self.font_index)
+		print(f"Selected Font: {self.selected_font}")
 		self.__update_font_preview()
 
 	def __update_font_preview(self):
-		font_id = QFontDatabase.addApplicationFont(self.__selected_font)
-		font_file_name = os.path.basename(self.__selected_font)
+		font_id = QFontDatabase.addApplicationFont(self.selected_font)
+		font_file_name = os.path.basename(self.selected_font)
 		if font_id > 0:
 			families = QFontDatabase.applicationFontFamilies(font_id)
 			styles = QFontDatabase.styles(families[0])
@@ -284,5 +288,5 @@ class ExifOptionWindow(QDialog, formClass):
 			else:
 				self.font_preview_line_edit.setFont(QFont(families[0], self.__font_preview_size))
 		else:
-			print(f'preview font update failed : {self.__selected_font}')
+			print(f'preview font update failed : {self.selected_font}')
 
