@@ -90,9 +90,13 @@ class WebpWindow(QMainWindow, formClass):
         #self.delete_button.clicked.connect(None)
         self.save_button.clicked.connect(self.on_click_save)
         self.save_button.setToolTip("파일 저장하기")
-        # 파일 추가 버튼 함수 링킹
+        # 파일 추가 기능 함수 링킹
         self.actionAdd_Files.triggered.connect(self.on_trigger_add_files)
+        # 파일 일괄 비우기 기능 함수 링킹
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
+        # Exif Frame Preview 표시 기능 링킹
+        self.preview_button.clicked.connect(self.on_click_preview)
+        self.preview_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
         # 종료 버튼 함수 링킹
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
         # Conversion 활성화 옵션 링킹
@@ -147,6 +151,16 @@ class WebpWindow(QMainWindow, formClass):
     def on_click_save(self):
         if self.image_list_widget.count() != 0:
             self.save_file()
+
+    def on_click_preview(self):
+        self.update_options()
+        self.converter.show_sample_exif_frame_image(file_path='Resources/Sample.jpg',
+                                    font_path=self.selected_font,
+                                    bg_color=self.background_color,
+                                    square_padding_option=self.square_mode_option,
+                                    dark_theme_option=self.dark_mode_option,
+                                    exif_padding_option=self.padding_option,
+                                    one_line_option=self.line_text_option)
 
     def on_click_open_resize_option(self):
         def on_accepted_resize_option(width, height):
@@ -313,4 +327,5 @@ class WebpWindow(QMainWindow, formClass):
         self.exif_writing_option = bool(state == Qt.CheckState.Checked.value)
         self.enable_conversion_option_box.setChecked(not state)
         self.open_exif_option_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
+        self.preview_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
 
