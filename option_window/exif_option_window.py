@@ -26,6 +26,10 @@ class ExifOptionWindow(QDialog, formClass):
 	def __init__(self):
 		super().__init__()
 
+		# 기타 참조 변수
+		self.default_font = 'Barlow-Light'
+		self.__font_preview_size = 24
+		
 		# UI 링킹 설정 (EXIF Options)
 		self.exif_option_button_box: QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
 		self.enable_padding_box: QCheckBox
@@ -39,28 +43,13 @@ class ExifOptionWindow(QDialog, formClass):
 		# UI 링킹 설정 (Font Options)
 		self.font_combo_box: QComboBox
 		self.font_preview_line_edit: QPlainTextEdit
-
-		# 옵션 값 설정 (EXIF)
-		self.enable_padding = False
-		self.enable_dark_mode = False
-		self.enable_one_line = False
-		self.enable_square_mode = False
-		self.save_exif = False
-		self.save_format_index = 0	# 0: JPEG, 1: PNG, 2: WebP
-
-		self.backup_enable_padding = self.enable_padding
-		self.backup_enable_dark_mode = self.enable_dark_mode
-		self.backup_enable_one_line = self.enable_one_line
-		self.backup_enable_square_mode = self.enable_square_mode
-		self.backup_save_exif = self.save_exif
-		self.backup_save_format_index = self.save_format_index
-
-		# 옵션 값 설정 (FONT)
-
+		self.__font_preview_size: int
+		
 		# UI 불러오기
 		self.setupUi(self)
 		self.bind_ui()
 		self.setup_ui_internal()
+		self.init_options()
 
 	def bind_ui(self):
 		self.exif_option_button_box.accepted.connect(self.on_save_close)
@@ -83,6 +72,9 @@ class ExifOptionWindow(QDialog, formClass):
 
 		self.save_format_box.currentIndexChanged.connect(self.on_change_save_format)
 		self.save_format_box.setToolTip("이미지 확장자 선택 옵션")
+
+		self.font_combo_box.currentIndexChanged.connect(self.on_change_font)
+		self.font_combo_box.setToolTip("폰트 변경 옵션")
 
 	def setup_ui_internal(self):
 		if platform.system() == "Windows":
@@ -119,6 +111,32 @@ class ExifOptionWindow(QDialog, formClass):
 			return
 		fullpath = os.path.join(dir_path, file_name)
 		self.font_combo_box.addItem(font_name, userData=fullpath)
+
+	def init_options(self):
+		# EXIF OPTIONS
+		self.enable_padding = self.enable_padding_box.isChecked()
+		self.enable_dark_mode = self.enable_dark_mode_box.isChecked()
+		self.enable_one_line = self.enable_one_line_box.isChecked()
+		self.enable_square_mode = self.enable_square_mode_box.isChecked()
+		self.save_exif = self.save_exif_data_box.isChecked()
+		self.save_format_index = self.save_format_box.currentIndex()	# 0: JPEG, 1: PNG, 2: WebP
+
+		# FONT OPTIONS
+		self.default_font_index = self.font_combo_box.findText(self.default_font)
+		self.font_combo_box.setCurrentIndex(self.default_font_index)
+		self.font_index = self.font_combo_box.currentIndex()
+		self.__selected_font = self.font_combo_box.itemData(self.font_index)
+		self.__update_font_preview()
+
+		# BACKUP EXIF OPTIONS
+		self.backup_enable_padding = self.enable_padding
+		self.backup_enable_dark_mode = self.enable_dark_mode
+		self.backup_enable_one_line = self.enable_one_line
+		self.backup_enable_square_mode = self.enable_square_mode
+		self.backup_save_exif = self.save_exif
+		self.backup_save_format_index = self.save_format_index
+
+		# BACKUP FONT OPTIONS
 
 	# DEBUG LOGGER FUNCTIONS
 	def debug_log(self, options=int):
@@ -163,25 +181,6 @@ class ExifOptionWindow(QDialog, formClass):
 
 		if self.enable_square_mode_box.isChecked() != self.enable_square_mode:
 			self.enable_square_mode_box.toggle()
-
-		def __update_font_preview(self):
-			font_id = QFontDatabase.addApplicationFont(self.__selected_font)
-			font_file_name = os.path.basename(self.__selected_font)
-			if font_id > 0:
-				families = QFontDatabase.applicationFontFamilies(font_id)
-				styles = QFontDatabase.styles(families[0])
-				style = None
-				for item in styles:
-					if item in font_file_name:
-						style = item
-
-				if style:
-					font = QFontDatabase.font(families[0], style, self.__font_preview_size)
-					self.font_preview_line_edit.setFont(font)
-				else:
-					self.font_preview_line_edit.setFont(QFont(families[0], self.__font_preview_size))
-			else:
-				print(f'preview font update failed : {self.__selected_font}')
 
 	def on_call(self):
 		self.__update_ui()
@@ -228,11 +227,30 @@ class ExifOptionWindow(QDialog, formClass):
 		self.save_format_index = self.save_format_box.currentIndex()
 
 	def on_change_font(self):
-		self.font_index = self.FontComboBox.currentIndex()
+		self.font_index = self.font_combo_box.currentIndex()
 		print(f"Font Index: {self.font_index}")
-		self.__selected_font = self.FontComboBox.itemData(self.font_index)
+		self.__selected_font = self.font_combo_box.itemData(self.font_index)
 		print(f"Selected Font: {self.__selected_font}")
 		self.__update_font_preview()
+
+	def __update_font_preview(self):
+		font_id = QFontDatabase.addApplicationFont(self.__selected_font)
+		font_file_name = os.path.basename(self.__selected_font)
+		if font_id > 0:
+			families = QFontDatabase.applicationFontFamilies(font_id)
+			styles = QFontDatabase.styles(families[0])
+			style = None
+			for item in styles:
+				if item in font_file_name:
+					style = item
+
+			if style:
+				font = QFontDatabase.font(families[0], style, self.__font_preview_size)
+				self.font_preview_line_edit.setFont(font)
+			else:
+				self.font_preview_line_edit.setFont(QFont(families[0], self.__font_preview_size))
+		else:
+			print(f'preview font update failed : {self.__selected_font}')
 
 	def on_trigger_color_picker(self):
 		self.__background_color = QColorDialog.getColor(title='Pick  Background Color')
