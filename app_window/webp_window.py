@@ -90,11 +90,13 @@ class WebpWindow(QMainWindow, formClass):
         self.enable_conversion_option_box.stateChanged.connect(self.on_toggle_conversion_enable)
         self.enable_conversion_option_box.toggle()
         self.open_conversion_option_button.clicked.connect(self.on_click_conversion_option)
+        self.open_conversion_option_button.setEnabled(self.enable_conversion_option_box.isChecked())
         # Watermark 활성화 옵션 링킹
         #self.enable_watermark_option_box.stateChanged.connect(None)
         # Exif Padding 활성화 옵션 링킹
         self.enable_exif_padding_option_box.stateChanged.connect(self.on_toggle_exif_writing_enable)
         self.open_exif_option_button.clicked.connect(self.on_click_exif_padding_option)
+        self.open_exif_option_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
 
     #################### PyQt FUNCTIONS
     def init_options(self):
@@ -147,6 +149,9 @@ class WebpWindow(QMainWindow, formClass):
     def on_click_conversion_option(self):
         self.webp_conversion_option_window.on_call()
 
+    def on_click_watermark_option(self):
+        pass #self.watermark_option_window.on_call()
+
     def on_click_exif_padding_option(self):
         self.exif_padding_option_window.on_call()
     
@@ -182,17 +187,37 @@ class WebpWindow(QMainWindow, formClass):
         # save 버튼 클릭 후 호출할 때 option을 마지막으로 업데이트하는 형식으로 변경
         # 어짜피 마지막 선택한 옵션만 필요한거 아닐까?
         
-        self.loseless_option = self.webp_conversion_option_window.loseless_option
-        self.exif_option = self.webp_conversion_option_window.exif_option
-        self.icc_profile_option = self.webp_conversion_option_window.icc_profile_option
-        self.exact_option = self.webp_conversion_option_window.exact_option
-        self.image_quality_option = self.webp_conversion_option_window.image_quality_option
-            
-        print(f"Loseless Option (main): {self.loseless_option}")
-        print(f"Exif Option (main): {self.exif_option}")
-        print(f"Icc Profile Option (main): {self.icc_profile_option}")
-        print(f"Transparent RGB Option (main): {self.exact_option}")
-        print(f"Image Quality (main): {self.image_quality_option}")
+        if self.conversion_option:
+            self.loseless_option = self.webp_conversion_option_window.loseless_option
+            self.exif_option = self.webp_conversion_option_window.exif_option
+            self.icc_profile_option = self.webp_conversion_option_window.icc_profile_option
+            self.exact_option = self.webp_conversion_option_window.exact_option
+            self.image_quality_option = self.webp_conversion_option_window.image_quality_option
+                
+            print(f"Loseless Option (main): {self.loseless_option}")
+            print(f"Exif Option (main): {self.exif_option}")
+            print(f"Icc Profile Option (main): {self.icc_profile_option}")
+            print(f"Transparent RGB Option (main): {self.exact_option}")
+            print(f"Image Quality (main): {self.image_quality_option}")
+
+        elif self.exif_writing_option:
+            self.padding_option = self.exif_padding_option_window.enable_padding
+            self.square_mode_option = self.exif_padding_option_window.enable_square_mode
+            self.dark_mode_option = self.exif_padding_option_window.enable_dark_mode
+            self.line_text_option = self.exif_padding_option_window.enable_one_line
+            self.save_exif_data = self.exif_padding_option_window.save_exif
+            self.save_format_index = self.exif_padding_option_window.save_format_index
+            self.__selected_font = self.exif_padding_option_window.__selected_font
+            self.__background_color = self.exif_padding_option_window.__background_color
+
+            print(f"Frame Option (main): {self.padding_option}")
+            print(f"1:1 Option (main): {self.square_mode_option}")
+            print(f"White Text Option (main): {self.dark_mode_option}")
+            print(f"One line Option (main): {self.line_text_option}")
+            print(f"Save Exif Option (main): {self.save_exif_data}")
+            print(f"Save Format (main): {self.save_format_index}")
+            print(f"Selected Font (main): {self.__selected_font}")
+            print(f"Background Color (main): {self.__background_color}")
 
     def load_file(self, filePath):
         icon = QtGui.QIcon(filePath)
@@ -263,8 +288,7 @@ class WebpWindow(QMainWindow, formClass):
     def on_toggle_conversion_enable(self, state):
         self.conversion_option = bool(state == Qt.CheckState.Checked.value)
         self.enable_exif_padding_option_box.setChecked(not state)
-        print(f"Conversion Pushed, Conversion Opt: {self.conversion_option}")
-        #print(f"Conversion Pushed, Exif Padding Opt: {self.exif_writing_option}")
+        self.open_conversion_option_button.setEnabled(self.enable_conversion_option_box.isChecked())
 
     # 워터마크 옵션
     def WatermarkColorOption(self, state):
@@ -273,4 +297,6 @@ class WebpWindow(QMainWindow, formClass):
     # Exif 표기 옵션
     def on_toggle_exif_writing_enable(self, state):
         self.exif_writing_option = bool(state == Qt.CheckState.Checked.value)
+        self.enable_conversion_option_box.setChecked(not state)
+        self.open_exif_option_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
 

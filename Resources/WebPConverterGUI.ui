@@ -205,6 +205,9 @@
      </property>
     </widget>
     <widget class="QPushButton" name="open_exif_option_button">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="geometry">
       <rect>
        <x>340</x>

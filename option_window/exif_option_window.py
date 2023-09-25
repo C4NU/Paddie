@@ -4,6 +4,7 @@ import platform
 import pathlib
 
 import user_config
+from user_config import UserConfig
 
 from PyQt6 import uic
 from PyQt6.QtCore import Qt
@@ -29,7 +30,8 @@ class ExifOptionWindow(QDialog, formClass):
 		# 기타 참조 변수
 		self.default_font = 'Barlow-Light'
 		self.__font_preview_size = 24
-		
+		self.__background_color = QColor(255, 255, 255)
+
 		# UI 링킹 설정 (EXIF Options)
 		self.exif_option_button_box: QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
 		self.enable_padding_box: QCheckBox
@@ -75,6 +77,9 @@ class ExifOptionWindow(QDialog, formClass):
 
 		self.font_combo_box.currentIndexChanged.connect(self.on_change_font)
 		self.font_combo_box.setToolTip("폰트 변경 옵션")
+
+		self.open_color_picker_button.clicked.connect(self.on_toggle_color_picker)
+		self.open_color_picker_button.setToolTip("Frame 색상 변경 옵션")
 
 	def setup_ui_internal(self):
 		if platform.system() == "Windows":
@@ -127,6 +132,11 @@ class ExifOptionWindow(QDialog, formClass):
 		self.font_index = self.font_combo_box.currentIndex()
 		self.__selected_font = self.font_combo_box.itemData(self.font_index)
 		self.__update_font_preview()
+		
+		# COLORPICKER OPTIONS
+		UserConfig.load()
+		if UserConfig.background_color:
+			self.__background_color = UserConfig.background_color
 
 		# BACKUP EXIF OPTIONS
 		self.backup_enable_padding = self.enable_padding
@@ -137,6 +147,7 @@ class ExifOptionWindow(QDialog, formClass):
 		self.backup_save_format_index = self.save_format_index
 
 		# BACKUP FONT OPTIONS
+		self.backup_font_index = self.font_index
 
 	# DEBUG LOGGER FUNCTIONS
 	def debug_log(self, options=int):
@@ -182,26 +193,45 @@ class ExifOptionWindow(QDialog, formClass):
 		if self.enable_square_mode_box.isChecked() != self.enable_square_mode:
 			self.enable_square_mode_box.toggle()
 
+		if self.save_exif_data_box.isChecked() != self.save_exif:
+			self.save_exif_data_box.toggle()
+
+		if self.save_format_box.currentIndex() != self.save_format_index:
+			self.save_format_box.setCurrentIndex(self.save_format_index)
+
+		if self.font_combo_box.currentIndex() != self.font_index:
+			self.font_combo_box.setCurrentIndex(self.font_index)
+			
+			
 	def on_call(self):
 		self.__update_ui()
 		self.show()
 
 	def on_save_close(self):
+		# BACKUP EXIF OPTIONS
 		self.backup_enable_padding = self.enable_padding
 		self.backup_enable_dark_mode = self.enable_dark_mode
 		self.backup_enable_one_line = self.enable_one_line
 		self.backup_enable_square_mode = self.enable_square_mode
 		self.backup_save_exif = self.save_exif
 		self.backup_save_format_index = self.save_format_index
+		# BACKUP FONT OPTIONS
+		self.backup_font_index = self.font_index
+		# BACKUP COLORPICKER OPTIONS
+
 		self.debug_log(0)
 	
 	def on_cancel_close(self):
+		# RESTORE EXIF OPTIONS
 		self.enable_padding = self.backup_enable_padding
 		self.enable_dark_mode = self.backup_enable_dark_mode
 		self.enable_one_line = self.backup_enable_one_line
 		self.enable_square_mode = self.backup_enable_square_mode
 		self.save_exif = self.backup_save_exif
 		self.save_format_index = self.backup_save_format_index
+		# RESTORE FONT OPTIONS
+		self.font_index = self.backup_font_index
+		# RESTORE COLORPICKER OPTIONS
 		self.debug_log(0)
 
 	# Exif Padding 옵션
@@ -225,6 +255,10 @@ class ExifOptionWindow(QDialog, formClass):
 
 	def on_change_save_format(self):
 		self.save_format_index = self.save_format_box.currentIndex()
+
+	def on_toggle_color_picker(self):
+		self.__background_color = QColorDialog.getColor(title='Pick  Background Color')
+		user_config.UserConfig.background_color = self.__background_color
 
 	def on_change_font(self):
 		self.font_index = self.font_combo_box.currentIndex()
@@ -252,6 +286,3 @@ class ExifOptionWindow(QDialog, formClass):
 		else:
 			print(f'preview font update failed : {self.__selected_font}')
 
-	def on_trigger_color_picker(self):
-		self.__background_color = QColorDialog.getColor(title='Pick  Background Color')
-		#user_config.UserConfig.background_color = self.__background_color
