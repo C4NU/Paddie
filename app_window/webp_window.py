@@ -2,7 +2,7 @@ import os
 import platform
 import sys
 
-from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow
+from option_window import WebPOptionWindow, ExifOptionWindow, WatermarkOptionWindow, InformationWindow
 
 print("Python Package Loaded")
 import webp

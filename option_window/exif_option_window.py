@@ -6,6 +6,8 @@ import pathlib
 import user_config
 from user_config import UserConfig
 
+from option_window import ResizeOptionWindow
+
 from PyQt6 import uic
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPalette, QColor, QFont
