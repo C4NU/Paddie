@@ -296,6 +296,7 @@
      <string>Options</string>
     </property>
     <addaction name="actionPreferences"/>
+    <addaction name="actionInformation"/>
     <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuFiles">
@@ -335,6 +336,11 @@
   <action name="actionPreferences">
    <property name="text">
     <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionInformation">
+   <property name="text">
+    <string>Information</string>
    </property>
   </action>
  </widget>

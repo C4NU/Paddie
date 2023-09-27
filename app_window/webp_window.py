@@ -2,7 +2,7 @@ import os
 import platform
 import sys
 
-from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow
+from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow
 
 print("Python Package Loaded")
 import webp
@@ -58,6 +58,8 @@ class WebpWindow(QMainWindow, formClass):
         # Exif Frame UI initialize
         self.exif_padding_option_window = ExifOptionWindow()
 
+        self.information_window = InformationWindow()
+
         # 파일 이름 변수
         self.file_name = []
 
@@ -94,6 +96,8 @@ class WebpWindow(QMainWindow, formClass):
         self.actionAdd_Files.triggered.connect(self.on_trigger_add_files)
         # 파일 일괄 비우기 기능 함수 링킹
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
+        # 프로그램 정보 기능 함수 링킹
+        self.actionInformation.triggered.connect(self.on_trigger_information)
         # Exif Frame Preview 표시 기능 링킹
         self.preview_button.clicked.connect(self.on_click_preview)
         self.preview_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
@@ -193,6 +197,9 @@ class WebpWindow(QMainWindow, formClass):
 
     def on_trigger_clear_files(self):
         self.image_list_widget.clear()
+
+    def on_trigger_information(self):
+        self.information_window.show()
 
     @staticmethod
     def on_trigger_exit():
