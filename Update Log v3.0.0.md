@@ -113,9 +113,9 @@ paddie.application@gmail.com
 
 ## 👀앞으로의 업데이트 예정 사항👀
 
-1. Preview 버튼
-   1. EXIF Frame의 각 옵션을 선택했을때 어떤식으로 출력될지 에 대해 Preview 버튼을 누르면 보여주는 기능이 제공될 예정입니다.
-2. Resize
+1. Preview 버튼 / 9.27 해결
+   1. EXIF Frame의 각 옵션을 선택했을때 어떤식으로 출력될지 에 대해 Preview 버튼을 누르면 보여주는 기능이 제공될 예정입니다. 
+2. Resize / 작업 예정
    1. JPEG, WebP, PNG든 뭐든간에 장축 기준으로 줄여버리는 Resize 기능을 제공할 예정입니다.
 3. 4:5
    1. 나도 인스타올릴때 귀찮아서 제공할 예정입니다.
