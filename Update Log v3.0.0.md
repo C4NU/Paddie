@@ -1,56 +1,122 @@
-# Paddie。
+# Paddie。v3.0.0-stable
 
-뱃지인가 뭐시긴가... 랑 stable 버전 뭐 이런거 표시?
+## 🥹유의사항🥹
 
-
-현재 최신 버전: WebP Converter v2.1.1-stable
-
-현재 stable 최신 버전: WebP Converter v2.1.1-stable
-
-## Package Version
-
-Python 3.10.11
-
-PyQt6
-
-Pillows
-
-Pyinstaller
-
-## Description
-
-JPG, PNG등의 이미지 사진을 변환시켜주는 프로그램.
-
-### Functions
-
-1. JPG, PNG, TIFF 이미지 파일을 WebP로 변환시키는 기능.
-   1. Loseless Option
-   2. Image Quality Option
-   3. Save Exif Option
-   4. Save ICC Profile Option
-   5. Save RGBA data(?) Option
-2. EXIF 데이터가 존재하는 이미지파일을 레터박스를 씌워 JPG / PNG / WebP 형태로 저장시키는 기능
-   1. 아무튼 여러가지 옵션 있음 ㅅㄱ
+1. WebP 이미지 변환은 최대 16383 * 16383 크기의 이미지 까지만 변경이 가능합니다.
+   1. 그 이상의 이미지 파일은 JPEG / PNG 등의 형태를 선택해주세용.
+2. Lightroom 후처리 가공된 이미지 파일을 삽입했을 때 정상적으로 출력이 됩니다.
+   1. 다른 이미지 파일 또한 정상적으로 출력이 가능하지만, 각각 바디 및 파일의 인코딩 및 기타 사항에 따라 정상적인 출력이 진행되지 않을 수 있습니당.
+3. **macOS 에서만 발생하는 오류**
+   1. paddie.app 으로 실행을 하게되면 한번 꺼졌다가 몇초~몇십초 뒤에 다시 켜지는데 이유는 모릅니다.
+   2. 그렇지만 paddie.exec 파일로 실행하면 조금 기다리면 켜져용!
 
 
-## Build
+## 🥹사용방법🥹
 
-```python
-# Windows
-pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py       
+1. 프로그램 실행![스크린샷 2023-09-25 오후 11.32.28](https://p.ipic.vip/8rvku4.png)
 
-# macOS
-pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py   
-```
+   1. 이렇게 창이 나오게됩니다.
+      1. Conversion Options는 WebP 이미지파일을 변환하는데 사용하는 옵션 입니다.
+      2. Watermark Options는 워터마크 기능 (추가예정) 을 사용하는 옵션 입니다.
+      3. EXIF Options는 EXIF 데이터가 적힌 프레임을 씌우는데 사용하는 옵션 입니다.
+
+2. 이미지 추가
+
+   ![스크린샷 2023-09-25 오후 11.35.10](https://p.ipic.vip/7rwvwt.png)
+
+   1. CMD + O / ctrl+o 
+   2. 프로그램 위의 Add Files 옵션 
+   3. 동그라미 친 + 버튼
+      1. 셋중 하나를 선택해서 이미지파일을 추가할 수 있습니다.
+      2. 이미지 파일은 여러개 추가할 수 있어요.
+
+3. WebP 변환 / EXIF 프레임 변환 둘 중에 하나 선택!
+
+   ![스크린샷 2023-09-25 오후 11.38.15](https://p.ipic.vip/3jph8v.png)
+
+   > Conversion Options를 선택했을때
+
+   ![스크린샷 2023-09-25 오후 11.39.03](https://p.ipic.vip/whre58.png)
+
+   > EXIF (Frame) Options를 선택했을때
+
+   1. 하나만 선택할 수 있습니당
+
+4. Option 버튼을 클릭해서 옵션을 선택하기![스크린샷 2023-09-25 오후 11.40.18](https://p.ipic.vip/n3ev29.png)
+
+   
+
+   > Conversion Option들
+
+   ![스크린샷 2023-09-25 오후 11.39.36](https://p.ipic.vip/tv7ksk.png)
+
+> Exif (Frame) Option들
+
+각각의 옵션은 마우스를 올려보면 어떤 의미인지 설명이 나옵니당
+
+네
+
+5. 저장하기
+
+![스크린샷 2023-09-25 오후 11.42.13](https://p.ipic.vip/5umj3m.png)
+
+이제 옵션을 전부 Save 하고, Save 버튼을 클릭하면 저장 경로를 찾는 화면이 나옵니다.
+
+경로를 찾고, Open을 눌러 저장을 해주세요.
+
+그럼
+
+6. 결과
+
+![스크린샷 2023-09-25 오후 11.43.20](https://p.ipic.vip/qu00tc.png)
+
+짜잔
+
+저장 잘되어있슴니다
+
+
+
+이렇게 알려줘도 모르면 나도몰라이제
+
+
+
+## **프로그램이 강제로 종료될 때**
+
+같이 실행되는
+
+- Terminal (macOS)
+- 명령프롬프트 (windows)
+
+에 적힌 로그를
+
+paddie.application@gmail.com
+
+으로 전송해주세요
+
+에러가 난 이미지파일도 같이 전송해주시기 바랍니다.
+
+## 🥹버그 해결 사항🥹
+
+1. 아마..없음..?
+
+## 😎업데이트 된 사항😎
+
+1. UI 전면개편
+   1. 다닥다닥 달라붙은 끔찍한 UI에서 깔끔하게 전면개편이 되었습니다.
+
+2. ToolTip
+   1. 이제 마우스를 올려놓으면 설명이 나옵니당.
+   2. ![](https://p.ipic.vip/78brji.png)
 
 
 
 
-- -w
-  - 터미널 없이 프로그램 형태로 실행
-- -F
-  - 프로그램 하나의 파일로 묶음 (.app / .exe)
-- -n
-  - 프로그램 이름
-- --icon
-  - Resources 폴더 안에있는 ico 파일로 아이콘 표시
+## 👀앞으로의 업데이트 예정 사항👀
+
+1. Preview 버튼
+   1. EXIF Frame의 각 옵션을 선택했을때 어떤식으로 출력될지 에 대해 Preview 버튼을 누르면 보여주는 기능이 제공될 예정입니다.
+2. Resize
+   1. JPEG, WebP, PNG든 뭐든간에 장축 기준으로 줄여버리는 Resize 기능을 제공할 예정입니다.
+3. 4:5
+   1. 나도 인스타올릴때 귀찮아서 제공할 예정입니다.
+   2. 랩틸리언새끼가 여러 옵션 제공하면 좋잖아...
