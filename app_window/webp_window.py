@@ -2,7 +2,7 @@ import os
 import platform
 import sys
 
-from option_window import WebPOptionWindow, ExifOptionWindow, WatermarkOptionWindow, InformationWindow
+from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow
 
 print("Python Package Loaded")
 import webp
@@ -59,6 +59,7 @@ class WebpWindow(QMainWindow, formClass):
         self.exif_padding_option_window = ExifOptionWindow()
 
         self.information_window = InformationWindow()
+        self.resize_window = ResizeOptionWindow()
 
         # 파일 이름 변수
         self.file_name = []
@@ -114,6 +115,8 @@ class WebpWindow(QMainWindow, formClass):
         self.enable_exif_padding_option_box.stateChanged.connect(self.on_toggle_exif_writing_enable)
         self.open_exif_option_button.clicked.connect(self.on_click_exif_padding_option)
         self.open_exif_option_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
+        # Resize 옵션 링킹
+        self.open_resize_option_button.clicked.connect(self.on_click_open_resize_option)
 
     #################### PyQt FUNCTIONS
     def init_options(self):
@@ -172,8 +175,8 @@ class WebpWindow(QMainWindow, formClass):
             # accept 된 경우에만 실행
             print(f'width : {width}, height : {height}')
 
-        self.resize_option_window.on_accepted = on_accepted_resize_option
-        self.resize_option_window.show()
+        self.resize_window.on_accepted = on_accepted_resize_option
+        self.resize_window.show()
         # note(komastar) : 리사이즈 정보 쿼리 방법 2. access public property
         # accept 되기 전에 호출하면 제대로 된 값을 불러오지 못 할 수 있음
         # print(f'w:{self.resize_option_window.width}, h:{self.resize_option_window.height}')

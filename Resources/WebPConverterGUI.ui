@@ -281,6 +281,19 @@
      <string>Preview</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="open_resize_option_button">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>380</y>
+      <width>81</width>
+      <height>36</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Resize</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
