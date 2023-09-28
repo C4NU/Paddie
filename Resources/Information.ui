@@ -25,9 +25,9 @@
   <widget class="QLabel" name="program_name">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>40</x>
      <y>10</y>
-     <width>121</width>
+     <width>351</width>
      <height>41</height>
     </rect>
    </property>
@@ -40,12 +40,15 @@
    <property name="text">
     <string>Paddie。</string>
    </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
   </widget>
   <widget class="QLabel" name="program_version">
    <property name="geometry">
     <rect>
      <x>160</x>
-     <y>60</y>
+     <y>70</y>
      <width>81</width>
      <height>51</height>
     </rect>
@@ -58,6 +61,37 @@
    </property>
    <property name="text">
     <string>V 3.0.0</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="program_email">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>240</y>
+     <width>231</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Barlow Light</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::NoFrame</enum>
+   </property>
+   <property name="text">
+    <string>paddie.application@gmail.com</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
  </widget>
