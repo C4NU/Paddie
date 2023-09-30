@@ -21,25 +21,27 @@ print("PyQt6 Package Loaded")
 from user_config import UserConfig
 
 if platform.system() == "Windows":
-    form = os.path.join(os.getcwd(), "Resources/WebPConverterGUI.ui")
+    program_exec_path = os.getcwd()
+    form = os.path.join(program_exec_path, "Resources/WebPConverterGUI.ui")
 else:
     # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-    form = os.path.join(os.path.dirname(sys.executable), "Resources/WebPConverterGUI.ui")
+    program_exec_path = os.path.dirname(sys.executable)
+    form = os.path.join(program_exec_path, "Resources/WebPConverterGUI.ui")
 
 try:
     formClass = uic.loadUiType(form)[0]
 except:
-    formClass = uic.loadUiType(os.path.join(os.getcwd(), "Resources/WebPConverterGUI.ui"))[0]
+    formClass = uic.loadUiType(os.path.join(program_exec_path, "Resources/WebPConverterGUI.ui"))[0]
 
 if platform.system() == "Windows":
-    sample_file_path = os.path.join(os.getcwd(), "Resources/")
+    sample_file_path = os.path.join(program_exec_path, "Resources/")
 else:
     # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-    sample_file_path = os.path.join(os.path.dirname(sys.executable), "Resources/")
+    sample_file_path = os.path.join(program_exec_path, "Resources/")
     if Path(sample_file_path+"Sample.jpg").is_file() == True:
         print("Sample File Exists")
     else:
-        sample_file_path = os.path.join(os.getcwd(), "Resources/")
+        sample_file_path = os.path.join(program_exec_path, "Resources/")
 
 print("UI Loaded")
 
