@@ -328,7 +328,10 @@ class WebpWindow(QMainWindow, formClass):
                                                       exif_padding_option=self.padding_option,
                                                       one_line_option=self.line_text_option,
                                                       save_exif_data_option=self.save_exif_data,
-                                                      resize_option=self.resize_option)
+                                                      resize_option=self.resize_option,
+                                                      width_option=self.resize_width_option,
+                                                      height_option=self.resize_height_option,
+                                                      resize_value=self.resize_value)
 
             else:
                 print("옵션 선택 에러 / 다시 선택해주세요")

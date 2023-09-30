@@ -107,7 +107,8 @@ class Converter:
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, 
                             bg_color, square_padding_option, dark_theme_option, exif_padding_option,
-                            one_line_option, save_exif_data_option):
+                            one_line_option, save_exif_data_option, resize_option, width_option, height_option, resize_value):
+        
         file_format = Converter.search_file_format(file_path)
 
         if file_format == '':
@@ -152,7 +153,12 @@ class Converter:
             else:
                 image = self.exif.set_image_text(image,model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path, color = font_color)
 
-
+        # Resize 하기
+        if resize_option:
+            image = self.resize.resize(image, 
+                                width_option,
+                                height_option,
+                                resize_value)
         # 파일 형식 선택
         export_extension = Converter.FILE_FORMAT_EXTENSION[file_format_option]
         export_quality = Converter.FILE_FORMAT_QUALITY_PRESET[file_format_option]

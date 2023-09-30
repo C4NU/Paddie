@@ -5,7 +5,6 @@ class Resize:
 		pass
 
 	def resize(self, image, width_option, height_option, resize):
-		resized_image = image
 		width, height = image.size
 
 		if width_option == True:
@@ -15,6 +14,6 @@ class Resize:
 			new_height = resize
 			new_width = new_height * width / height
 
-		resized_image = resized_image.resize((int(new_width), int(new_height)), Image.LANCZOS)
+		image = image.resize((int(new_width), int(new_height)), Image.LANCZOS)
 
-		return resized_image
+		return image

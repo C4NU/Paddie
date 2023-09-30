@@ -27,16 +27,14 @@ class Exif:
                 self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Resources/Barlow-Light.ttf'), self.font_size)
         self.dump_data = "NONEDATA"
 
-    def debugger(self, debug_type):
-        pass
-
     def get_exif_data(self, image):
         exif_data = image._getexif()
         result_exif = None
 
         if exif_data is None:
             print('Sorry, image has no exif data.')
-            return
+            return None, image
+ 
         else:
             # 데이터 읽어오기
             model = str(exif_data.get(272, self.dump_data))
