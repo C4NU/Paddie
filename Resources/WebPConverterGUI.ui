@@ -281,7 +281,7 @@
      <string>Preview</string>
     </property>
    </widget>
-   <widget class="QGroupBox" name="resize_option_goupt_box">
+   <widget class="QGroupBox" name="resize_option_group_box">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -333,7 +333,7 @@
      <x>0</x>
      <y>0</y>
      <width>461</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuOptions">

@@ -80,6 +80,12 @@ class WebpWindow(QMainWindow, formClass):
         self.selected_font = self.exif_padding_option_window.selected_font
         self.background_color = self.exif_padding_option_window.background_color
 
+        # Resize 관련 변수 초기화
+        self.resize_option = False
+        self.resize_width_option = self.resize_window.width_option
+        self.resize_height_option = self.resize_window.height_option
+        self.resize_value = self.resize_window.resize_value
+
         self.setupUi(self)
         self.bind_ui()
         self.init_options()
@@ -116,7 +122,9 @@ class WebpWindow(QMainWindow, formClass):
         self.open_exif_option_button.clicked.connect(self.on_click_exif_padding_option)
         self.open_exif_option_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
         # Resize 옵션 링킹
+        self.enable_resize_option_box.stateChanged.connect(self.on_toggle_resize_enable)
         self.open_resize_option_button.clicked.connect(self.on_click_open_resize_option)
+        self.open_resize_option_button.setEnabled(self.enable_resize_option_box.isChecked())
 
     #################### PyQt FUNCTIONS
     def init_options(self):
@@ -127,6 +135,8 @@ class WebpWindow(QMainWindow, formClass):
         # self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
         ####################	하단 EXIF 삽입 관련 옵션
         self.exif_writing_option = self.enable_exif_padding_option_box.isChecked()
+        ####################    리사이즈 옵션
+        self.resize_option = self.enable_resize_option_box.isChecked()
 
         UserConfig.load()
         if UserConfig.background_color:
@@ -173,6 +183,10 @@ class WebpWindow(QMainWindow, formClass):
         def on_accepted_resize_option(width_option, height_option, resize_value):
             # note(komastar) : 리사이즈 정보 쿼리 방법 1. callback
             # accept 된 경우에만 실행
+            self.resize_width_option = width_option
+            self.resize_height_option = height_option
+            self.resize_value = resize_value
+
             print(f'width : {width_option}, height : {height_option}, resize value: {resize_value}')
 
         self.resize_window.on_accepted = on_accepted_resize_option
@@ -294,7 +308,11 @@ class WebpWindow(QMainWindow, formClass):
                                                          icc_profile_option=self.icc_profile_option,
                                                          exact_option=self.exact_option, watermark_text="",
                                                          exif_view_option=self.exif_writing_option,
-                                                         conversion_option=self.conversion_option)
+                                                         conversion_option=self.conversion_option,
+                                                         resize_option=self.resize_option,
+                                                         width_option=self.resize_width_option,
+                                                         height_option=self.resize_height_option,
+                                                         resize_value=self.resize_value)
 
             # 02 Exif Padding 이미지로만 변환할때
             elif self.exif_writing_option:
@@ -309,7 +327,8 @@ class WebpWindow(QMainWindow, formClass):
                                                       dark_theme_option=self.dark_mode_option,
                                                       exif_padding_option=self.padding_option,
                                                       one_line_option=self.line_text_option,
-                                                      save_exif_data_option=self.save_exif_data)
+                                                      save_exif_data_option=self.save_exif_data,
+                                                      resize_option=self.resize_option)
 
             else:
                 print("옵션 선택 에러 / 다시 선택해주세요")
@@ -338,4 +357,8 @@ class WebpWindow(QMainWindow, formClass):
         self.enable_conversion_option_box.setChecked(not state)
         self.open_exif_option_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
         self.preview_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
+
+    def on_toggle_resize_enable(self, state):
+        self.resize_option = bool(state == Qt.CheckState.Checked.value)
+        self.open_resize_option_button.setEnabled(self.enable_resize_option_box.isChecked())
 

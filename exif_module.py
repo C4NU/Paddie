@@ -6,8 +6,6 @@ import platform
 from PIL import Image, ImageDraw, ImageFont
 import math
 
-from fractions import Fraction
-
 from model_name_mapper import ModelNameMapper
 
 

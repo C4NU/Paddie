@@ -5,6 +5,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps, ExifTags
 import os
 # import Watermark_module
 import exif_module
+import resize_module
 
 
 class Converter:
@@ -14,6 +15,7 @@ class Converter:
     def __init__(self) -> None:
         # self.watermark = Watermark_module.Watermark()
         self.exif = exif_module.Exif()
+        self.resize = resize_module.Resize()
 
     @staticmethod
     def fix_orientation(image):
@@ -45,10 +47,9 @@ class Converter:
             print(e)
             return None, new_image
 
-    @staticmethod
-    def convert_image_to_webp(file_path, save_path, save_name, loseless_option, image_quality_option,
+    def convert_image_to_webp(self, file_path, save_path, save_name, loseless_option, image_quality_option,
                               exif_option, icc_profile_option, exact_option, watermark_text, exif_view_option,
-                              conversion_option):
+                              conversion_option, resize_option, width_option, height_option, resize_value):
         file_format = Converter.search_file_format(file_path)
         # note(komastar) : file_format : 'jpg', 'png'...
         
@@ -58,6 +59,13 @@ class Converter:
             dest = save_path + save_name + ".webp"
 
             new_exif_data, image = Converter.fix_orientation(image)
+
+            # Reize 하기
+            if resize_option:
+                image = self.resize.resize(image, 
+                                    width_option,
+                                    height_option,
+                                    resize_value)
 
             # Exif Option 데이터 읽어오기 / 오류시 except
             if new_exif_data is not None:

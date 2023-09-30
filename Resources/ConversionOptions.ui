@@ -155,19 +155,6 @@
      <string>Transparent RGB</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="open_resize_option_button">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>50</y>
-      <width>111</width>
-      <height>23</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Resize Option</string>
-    </property>
-   </widget>
   </widget>
  </widget>
  <resources/>
