@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>461</width>
-    <height>694</height>
+    <height>764</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -99,7 +99,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>440</y>
+      <y>510</y>
       <width>441</width>
       <height>61</height>
      </rect>
@@ -144,7 +144,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>500</y>
+      <y>570</y>
       <width>441</width>
       <height>61</height>
      </rect>
@@ -183,7 +183,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>560</y>
+      <y>630</y>
       <width>441</width>
       <height>61</height>
      </rect>
@@ -225,7 +225,7 @@
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>620</y>
+      <y>690</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -281,18 +281,50 @@
      <string>Preview</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="open_resize_option_button">
+   <widget class="QGroupBox" name="resize_option_goupt_box">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>380</y>
-      <width>81</width>
-      <height>36</height>
+      <x>10</x>
+      <y>450</y>
+      <width>441</width>
+      <height>61</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Resize</string>
+    <property name="title">
+     <string>Resize Options</string>
     </property>
+    <widget class="QCheckBox" name="enable_resize_option_box">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Enable</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <property name="tristate">
+      <bool>false</bool>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="open_resize_option_button">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>20</y>
+       <width>91</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Options</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

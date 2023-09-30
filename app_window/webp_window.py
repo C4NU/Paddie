@@ -170,10 +170,10 @@ class WebpWindow(QMainWindow, formClass):
                                     one_line_option=self.line_text_option)
 
     def on_click_open_resize_option(self):
-        def on_accepted_resize_option(width, height):
+        def on_accepted_resize_option(width_option, height_option, resize_value):
             # note(komastar) : 리사이즈 정보 쿼리 방법 1. callback
             # accept 된 경우에만 실행
-            print(f'width : {width}, height : {height}')
+            print(f'width : {width_option}, height : {height_option}, resize value: {resize_value}')
 
         self.resize_window.on_accepted = on_accepted_resize_option
         self.resize_window.show()
