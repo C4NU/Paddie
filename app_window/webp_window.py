@@ -2,6 +2,8 @@ import os
 import platform
 import sys
 
+from pathlib import Path
+
 from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow
 
 print("Python Package Loaded")
@@ -28,6 +30,16 @@ try:
     formClass = uic.loadUiType(form)[0]
 except:
     formClass = uic.loadUiType(os.path.join(os.getcwd(), "Resources/WebPConverterGUI.ui"))[0]
+
+if platform.system() == "Windows":
+    sample_file_path = os.path.join(os.getcwd(), "Resources/")
+else:
+    # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
+    sample_file_path = os.path.join(os.path.dirname(sys.executable), "Resources/")
+    if Path(sample_file_path+"Sample.jpg").is_file() == True:
+        print("Sample File Exists")
+    else:
+        sample_file_path = os.path.join(os.getcwd(), "Resources/")
 
 print("UI Loaded")
 
@@ -89,8 +101,6 @@ class WebpWindow(QMainWindow, formClass):
         self.setupUi(self)
         self.bind_ui()
         self.init_options()
-
-    
 
     def bind_ui(self):
         # 실행 버튼 함수 링킹
@@ -171,7 +181,9 @@ class WebpWindow(QMainWindow, formClass):
 
     def on_click_preview(self):
         self.update_options()
-        self.converter.show_sample_exif_frame_image(file_path='Resources/Sample.jpg',
+        
+        self.converter.show_sample_exif_frame_image(file_path=sample_file_path,
+                                    file_name="Sample.jpg",
                                     font_path=self.selected_font,
                                     bg_color=self.background_color,
                                     square_padding_option=self.square_mode_option,

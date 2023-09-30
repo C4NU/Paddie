@@ -169,17 +169,20 @@ class Converter:
         else:
             image.save(fullpath, format=export_extension, quality=export_quality)
 
-    def show_sample_exif_frame_image(self, file_path, font_path, 
+    def show_sample_exif_frame_image(self, file_path, file_name,font_path, 
                             bg_color, square_padding_option, dark_theme_option, exif_padding_option,
                             one_line_option):
-        file_format = Converter.search_file_format(file_path)
+        
+        file_format = Converter.search_file_format(file_path+file_name)
+
+        print(file_path)
 
         if file_format == '':
             print("잘못된 파일 형식 입니다.")
             return
 
         # 02 EXIF Padding Image로 변환할 때
-        image = Image.open(file_path)
+        image = Image.open(file_path+file_name)
 
         font_color = (0,0,0)
         background_color = (bg_color.red(), bg_color.green(), bg_color.blue())
@@ -216,7 +219,7 @@ class Converter:
             else:
                 image = self.exif.set_image_text(image,model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path, color = font_color)
 
-        image.show()
+        image.show(title="Sample")
 
     @staticmethod
     def search_file_format(file_path) -> str:
