@@ -31,6 +31,7 @@ else:
 try:
     formClass = uic.loadUiType(form)[0]
 except:
+    program_exec_path = os.getcwd()
     formClass = uic.loadUiType(os.path.join(program_exec_path, "Resources/WebPConverterGUI.ui"))[0]
 
 if platform.system() == "Windows":
