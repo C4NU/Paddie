@@ -3,6 +3,9 @@
 from PIL import Image, ImageDraw, ImageFont, ImageOps, ExifTags
 
 import os
+import subprocess
+import platform
+
 # import Watermark_module
 import exif_module
 import resize_module
@@ -219,7 +222,12 @@ class Converter:
             else:
                 image = self.exif.set_image_text(image,model_data=model_data, exif_data=exif_data, length=padding, font_path=font_path, color = font_color)
 
-        image.show(title="Sample")
+        if platform.system() == "Darwin":
+            save_path = file_path+"Sample_result.jpg"
+            image.save(save_path)
+            subprocess.run(["open", "-a", "Preview", save_path])
+        else:
+            image.show()
 
     @staticmethod
     def search_file_format(file_path) -> str:
