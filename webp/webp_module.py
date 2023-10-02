@@ -23,11 +23,11 @@ class Converter:
     @staticmethod
     def fix_orientation(image):
         exif = image.getexif()
-        
+        print(type(exif))
         new_image = None
         
         try:
-            if exif:
+            if exif != {}:
                 orientation = exif.get(274)
 
                 print(orientation)
@@ -44,7 +44,7 @@ class Converter:
                 else:
                     new_image = image.rotate(0, expand=True)
 
-                return exif, new_image
+                    return exif, new_image
 
         except Exception as e:
             print(e)
@@ -61,7 +61,14 @@ class Converter:
             image = Image.open(file_path)
             dest = save_path + save_name + ".webp"
 
-            new_exif_data, image = Converter.fix_orientation(image)
+            model_data, exif_data = self.exif.get_exif_data(image)
+
+            if model_data == None:
+                exif_option = False
+                new_exif_data = None
+
+            else:
+                new_exif_data, image = Converter.fix_orientation(image)
 
             # Reize 하기
             if resize_option:
@@ -135,7 +142,11 @@ class Converter:
         
         horizontalImage = True if image.width>=image.height else False
         
-        new_exif_data, image = Converter.fix_orientation(image)
+        if model_data == None:
+            return
+
+        else:
+            new_exif_data, image = Converter.fix_orientation(image)
 
         if square_padding_option==True:
             image = self.exif.set_square_padding(image, gap = 60, color=background_color, horizontalImage= horizontalImage)
@@ -238,21 +249,3 @@ class Converter:
         if file_format in support_format:
             return file_format
         return ''
-
-
-def main():
-    conv = Converter()
-
-    conv.convert_image_to_webp(file_path="Error-Test/P2080300.jpg", 
-                                save_path="Error-Test", 
-                                save_name="P2080300",
-                                loseless_option=True,
-                                image_quality_option=80,
-                                exif_option=True,
-                                icc_profile_option=True,
-                                exact_option=True
-                               )
-
-
-if __name__ == "__main__":
-    main()
