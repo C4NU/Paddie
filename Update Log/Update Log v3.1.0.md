@@ -97,7 +97,9 @@ paddie.application@gmail.com
 
 ## 🥹버그 해결 사항🥹
 
-1. 아마..없음..?
+1. EXIF 데이터 없을때 fix_orientation 관련으로 터지는 문제 해결
+   1. 앞으로는 EXIF 테두리 씌울때 결과물이 보여지지 않는다면 EXIF 데이터가 없어서 그렇습니당.
+
 
 ## 😎업데이트 된 사항😎
 
