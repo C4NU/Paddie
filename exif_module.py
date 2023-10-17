@@ -88,7 +88,7 @@ class Exif:
             print("ShutterSpeed: " + shutter_speed)
 
             try:
-                result_exif = focal_length + "mm | F/" + f_number + " | " + "ISO " + iso + " | " + shutter_speed
+                result_exif = focal_length + "mm | F/" + "{:.1f}".format(f_number) + " | " + "ISO " + iso + " | " + shutter_speed
             except:
                 print("데이터 불량, 콘솔 창의 기록을 댓글로 남겨주세요.")
 
