@@ -171,4 +171,5 @@ cython_debug/
 # Test Folder
 Test/
 .DS_Store
-.DS_Store
+/user_data.json
+.idea

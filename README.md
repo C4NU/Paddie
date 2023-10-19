@@ -1,69 +1,56 @@
-# WebP Converter GUI
+# Paddie。
+
+뱃지인가 뭐시긴가... 랑 stable 버전 뭐 이런거 표시?
+
+
+현재 최신 버전: WebP Converter v2.1.1-stable
+
+현재 stable 최신 버전: WebP Converter v2.1.1-stable
 
 ## Package Version
 
 Python 3.10.11
 
-PyQt5, Pillows
+PyQt6
+
+Pillows
+
+Pyinstaller
 
 ## Description
 
-파이썬으로 작성된 JPG, PNG등의 이미지 사진을 WebP로 변환해주는 GUI 변환기
+JPG, PNG등의 이미지 사진을 변환시켜주는 프로그램.
 
-## Windows 빌드할 때 (pyinstaller)
-### 1. EXE 빌드
+### Functions
 
-#### 명령어
+1. JPG, PNG, TIFF 이미지 파일을 WebP로 변환시키는 기능.
+   1. Loseless Option
+   2. Image Quality Option
+   3. Save Exif Option
+   4. Save ICC Profile Option
+   5. Save RGBA data(?) Option
+2. EXIF 데이터가 존재하는 이미지파일을 레터박스를 씌워 JPG / PNG / WebP 형태로 저장시키는 기능
+   1. 아무튼 여러가지 옵션 있음 ㅅㄱ
 
-```python
-pyinstaller -w -F 'main.py 경로' --icon=.\Resources\Icon@64X64_02.ico -n='빌드 exe 이름'
-```
 
-#### Sample
-
-```python
-pyinstaller -w -F 'C:\Users\canu1\Documents\Development\#1 Python Projects\WebPConverterGUI\main.py' --icon=.\Resources\Icon@64X64_02.ico -n='WebP Converter'
-```
-
-### 2. .spec 파일 수정
-```
-...
-    datas=[('WebPConverterGUI.ui', '.')],
-...
-```
-
-### 3. .spec 파일로 다시 빌드
-```python
-pyinstaller "WebP Converter.spec"
-```
-
-## macOS 빌드할 때 (pyinstaller)
-### 1. app 빌드
-
-#### 명령어
+## Build
 
 ```python
-pyinstaller -w -F '/Users/jeonhyojae/Dev/Python Projects/WebP-Converter-GUI/main.py' --icon=./Resources/Icon@64X64_02.ico -n='WebP Converter'
+# Windows
+pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py       
+
+# macOS
+pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py   
 ```
 
-#### Sample
 
-```python
-pyinstaller -w -F '/Users/jeonhyojae/Dev/Python Projects/WebP-Converter-GUI/main.py' --icon=./Resources/Icon@64X64_02.ico -n='WebP Converter' -d all
-```
 
-### 2. .spec 파일 수정
-    ...
-        datas=[('WebPConverterGUI.ui', '.')],
-    ...
 
-### 3. .spec 파일로 다시 빌드
-
-```python
-pyinstaller "WebP Converter.spec"
-```
-
-워터마크 관련 구현 기능
-1. 워터마크 폰트 고르는 기능
-2. 워터마크 기본 폰트 설정
-3. 워터마크 위치 조정, 폰트 크기 설정, 미리보기 지원?
+- -w
+  - 터미널 없이 프로그램 형태로 실행
+- -F
+  - 프로그램 하나의 파일로 묶음 (.app / .exe)
+- -n
+  - 프로그램 이름
+- --icon
+  - Resources 폴더 안에있는 ico 파일로 아이콘 표시
