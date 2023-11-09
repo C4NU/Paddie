@@ -1,11 +1,10 @@
 # Paddie。
 
-뱃지인가 뭐시긴가... 랑 stable 버전 뭐 이런거 표시?
+[![CodeFactor](https://www.codefactor.io/repository/github/c4nu/paddie/badge/main)](https://www.codefactor.io/repository/github/c4nu/paddie/overview/main)
 
+![](https://img.shields.io/badge/stable-v3.1.1-blue?style=flat)
 
-현재 최신 버전: WebP Converter v2.1.1-stable
-
-현재 stable 최신 버전: WebP Converter v2.1.1-stable
+[![Github All Releases](https://img.shields.io/github/downloads/c4nu/paddie/total.svg)]()
 
 ## Package Version
 
