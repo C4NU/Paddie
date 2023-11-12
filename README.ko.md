@@ -1,20 +1,24 @@
 # Paddie。
 
 [![CodeFactor](https://www.codefactor.io/repository/github/c4nu/paddie/badge/main)](https://www.codefactor.io/repository/github/c4nu/paddie/overview/main)
-![Stable Version](https://img.shields.io/badge/stable-v3.1.1-blue?style=flat)
+
+![](https://img.shields.io/badge/stable-v3.1.1-blue?style=flat)
+
 [![Github All Releases](https://img.shields.io/github/downloads/c4nu/paddie/total.svg)]()
 
-## Version
-### Python Version
-![Python 3.10.11](https://img.shields.io/badge/Python-3.10.11-yellow?style=flat)
-### Module Version
-![PyQt6](https://img.shields.io/badge/PyQt-NULL-green?style=flat)
-![Pillows](https://img.shields.io/badge/Pillows-NULL-yellow?style=flat)
-![Pyinstaller](https://img.shields.io/badge/Pyinstaller-NULL-red?style=flat)
+## Package Version
+
+Python 3.10.11
+
+PyQt6
+
+Pillows
+
+Pyinstaller
 
 ## Description
 
-A program that compresses image files into WebP format, or reads EXIF data and writes it to the image border.
+JPG, PNG등의 이미지 사진을 변환시켜주는 프로그램.
 
 ### Functions
 
@@ -49,6 +53,3 @@ pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import
   - 프로그램 이름
 - --icon
   - Resources 폴더 안에있는 ico 파일로 아이콘 표시
-
-## Used Resources
-1. Barlow-Light Fonts

@@ -2,11 +2,11 @@
 
 ########################################
 import sys  # 시스템 모듈
-import os
+import subprocess
 ########################################
 
 def main():
-    print(os.system("python3 --version"))
+    subprocess.run(['python3', '--version'], shell=False)
     import app_window
     print("App Window module Loaded")
     app = app_window.WebpApp()
