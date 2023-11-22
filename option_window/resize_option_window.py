@@ -51,6 +51,12 @@ class ResizeOptionWindow(QDialog, formClass):
 
     def init_options(self):
         self.axis_option_box.addItems(['Width', 'Height', 'Longest', 'Shortest'])
+
+    def on_call(self):
+        self.__update_ui()
+        self.show()
+          
+    def __update_ui(self):
         index = UserConfig.resize_axis
         self.axis_option_box.setCurrentIndex(index)
 
@@ -59,14 +65,9 @@ class ResizeOptionWindow(QDialog, formClass):
 
     def on_axis_option_box_index_changed(self, index):
         self.axis_option = index
-        print("Axis Changed", UserConfig.resize_axis, index)
-        UserConfig.resize_axis = index
-        UserConfig.save()
-        
+
     def on_change_resize_value(self):
         self.resize_value = self.resize_value_box.value()
-        UserConfig.resize_size = self.resize_value
-        UserConfig.save()
 
     def __update_size_info(self):
         '''
@@ -78,5 +79,9 @@ class ResizeOptionWindow(QDialog, formClass):
         self.__update_size_info()
         if self.on_accepted:
             print(self.axis_option, self.resize_value)
+            UserConfig.resize_axis = self.axis_option
+            UserConfig.resize_size = self.resize_value
+            UserConfig.save()
+
             self.on_accepted(self.axis_option, self.resize_value)
         super().accept()

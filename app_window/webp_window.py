@@ -211,7 +211,7 @@ class WebpWindow(QMainWindow, formClass):
             print(f'Axis(0:Width,1:Height,2:Longest,3:Shortest) : {axis_option}, resize value: {resize_value}')
 
         self.resize_window.on_accepted = on_accepted_resize_option
-        self.resize_window.show()
+        self.resize_window.on_call()
         # note(komastar) : 리사이즈 정보 쿼리 방법 2. access public property
         # accept 되기 전에 호출하면 제대로 된 값을 불러오지 못 할 수 있음
         # print(f'w:{self.resize_option_window.width}, h:{self.resize_option_window.height}')
