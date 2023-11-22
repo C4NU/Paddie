@@ -52,7 +52,7 @@ class Converter:
 
     def convert_image_to_webp(self, file_path, save_path, save_name, loseless_option, image_quality_option,
                               exif_option, icc_profile_option, exact_option, watermark_text, exif_view_option,
-                              conversion_option, resize_option, width_option, height_option, resize_value):
+                              conversion_option, resize_option, axis_option, resize_value):
         file_format = Converter.search_file_format(file_path)
         # note(komastar) : file_format : 'jpg', 'png'...
         
@@ -73,8 +73,7 @@ class Converter:
             # Reize 하기
             if resize_option:
                 image = self.resize.resize(image, 
-                                    width_option,
-                                    height_option,
+                                    axis_option,
                                     resize_value)
 
             # Exif Option 데이터 읽어오기 / 오류시 except
@@ -117,7 +116,7 @@ class Converter:
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, 
                             bg_color, square_padding_option, dark_theme_option, exif_padding_option,
-                            one_line_option, save_exif_data_option, resize_option, width_option, height_option, resize_value):
+                            one_line_option, save_exif_data_option, resize_option, axis_option, resize_value):
         
         file_format = Converter.search_file_format(file_path)
 
@@ -170,8 +169,7 @@ class Converter:
         # Resize 하기
         if resize_option:
             image = self.resize.resize(image, 
-                                width_option,
-                                height_option,
+                                axis_option,
                                 resize_value)
         # 파일 형식 선택
         export_extension = Converter.FILE_FORMAT_EXTENSION[file_format_option]

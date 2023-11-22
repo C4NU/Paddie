@@ -17,7 +17,7 @@ class UserConfig:
 
     resize_options = False
     resize_axis = 2 # 0:Width, 1:Height, 2:Longest, 3:Shortest
-    resize_size = 2000
+    resize_size = 3000
 
     conversion_options = True
     conversion_loseless = False

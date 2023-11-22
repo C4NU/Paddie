@@ -97,8 +97,7 @@ class WebpWindow(QMainWindow, formClass):
 
         # Resize 관련 변수 초기화
         self.resize_option = False
-        self.resize_width_option = self.resize_window.width_option
-        self.resize_height_option = self.resize_window.height_option
+        self.resize_axis_option = self.resize_window.axis_option
         self.resize_value = self.resize_window.resize_value
 
         self.setupUi(self)
@@ -125,7 +124,6 @@ class WebpWindow(QMainWindow, formClass):
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
         # Conversion 활성화 옵션 링킹
         self.enable_conversion_option_box.stateChanged.connect(self.on_toggle_conversion_enable)
-        self.enable_conversion_option_box.toggle()
         self.open_conversion_option_button.clicked.connect(self.on_click_conversion_option)
         self.open_conversion_option_button.setEnabled(self.enable_conversion_option_box.isChecked())
         # Watermark 활성화 옵션 링킹
@@ -154,6 +152,15 @@ class WebpWindow(QMainWindow, formClass):
         UserConfig.load()
         if UserConfig.exif_bg_color:
             self.background_color = UserConfig.exif_bg_color
+
+        if UserConfig.resize_options:
+            self.enable_resize_option_box.toggle()
+
+        if UserConfig.conversion_options:
+            self.enable_conversion_option_box.toggle()
+
+        if UserConfig.exif_options:
+            self.enable_exif_padding_option_box.toggle()
 
     def resizeEvent(self, event):
         geometry = self.image_list_widget.geometry()
@@ -195,14 +202,13 @@ class WebpWindow(QMainWindow, formClass):
                                     one_line_option=self.line_text_option)
 
     def on_click_open_resize_option(self):
-        def on_accepted_resize_option(width_option, height_option, resize_value):
+        def on_accepted_resize_option(axis_option, resize_value):
             # note(komastar) : 리사이즈 정보 쿼리 방법 1. callback
             # accept 된 경우에만 실행
-            self.resize_width_option = width_option
-            self.resize_height_option = height_option
+            self.resize_axis_option = axis_option
             self.resize_value = resize_value
 
-            print(f'width : {width_option}, height : {height_option}, resize value: {resize_value}')
+            print(f'Axis(0:Width,1:Height,2:Longest,3:Shortest) : {axis_option}, resize value: {resize_value}')
 
         self.resize_window.on_accepted = on_accepted_resize_option
         self.resize_window.show()
@@ -335,8 +341,7 @@ class WebpWindow(QMainWindow, formClass):
                                                          exif_view_option=self.exif_writing_option,
                                                          conversion_option=self.conversion_option,
                                                          resize_option=self.resize_option,
-                                                         width_option=self.resize_width_option,
-                                                         height_option=self.resize_height_option,
+                                                         axis_option=self.resize_axis_option,
                                                          resize_value=self.resize_value)
 
             # 02 Exif Padding 이미지로만 변환할때
@@ -354,8 +359,7 @@ class WebpWindow(QMainWindow, formClass):
                                                       one_line_option=self.line_text_option,
                                                       save_exif_data_option=self.save_exif_data,
                                                       resize_option=self.resize_option,
-                                                      width_option=self.resize_width_option,
-                                                      height_option=self.resize_height_option,
+                                                      axis_option=self.resize_axis_option,
                                                       resize_value=self.resize_value)
 
             else:
@@ -373,7 +377,11 @@ class WebpWindow(QMainWindow, formClass):
     def on_toggle_conversion_enable(self, state):
         self.conversion_option = bool(state == Qt.CheckState.Checked.value)
         self.enable_exif_padding_option_box.setChecked(not state)
-        self.open_conversion_option_button.setEnabled(self.enable_conversion_option_box.isChecked())
+
+        checked = self.enable_conversion_option_box.isChecked()
+        self.open_conversion_option_button.setEnabled(checked)
+        UserConfig.conversion_options = checked
+        UserConfig.save()
 
     # 워터마크 옵션
     def WatermarkColorOption(self, state):
@@ -383,10 +391,18 @@ class WebpWindow(QMainWindow, formClass):
     def on_toggle_exif_writing_enable(self, state):
         self.exif_writing_option = bool(state == Qt.CheckState.Checked.value)
         self.enable_conversion_option_box.setChecked(not state)
-        self.open_exif_option_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
-        self.preview_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
+
+        checked = self.enable_exif_padding_option_box.isChecked()
+        self.open_exif_option_button.setEnabled(checked)
+        self.preview_button.setEnabled(checked)
+        UserConfig.exif_options = checked
+        UserConfig.save()
 
     def on_toggle_resize_enable(self, state):
         self.resize_option = bool(state == Qt.CheckState.Checked.value)
-        self.open_resize_option_button.setEnabled(self.enable_resize_option_box.isChecked())
+        checked = self.enable_resize_option_box.isChecked()
+        self.open_resize_option_button.setEnabled(checked)
+
+        UserConfig.resize_options = checked
+        UserConfig.save()
 

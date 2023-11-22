@@ -44,42 +44,42 @@
    <property name="title">
     <string>Resize Options</string>
    </property>
-   <widget class="QCheckBox" name="width_option_box">
+   <widget class="QLabel" name="axis_option_label">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>20</y>
-      <width>81</width>
-      <height>16</height>
+      <y>38</y>
+      <width>56</width>
+      <height>22</height>
      </rect>
     </property>
     <property name="text">
-     <string>Width</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
+     <string>Axis</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="height_option_box">
+   <widget class="QComboBox" name="axis_option_box">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>20</y>
-      <width>81</width>
-      <height>16</height>
+      <x>80</x>
+      <y>38</y>
+      <width>131</width>
+      <height>22</height>
      </rect>
     </property>
-    <property name="text">
+    <stringlist>
+     <string>Width</string>
      <string>Height</string>
-    </property>
+     <string>Longest</string>
+     <string>Shortest</string>
+    </stringlist>
    </widget>
    <widget class="QLabel" name="resize_value_label">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>52</y>
+      <y>82</y>
       <width>56</width>
-      <height>20</height>
+      <height>22</height>
      </rect>
     </property>
     <property name="text">
@@ -89,9 +89,9 @@
    <widget class="QSpinBox" name="resize_value_box">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>50</y>
-      <width>81</width>
+      <x>80</x>
+      <y>82</y>
+      <width>131</width>
       <height>22</height>
      </rect>
     </property>
