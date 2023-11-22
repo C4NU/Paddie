@@ -41,7 +41,10 @@ class Exif:
             model = ModelNameMapper.replace_model_name(model)
 
             lens_model = str(exif_data.get(42036, self.dump_data))
-            f_number = str(exif_data.get(33437, self.dump_data))
+            f_number_raw = exif_data.get(33437, self.dump_data)
+            f_number = self.dump_data
+            if f_number_raw is not self.dump_data:
+                f_number = "{:.1f}".format(float(f_number_raw))
             focal_length = str(exif_data.get(41989, self.dump_data))
             iso = str(exif_data.get(34855, self.dump_data))
 
@@ -88,8 +91,9 @@ class Exif:
             print("ShutterSpeed: " + shutter_speed)
 
             try:
-                result_exif = focal_length + "mm | F/" + "{:.1f}".format(f_number) + " | " + "ISO " + iso + " | " + shutter_speed
-            except:
+                result_exif = focal_length + "mm | F/" + f_number + " | " + "ISO " + iso + " | " + shutter_speed
+            except Exception as e:
+                print(e)
                 print("데이터 불량, 콘솔 창의 기록을 댓글로 남겨주세요.")
 
             return result_model, result_exif
