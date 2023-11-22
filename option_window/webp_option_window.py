@@ -6,6 +6,8 @@ from PyQt6 import uic
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton
 
+from user_config import UserConfig
+
 if platform.system() == "Windows":
 	form = os.path.join(os.getcwd(), "Resources/ConversionOptions.ui")
 else:
@@ -37,13 +39,6 @@ class WebPOptionWindow(QDialog, formClass):
 		self.icc_profile_option = False
 		self.exact_option = False
 		self.image_quality_option = 80
-
-		# Cancel 시 revert 시킬 옵션 값 backup
-		self.backup_loseless_option = False
-		self.backup_exif_option = False
-		self.backup_icc_profile_option = False
-		self.backup_exact_option = False
-		self.backup_image_quality_option = 80
 
 		self.setupUi(self)
 		self.bind_ui()
@@ -116,39 +111,37 @@ class WebPOptionWindow(QDialog, formClass):
 		self.debug_log(5)
 	
 	def __update_ui(self):
-		if self.loseless_option_box.isChecked() != self.loseless_option:
+		if self.loseless_option_box.isChecked() != UserConfig.conversion_loseless:
 			self.loseless_option_box.toggle()
 
-		if self.exif_option_box.isChecked() != self.exif_option:
+		if self.exif_option_box.isChecked() != UserConfig.conversion_exif:
 			self.exif_option_box.toggle()
 
-		if self.icc_profile_option_box.isChecked() != self.icc_profile_option:
+		if self.icc_profile_option_box.isChecked() != UserConfig.conversion_icc:
 			self.icc_profile_option_box.toggle()
 
-		if self.exact_option_box.isChecked() != self.exact_option:
+		if self.exact_option_box.isChecked() != UserConfig.conversion_transparent:
 			self.exact_option_box.toggle()
 
-		if self.image_quality_spinbox.value() != self.image_quality_option:
-			self.image_quality_spinbox.setValue(self.image_quality_option)
+		if self.image_quality_spinbox.value() != UserConfig.conversion_quality:
+			self.image_quality_spinbox.setValue(UserConfig.conversion_quality)
 
 	def on_call(self):
 		self.__update_ui()
 		self.show()
 
 	def on_save_close(self):
-		self.backup_loseless_option = self.loseless_option
-		self.backup_exif_option = self.exif_option
-		self.backup_icc_profile_option = self.icc_profile_option
-		self.backup_exact_option = self.exact_option
-		self.backup_image_quality_option = self.image_quality_option
 		self.debug_log(0)
+
+		UserConfig.conversion_loseless = self.loseless_option
+		UserConfig.conversion_exif = self.exif_option
+		UserConfig.conversion_icc = self.icc_profile_option
+		UserConfig.conversion_transparent = self.exact_option
+		UserConfig.conversion_quality = self.image_quality_option
+		UserConfig.save()
+
 		self.accept()
 	
 	def on_cancel_close(self):
-		self.loseless_option = self.backup_loseless_option
-		self.exif_option = self.backup_exif_option
-		self.icc_profile_option = self.backup_icc_profile_option
-		self.exact_option = self.backup_exact_option
-		self.image_quality_option = self.backup_image_quality_option
 		self.debug_log(0)
 		self.reject()

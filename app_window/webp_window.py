@@ -128,6 +128,7 @@ class WebpWindow(QMainWindow, formClass):
         self.open_conversion_option_button.setEnabled(self.enable_conversion_option_box.isChecked())
         # Watermark 활성화 옵션 링킹
         #self.enable_watermark_option_box.stateChanged.connect(None)
+        self.enable_watermark_option_box.setEnabled(False)
         # Exif Padding 활성화 옵션 링킹
         self.enable_exif_padding_option_box.stateChanged.connect(self.on_toggle_exif_writing_enable)
         self.open_exif_option_button.clicked.connect(self.on_click_exif_padding_option)
