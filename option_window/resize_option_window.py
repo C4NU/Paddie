@@ -35,7 +35,6 @@ class ResizeOptionWindow(QDialog, formClass):
 
         self.setupUi(self)
         self.bind_ui()
-        self.init_options()
         # 기본 리사이징 사이즈 (3000px)
 
         self.__update_size_info()
@@ -48,9 +47,6 @@ class ResizeOptionWindow(QDialog, formClass):
 
         self.resize_value_box.valueChanged.connect(self.on_change_resize_value)
         self.resize_value_box.setToolTip("체크된 높이 기준으로 리사이즈 됩니다.")
-
-    def init_options(self):
-        self.axis_option_box.addItems(['Width', 'Height', 'Longest', 'Shortest'])
 
     def on_call(self):
         self.__update_ui()

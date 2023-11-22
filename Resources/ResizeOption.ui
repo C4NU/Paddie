@@ -66,6 +66,26 @@
       <height>22</height>
      </rect>
     </property>
+    <item>
+     <property name="text">
+      <string>Width</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Height</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Longest</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Shortest</string>
+     </property>
+    </item>
     <stringlist>
      <string>Width</string>
      <string>Height</string>
