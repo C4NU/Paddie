@@ -28,12 +28,15 @@ class UserConfig:
     
     exif_options = False
     exif_padding = False
-    exif_format = "{body} | {lens}\n{focal_length_ff} | {aperture} | {iso} | {shutter_speed}" # replacement of 1 line text
+    exif_save_exifdata = False
+    exif_quality = 80
     exif_ratio = 0 # 0:Original, 1:Square, 2:4:5, replacement of Square Mode
-    exif_type = 0 # 0:JPEG, 1:PNG, 2:WebP, name changed from format
+    exif_type = 2 # 0:JPEG, 1:PNG, 2:WebP, name changed from format
     exif_text_color = QColor(0, 0, 0) # replacement of white text
     exif_bg_color = QColor(255, 255, 255)
+    exif_format = "{body} | {lens}\n{focal_length_ff} | {aperture} | {iso} | {shutter_speed}" # replacement of 1 line text
     exif_font = 1 # index of font list
+    exif_format_alignment = 0 # 0:Center, 1:Left, 2:Right
 
     @staticmethod
     def save():

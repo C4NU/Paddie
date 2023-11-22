@@ -60,7 +60,7 @@ class WebPOptionWindow(QDialog, formClass):
 		self.exact_option_box.setToolTip("몰?루... 저장 옵션")
 
 		self.image_quality_spinbox.valueChanged.connect(self.on_change_image_quality)
-		self.image_quality_spinbox.setToolTip("이미지 품질 저장 옵션 \n 92 정도가 web에서 사용하기 제일 좋습니다.")
+		self.image_quality_spinbox.setToolTip("이미지 품질 저장 옵션\n92 정도가 web에서 사용하기 제일 좋습니다.")
 
 	# DEBUG LOGGER FUNCTIONS
 	def debug_log(self, options=int):

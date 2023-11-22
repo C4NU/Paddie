@@ -3,16 +3,13 @@ import sys
 import platform
 import pathlib
 
-import user_config
 from user_config import UserConfig
-
-from option_window import ResizeOptionWindow
 
 from PyQt6 import uic
 from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPalette, QColor, QFont
+from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtGui import QFontDatabase
-from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton, QComboBox, QPlainTextEdit, QColorDialog
+from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton, QComboBox, QPlainTextEdit, QColorDialog, QLabel, QVBoxLayout
 
 if platform.system() == "Windows":
 	form = os.path.join(os.getcwd(), "Resources/ExifOptions.ui")
@@ -31,22 +28,31 @@ class ExifOptionWindow(QDialog, formClass):
 
 		# 기타 참조 변수
 		self.default_font = 'Barlow-Light'
-		self.__font_preview_size = 24
+		self.__font_preview_size = 18
+		self.text_color = QColor(0, 0, 0)
 		self.background_color = QColor(255, 255, 255)
+		self.font_alignment = 0
+		self.enable_padding = False
+		self.save_exif = False
+		self.image_ratio = 0
+		self.image_type = 2
+		self.image_quality_option = 80
 
 		# UI 링킹 설정 (EXIF Options)
 		self.exif_option_button_box: QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
 		self.enable_padding_box: QCheckBox
-		self.enable_dark_mode_box: QCheckBox
-		self.enable_one_line_box: QCheckBox
-		self.enable_square_mode_box: QCheckBox
 		self.save_exif_data_box: QCheckBox
-		self.save_format_box: QComboBox
-		self.open_color_picker_button: QPushButton
+		self.image_ratio_box: QComboBox
+		self.image_type_box: QComboBox
+		self.image_quality_spinbox: QSpinBox
+		self.open_text_color_button: QPushButton
+		self.open_bg_color_button: QPushButton
 
 		# UI 링킹 설정 (Font Options)
 		self.font_combo_box: QComboBox
-		self.font_preview_line_edit: QPlainTextEdit
+		self.alignment_combo_box: QComboBox
+		self.format_input_area: QPlainTextEdit
+		self.format_preview_area: QLabel
 		self.__font_preview_size: int
 		self.selected_font: str
 		
@@ -54,7 +60,6 @@ class ExifOptionWindow(QDialog, formClass):
 		self.setupUi(self)
 		self.bind_ui()
 		self.setup_ui_internal()
-		self.init_options()
 
 	def bind_ui(self):
 		self.exif_option_button_box.accepted.connect(self.on_save_close)
@@ -63,26 +68,32 @@ class ExifOptionWindow(QDialog, formClass):
 		self.enable_padding_box.stateChanged.connect(self.on_toggle_padding_option)
 		self.enable_padding_box.setToolTip("프레임 생성 옵션")
 
-		self.enable_dark_mode_box.stateChanged.connect(self.on_toggle_dark_mode_option)
-		self.enable_dark_mode_box.setToolTip("폰트 색상 지정 옵션")
-
-		self.enable_one_line_box.stateChanged.connect(self.on_toggle_one_line_option)
-		self.enable_one_line_box.setToolTip("1줄 저장 옵션")
-
-		self.enable_square_mode_box.stateChanged.connect(self.on_toggle_square_mode_option)
-		self.enable_square_mode_box.setToolTip("1:1 비율 저장 옵션")
-
 		self.save_exif_data_box.stateChanged.connect(self.on_toggle_save_exif_data_option)
 		self.save_exif_data_box.setToolTip("EXIF 저장 옵션")
 
-		self.save_format_box.currentIndexChanged.connect(self.on_change_save_format)
-		self.save_format_box.setToolTip("이미지 확장자 선택 옵션")
+		self.image_ratio_box.currentIndexChanged.connect(self.on_change_image_ratio)
+		self.image_ratio_box.setToolTip("이미지 비율 선택 옵션, Padding 강제 적용")
+
+		self.image_type_box.currentIndexChanged.connect(self.on_change_image_type)
+		self.image_type_box.setToolTip("이미지 확장자 선택 옵션")
+
+		self.image_quality_spinbox.valueChanged.connect(self.on_change_image_quality)
+		self.image_quality_spinbox.setToolTip("이미지 품질 저장 옵션\n92 정도가 web에서 사용하기 제일 좋습니다.")
+
+		self.open_text_color_button.clicked.connect(self.on_change_textcolor_picker)
+		self.open_text_color_button.setToolTip("Frame 내 텍스트 색상 변경 옵션")
+
+		self.open_bg_color_button.clicked.connect(self.on_change_bgcolor_picker)
+		self.open_bg_color_button.setToolTip("Frame 색상 변경 옵션")
 
 		self.font_combo_box.currentIndexChanged.connect(self.on_change_font)
 		self.font_combo_box.setToolTip("폰트 변경 옵션")
 
-		self.open_color_picker_button.clicked.connect(self.on_toggle_color_picker)
-		self.open_color_picker_button.setToolTip("Frame 색상 변경 옵션")
+		self.alignment_combo_box.currentIndexChanged.connect(self.on_change_alignment)
+		self.alignment_combo_box.setToolTip("정렬 변경 옵션")
+
+		self.format_input_area.textChanged.connect(self.on_format_input_area_changed)
+		self.format_input_area.setToolTip("사진 밑에 삽입할 텍스트 입력")
 
 	def setup_ui_internal(self):
 		if platform.system() == "Windows":
@@ -120,157 +131,99 @@ class ExifOptionWindow(QDialog, formClass):
 		fullpath = os.path.join(dir_path, file_name)
 		self.font_combo_box.addItem(font_name, userData=fullpath)
 
-	def init_options(self):
-		# EXIF OPTIONS
-		self.enable_padding = self.enable_padding_box.isChecked()
-		self.enable_dark_mode = self.enable_dark_mode_box.isChecked()
-		self.enable_one_line = self.enable_one_line_box.isChecked()
-		self.enable_square_mode = self.enable_square_mode_box.isChecked()
-		self.save_exif = self.save_exif_data_box.isChecked()
-		self.save_format_index = self.save_format_box.currentIndex()	# 0: JPEG, 1: PNG, 2: WebP
-
-		# FONT OPTIONS
-		self.default_font_index = self.font_combo_box.findText(self.default_font)
-		self.font_combo_box.setCurrentIndex(self.default_font_index)
-		self.font_index = self.font_combo_box.currentIndex()
-		self.selected_font = self.font_combo_box.itemData(self.font_index)
-		self.__update_font_preview()
-		
-		# COLORPICKER OPTIONS
-		UserConfig.load()
-		if UserConfig.exif_bg_color:
-			self.background_color = UserConfig.exif_bg_color
-
-		# BACKUP EXIF OPTIONS
-		self.backup_enable_padding = self.enable_padding
-		self.backup_enable_dark_mode = self.enable_dark_mode
-		self.backup_enable_one_line = self.enable_one_line
-		self.backup_enable_square_mode = self.enable_square_mode
-		self.backup_save_exif = self.save_exif
-		self.backup_save_format_index = self.save_format_index
-
-		# BACKUP FONT OPTIONS
-		self.backup_font_index = self.font_index
-
-	# DEBUG LOGGER FUNCTIONS
-	def debug_log(self, options=int):
-		if options == 0:
-			print(f"Padding Option: {self.enable_padding}")
-			print(f"Exif Option: {self.enable_dark_mode}")
-			print(f"One line Option: {self.enable_one_line}")
-			print(f"Square Option: {self.enable_square_mode}")
-			print(f"Save Exif Option: {self.save_exif}")
-			print(f"Save Format: {self.save_format_index}")
-		elif options == 1:
-			print(f"Padding Option: {self.enable_padding}")
-		elif options == 2:
-			print(f"Exif Option: {self.enable_dark_mode}")
-		elif options == 3:
-			print(f"One line Option: {self.enable_one_line}")
-		elif options == 4:
-			print(f"Square Option: {self.enable_square_mode}")
-		elif options == 5:
-			print(f"Save Exif Option: {self.save_exif}")
-		elif options == 6:
-			print(f"Save Format: {self.save_format_index}")
-		elif options == 99:
-			print(f"Backup Padding Option: {self.backup_enable_padding}")
-			print(f"Backup Exif Option: {self.backup_enable_dark_mode}")
-			print(f"Backup One line Option: {self.backup_enable_one_line}")
-			print(f"Backup Square Option: {self.backup_enable_square_mode}")
-			print(f"Backup Save Exif Option: {self.backup_save_exif}")
-			print(f"Backup Save Format: {self.backup_save_format_index}")
-		else:
-			print("Wrong Debug Mode")
-
 	def __update_ui(self):
-		if self.enable_padding_box.isChecked() != self.enable_padding:
+		if self.enable_padding_box.isChecked() != UserConfig.exif_padding:
 			self.enable_padding_box.toggle()
 
-		if self.enable_dark_mode_box.isChecked() != self.enable_dark_mode:
-			self.enable_dark_mode_box.toggle()
-
-		if self.enable_one_line_box.isChecked() != self.enable_one_line:
-			self.enable_one_line_box.toggle()
-
-		if self.enable_square_mode_box.isChecked() != self.enable_square_mode:
-			self.enable_square_mode_box.toggle()
-
-		if self.save_exif_data_box.isChecked() != self.save_exif:
+		if self.save_exif_data_box.isChecked() != UserConfig.exif_save_exifdata:
 			self.save_exif_data_box.toggle()
 
-		if self.save_format_box.currentIndex() != self.save_format_index:
-			self.save_format_box.setCurrentIndex(self.save_format_index)
+		if self.image_ratio_box.currentIndex() != UserConfig.exif_ratio:
+			self.image_ratio_box.setCurrentIndex(UserConfig.exif_ratio)
 
-		if self.font_combo_box.currentIndex() != self.font_index:
-			self.font_combo_box.setCurrentIndex(self.font_index)
-			self.selected_font = self.font_combo_box.itemData(self.font_index)
-			
+		if self.image_type_box.currentIndex() != UserConfig.exif_type:
+			self.image_type_box.setCurrentIndex(UserConfig.exif_type)
+
+		if self.image_quality_spinbox.value() != UserConfig.exif_quality:
+			self.image_quality_spinbox.setValue(UserConfig.exif_quality)
+
+		if self.font_combo_box.currentIndex() != UserConfig.exif_font:
+			# if folder data is changed from previous run
+			if UserConfig.exif_font >= self.font_combo_box.count():
+				UserConfig.exif_font = 1
+			self.font_combo_box.setCurrentIndex(UserConfig.exif_font)
+			self.selected_font = self.font_combo_box.itemData(UserConfig.exif_font)
+
+		if self.alignment_combo_box.currentIndex() != UserConfig.exif_format_alignment:
+			self.alignment_combo_box.setCurrentIndex(UserConfig.exif_format_alignment)
+
+		self.format_input_area.setPlainText(UserConfig.exif_format)
+		self.caption_format = UserConfig.exif_format
+		self.text_color = UserConfig.exif_text_color
+		self.background_color = UserConfig.exif_bg_color
+
+		self.__update_font_preview()
 			
 	def on_call(self):
 		self.__update_ui()
 		self.show()
 
 	def on_save_close(self):
-		# BACKUP EXIF OPTIONS
-		self.backup_enable_padding = self.enable_padding
-		self.backup_enable_dark_mode = self.enable_dark_mode
-		self.backup_enable_one_line = self.enable_one_line
-		self.backup_enable_square_mode = self.enable_square_mode
-		self.backup_save_exif = self.save_exif
-		self.backup_save_format_index = self.save_format_index
-		# BACKUP FONT OPTIONS
-		self.backup_font_index = self.font_index
 		self.selected_font = self.font_combo_box.itemData(self.font_index)
-		# BACKUP COLORPICKER OPTIONS
 
-		self.debug_log(0)
+		UserConfig.exif_padding = self.enable_padding
+		UserConfig.exif_save_exifdata = self.save_exif
+		UserConfig.exif_ratio = self.image_ratio
+		UserConfig.exif_type = self.image_type
+		UserConfig.exif_quality = self.image_quality_option
+		UserConfig.exif_text_color = self.text_color
+		UserConfig.exif_bg_color = self.background_color
+		UserConfig.exif_font = self.font_index
+		UserConfig.exif_format_alignment = self.font_alignment
+		UserConfig.exif_format = self.caption_format
+		UserConfig.save()
 	
 	def on_cancel_close(self):
-		# RESTORE EXIF OPTIONS
-		self.enable_padding = self.backup_enable_padding
-		self.enable_dark_mode = self.backup_enable_dark_mode
-		self.enable_one_line = self.backup_enable_one_line
-		self.enable_square_mode = self.backup_enable_square_mode
-		self.save_exif = self.backup_save_exif
-		self.save_format_index = self.backup_save_format_index
-		# RESTORE FONT OPTIONS
-		self.font_index = self.backup_font_index
-		self.selected_font = self.font_combo_box.itemData(self.backup_font_index)
-		# RESTORE COLORPICKER OPTIONS
-		self.debug_log(0)
+		self.selected_font = ""
 
 	# Exif Padding 옵션
 	def on_toggle_padding_option(self, state):
 		self.enable_padding = bool(state == Qt.CheckState.Checked.value)        
-		print(f"Padding Mode Pushed, Square Mode Opt: {self.enable_padding}")
-
-	# 폰트 색상
-	def on_toggle_dark_mode_option(self, state):
-		self.enable_dark_mode = bool(state == Qt.CheckState.Checked.value)        
-		print(f"Dark Mode Pushed, Dark Mode Opt: {self.enable_dark_mode}")
-
-	def on_toggle_square_mode_option(self, state):
-		self.enable_square_mode = bool(state == Qt.CheckState.Checked.value)        
-
-	def on_toggle_one_line_option(self, state):
-		self.enable_one_line = bool(state == Qt.CheckState.Checked.value)        
+		print(f"Padding Mode Pushed, Square Mode Opt: {self.enable_padding}")  
 
 	def on_toggle_save_exif_data_option(self, state):
 		self.save_exif = bool(state == Qt.CheckState.Checked.value)
 
-	def on_change_save_format(self):
-		self.save_format_index = self.save_format_box.currentIndex()
+	def on_change_image_ratio(self):
+		self.image_ratio = self.image_ratio_box.currentIndex()
 
-	def on_toggle_color_picker(self):
-		self.background_color = QColorDialog.getColor(title='Pick  Background Color')
-		user_config.UserConfig.background_color = self.background_color
+	def on_change_image_type(self):
+		self.image_type = self.image_type_box.currentIndex()
+
+	def on_change_image_quality(self):
+		self.image_quality_option = self.image_quality_spinbox.value()
+
+	def on_change_textcolor_picker(self):
+		self.text_color = QColorDialog.getColor(title='Pick Text Color', initial=self.text_color)
+		self.__update_font_preview()
+		
+	def on_change_bgcolor_picker(self):
+		self.background_color = QColorDialog.getColor(title='Pick Background Color', initial=self.background_color)
+		self.__update_font_preview()
 
 	def on_change_font(self):
 		self.font_index = self.font_combo_box.currentIndex()
 		print(f"Font Index: {self.font_index}")
 		self.selected_font = self.font_combo_box.itemData(self.font_index)
 		print(f"Selected Font: {self.selected_font}")
+		self.__update_font_preview()
+
+	def on_change_alignment(self):
+		self.font_alignment = self.alignment_combo_box.currentIndex()
+		self.__update_font_preview()
+
+	def on_format_input_area_changed(self):
+		self.caption_format = self.format_input_area.toPlainText()
 		self.__update_font_preview()
 
 	def __update_font_preview(self):
@@ -286,9 +239,16 @@ class ExifOptionWindow(QDialog, formClass):
 
 			if style:
 				font = QFontDatabase.font(families[0], style, self.__font_preview_size)
-				self.font_preview_line_edit.setFont(font)
+				self.format_preview_area.setFont(font)
 			else:
-				self.font_preview_line_edit.setFont(QFont(families[0], self.__font_preview_size))
+				self.format_preview_area.setFont(QFont(families[0], self.__font_preview_size))
 		else:
 			print(f'preview font update failed : {self.selected_font}')
 
+		alignment = Qt.AlignmentFlag.AlignCenter
+		if self.font_alignment == 1: alignment = Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
+		elif self.font_alignment == 2: alignment = Qt.AlignmentFlag.AlignRight | Qt.AlignmentFlag.AlignVCenter
+
+		self.format_preview_area.setAlignment(alignment)
+		self.format_preview_area.setStyleSheet(f"background-color: {self.background_color.name()}; color: {self.text_color.name()};")
+		self.format_preview_area.setText(self.format_input_area.toPlainText())

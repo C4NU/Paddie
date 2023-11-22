@@ -87,11 +87,11 @@ class WebpWindow(QMainWindow, formClass):
         self.image_quality_option = self.webp_conversion_option_window.image_quality_option
 
         self.padding_option = self.exif_padding_option_window.enable_padding
-        self.square_mode_option = self.exif_padding_option_window.enable_square_mode
-        self.dark_mode_option = self.exif_padding_option_window.enable_dark_mode
-        self.line_text_option = self.exif_padding_option_window.enable_one_line
+        self.square_mode_option = False# self.exif_padding_option_window.enable_square_mode
+        self.dark_mode_option = False# self.exif_padding_option_window.enable_dark_mode
+        self.line_text_option = False#self.exif_padding_option_window.enable_one_line
         self.save_exif_data = self.exif_padding_option_window.save_exif
-        self.save_format_index = self.exif_padding_option_window.save_format_index
+        self.save_format_index = 0#self.exif_padding_option_window.save_format_index
         self.selected_font = self.exif_padding_option_window.selected_font
         self.background_color = self.exif_padding_option_window.background_color
 
@@ -286,9 +286,9 @@ class WebpWindow(QMainWindow, formClass):
 
         elif self.exif_writing_option:
             self.padding_option = self.exif_padding_option_window.enable_padding
-            self.square_mode_option = self.exif_padding_option_window.enable_square_mode
-            self.dark_mode_option = self.exif_padding_option_window.enable_dark_mode
-            self.line_text_option = self.exif_padding_option_window.enable_one_line
+            self.square_mode_option = False# self.exif_padding_option_window.enable_square_mode
+            self.dark_mode_option = False#self.exif_padding_option_window.enable_dark_mode
+            self.line_text_option = False#self.exif_padding_option_window.enable_one_line
             self.save_exif_data = self.exif_padding_option_window.save_exif
             self.save_format_index = self.exif_padding_option_window.save_format_index
             self.selected_font = self.exif_padding_option_window.selected_font

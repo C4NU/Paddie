@@ -123,14 +123,24 @@ class Exif:
         
     def set_image_text(self, image, model_data, exif_data, length, font_path, color):
         draw = ImageDraw.Draw(image)
+
         x = image.width / 2
         y = image.height - (length / 2)
+        anchor = "ms"
+
+        alignment = 1 #temporary
+        if alignment is 1:
+            x = length / 2
+            anchor = "ls"
+        elif alignment is 2:
+            x = image.width - (length / 2)
+            anchor = "rs"
 
         self.font_size = length / 4.5
         self.font = ImageFont.truetype(font_path, self.font_size)
 
-        draw.text(xy=(x, y - self.font_size / 2), text=model_data, font=self.font, fill=color, anchor="ms")
-        draw.text(xy=(x, y + self.font_size), text=exif_data, font=self.font, fill=color, anchor="ms")
+        draw.text(xy=(x, y - self.font_size / 2), text=model_data, font=self.font, fill=color, anchor=anchor)
+        draw.text(xy=(x, y + self.font_size), text=exif_data, font=self.font, fill=color, anchor=anchor)
 
         return image   
 
