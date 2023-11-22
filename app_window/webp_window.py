@@ -152,8 +152,8 @@ class WebpWindow(QMainWindow, formClass):
         self.resize_option = self.enable_resize_option_box.isChecked()
 
         UserConfig.load()
-        if UserConfig.background_color:
-            self.background_color = UserConfig.background_color
+        if UserConfig.exif_bg_color:
+            self.background_color = UserConfig.exif_bg_color
 
     def resizeEvent(self, event):
         geometry = self.image_list_widget.geometry()
@@ -238,13 +238,23 @@ class WebpWindow(QMainWindow, formClass):
         sys.exit()
 
     def open_file(self):
-        open_files = QFileDialog.getOpenFileNames(self, "Open File")
+        open_files = QFileDialog.getOpenFileNames(self, caption="Open File", directory=UserConfig.latest_load_path)
 
         if len(open_files) > 0:
+            load_path = None
+
             for file in open_files[0]:
                 if "" == file: continue
                 if "All Files (*)" == file: continue
+
+                if not load_path:
+                    load_path = os.path.dirname(file)
+
                 self.load_file(file)
+            
+            if load_path:
+                UserConfig.latest_load_path = load_path
+                UserConfig.save()
 
     #################### FUNCTIONS
     def update_options(self):

@@ -10,24 +10,39 @@ from PyQt6.QtGui import QColor
 print("PyQt6 QColor Loaded")
 
 
-class UserConfigKey:
-    LATEST_SAVE_PATH = 'latest_save_path'
-    BACKGROUND_PATH = 'background_path'
-
-
 class UserConfig:
+    # setting value is default value
+    latest_load_path = None
     latest_save_path = None
-    background_color: QColor
-    background_color = None
+
+    resize_options = False
+    resize_axis = 2 # 0:Width, 1:Height, 2:Longest, 3:Shortest
+    resize_size = 2000
+
+    conversion_options = True
+    conversion_loseless = False
+    conversion_exif = False
+    conversion_icc = False
+    conversion_transparent = False
+    conversion_quality = 80
+    
+    exif_options = False
+    exif_padding = False
+    exif_format = "{body} | {lens}\n{focal_length_ff} | {aperture} | {iso} | {shutter_speed}" # replacement of 1 line text
+    exif_ratio = 0 # 0:Original, 1:Square, 2:4:5, replacement of Square Mode
+    exif_type = 0 # 0:JPEG, 1:PNG, 2:WebP, name changed from format
+    exif_text_color = QColor(0, 0, 0) # replacement of white text
+    exif_bg_color = QColor(255, 255, 255)
+    exif_font = 1 # index of font list
 
     @staticmethod
     def save():
         with open('user_data.json', 'w') as save_data:
-            data = dict()
-            data[UserConfigKey.LATEST_SAVE_PATH] = UserConfig.latest_save_path
-            if UserConfig.background_color:
-                color = UserConfig.background_color
-                data[UserConfigKey.BACKGROUND_PATH] = [color.red(), color.green(), color.blue()]
+            data = {key: getattr(UserConfig, key) for key in UserConfig.__dict__.keys() if not key.startswith("__") and not callable(getattr(UserConfig, key)) and "_color" not in key}
+
+            # Special handling for QColor
+            data['exif_text_color'] = [UserConfig.exif_text_color.red(), UserConfig.exif_text_color.green(), UserConfig.exif_text_color.blue()]
+            data['exif_bg_color'] = [UserConfig.exif_bg_color.red(), UserConfig.exif_bg_color.green(), UserConfig.exif_bg_color.blue()]
 
             json.dump(data, save_data, indent=4)
 
@@ -39,11 +54,14 @@ class UserConfig:
 
         with open('user_data.json', 'r') as load_data:
             try:
-                data: dict
                 data = json.load(load_data)
-                UserConfig.latest_save_path = data.get(UserConfigKey.LATEST_SAVE_PATH)
-                color = data.get(UserConfigKey.BACKGROUND_PATH)
-                if color:
-                    UserConfig.background_color = QColor(color[0], color[1], color[2])
+
+                for key, value in data.items():
+                    # Special handling for QColor
+                    if key == 'exif_text_color' or key == 'exif_bg_color':
+                        setattr(UserConfig, key, QColor(value[0], value[1], value[2]))
+                    else:
+                        setattr(UserConfig, key, value)
+
             except json.decoder.JSONDecodeError:
                 print('json decode error')

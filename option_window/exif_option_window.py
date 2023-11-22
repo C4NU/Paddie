@@ -138,8 +138,8 @@ class ExifOptionWindow(QDialog, formClass):
 		
 		# COLORPICKER OPTIONS
 		UserConfig.load()
-		if UserConfig.background_color:
-			self.background_color = UserConfig.background_color
+		if UserConfig.exif_bg_color:
+			self.background_color = UserConfig.exif_bg_color
 
 		# BACKUP EXIF OPTIONS
 		self.backup_enable_padding = self.enable_padding
