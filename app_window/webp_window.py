@@ -12,8 +12,6 @@ import webp
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
 from PyQt6 import QtGui, QtWidgets, QtCore
-from PyQt6.QtGui import QPalette, QColor, QFont
-from PyQt6.QtGui import QFontDatabase
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit
 print("PyQt6 Package Loaded")

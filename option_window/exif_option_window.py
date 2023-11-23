@@ -57,6 +57,8 @@ class ExifOptionWindow(QDialog, formClass):
 		self.format_preview_area: QLabel
 		self.__font_preview_size: int
 		self.selected_font: str
+		self.__selected_font_family: str
+		self.__selected_font_style: str
 		
 		# UI 불러오기
 		self.setupUi(self)
@@ -113,7 +115,7 @@ class ExifOptionWindow(QDialog, formClass):
 					continue
 
 				for font_item in os.listdir(item):
-					print(f"Fonts Item: {font_item}")
+					print(f"Fonts Item: {font_item} at:{item}")
 					self.__add_font_combobox(item, font_item)
 		except:
 			# py 형식으로 실행할 때 macOS 오류 처리용 경로 설정
@@ -123,6 +125,7 @@ class ExifOptionWindow(QDialog, formClass):
 					continue
 
 				for font_item in os.listdir(item):
+					print(f"Fonts Item (exception): {font_item} at:{item}")
 					self.__add_font_combobox(item, font_item)
 
 	def __add_font_combobox(self, dir_path, file_name):
@@ -131,7 +134,22 @@ class ExifOptionWindow(QDialog, formClass):
 		if item_ext != 'ttf':
 			return
 		fullpath = os.path.join(dir_path, file_name)
-		self.font_combo_box.addItem(font_name, userData=fullpath)
+		
+		font_id = QFontDatabase.addApplicationFont(fullpath)
+		font_file_name = os.path.basename(fullpath)
+
+		print("font_id:", font_id)
+		print("font_file_name:", font_file_name)
+
+		if font_id >= 0:
+			family = QFontDatabase.applicationFontFamilies(font_id)[0]
+			print("family:", family)
+			style = QFontDatabase.styles(family)[-1]
+			print("style:", style)
+
+			self.font_combo_box.addItem(font_name, userData=(fullpath, family, style))
+		else:
+			print(f'preview font update failed : {fullpath}')
 
 	def __update_ui(self):
 		if self.enable_padding_box.isChecked() != UserConfig.exif_padding:
@@ -154,7 +172,7 @@ class ExifOptionWindow(QDialog, formClass):
 			if UserConfig.exif_font_index >= self.font_combo_box.count():
 				UserConfig.exif_font_index = 1
 			self.font_combo_box.setCurrentIndex(UserConfig.exif_font_index)
-			self.selected_font = self.font_combo_box.itemData(UserConfig.exif_font_index)
+			self.__update_selected_font()
 
 		if self.alignment_combo_box.currentIndex() != UserConfig.exif_format_alignment:
 			self.alignment_combo_box.setCurrentIndex(UserConfig.exif_format_alignment)
@@ -166,12 +184,18 @@ class ExifOptionWindow(QDialog, formClass):
 
 		self.__update_font_preview()
 			
+	def __update_selected_font(self):
+		itemData = self.font_combo_box.itemData(self.font_combo_box.currentIndex())
+		self.selected_font = itemData[0]
+		self.__selected_font_family = itemData[1]
+		self.__selected_font_style = itemData[2]
+
 	def on_call(self):
 		self.__update_ui()
 		self.show()
 
 	def on_save_close(self):
-		self.selected_font = self.font_combo_box.itemData(self.font_index)
+		self.__update_selected_font()
 
 		UserConfig.exif_padding = self.enable_padding
 		UserConfig.exif_save_exifdata = self.save_exif
@@ -180,7 +204,7 @@ class ExifOptionWindow(QDialog, formClass):
 		UserConfig.exif_quality = self.image_quality_option
 		UserConfig.exif_text_color = self.text_color
 		UserConfig.exif_bg_color = self.background_color
-		UserConfig.exif_font_index = self.font_index
+		UserConfig.exif_font_index = self.font_combo_box.currentIndex()
 		UserConfig.exif_format_alignment = self.font_alignment
 		UserConfig.exif_format = self.caption_format
 		UserConfig.save()
@@ -214,10 +238,8 @@ class ExifOptionWindow(QDialog, formClass):
 		self.__update_font_preview()
 
 	def on_change_font(self):
-		self.font_index = self.font_combo_box.currentIndex()
-		print(f"Font Index: {self.font_index}")
-		self.selected_font = self.font_combo_box.itemData(self.font_index)
-		print(f"Selected Font: {self.selected_font}")
+		print(f"Font Index: {self.font_combo_box.currentIndex()}")
+		self.__update_selected_font()
 		self.__update_font_preview()
 
 	def on_change_alignment(self):
@@ -229,23 +251,14 @@ class ExifOptionWindow(QDialog, formClass):
 		self.__update_font_preview()
 
 	def __update_font_preview(self):
-		font_id = QFontDatabase.addApplicationFont(self.selected_font)
-		font_file_name = os.path.basename(self.selected_font)
-		if font_id > 0:
-			families = QFontDatabase.applicationFontFamilies(font_id)
-			styles = QFontDatabase.styles(families[0])
-			style = None
-			for item in styles:
-				if item in font_file_name:
-					style = item
-
-			if style:
-				font = QFontDatabase.font(families[0], style, self.__font_preview_size)
-				self.format_preview_area.setFont(font)
-			else:
-				self.format_preview_area.setFont(QFont(families[0], self.__font_preview_size))
+		print("Selected font family:", self.__selected_font_family)
+		print("Selected font style:", self.__selected_font_style)
+		
+		if self.__selected_font_style:
+			font = QFontDatabase.font(self.__selected_font_family, self.__selected_font_style, self.__font_preview_size)
+			self.format_preview_area.setFont(font)
 		else:
-			print(f'preview font update failed : {self.selected_font}')
+			self.format_preview_area.setFont(QFont(self.__selected_font_family, self.__font_preview_size))
 
 		alignment = Qt.AlignmentFlag.AlignCenter
 		if self.font_alignment == 1: alignment = Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
