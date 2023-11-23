@@ -26,17 +26,7 @@ class Exif:
             except:
                 self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Resources/Barlow-Light.ttf'), self.font_size)
 
-    def set_image_padding(self, image, length, color):
-        width, height = image.size
-        new_width = width + 2 * length
-        new_height = height + 2 * length
-
-        result = Image.new(image.mode, (new_width, new_height), color)
-        result.paste(image, (length, length))
-
-        return result
-
-    def set_image_padding2(self, image, top, side, bottom, color):
+    def set_image_padding(self, image, top, side, bottom, color):
         width, height = image.size
 
         new_width = width + 2 * side
@@ -67,11 +57,16 @@ class Exif:
         self.font_size = length / 6
 
         line_count = len(text.splitlines())
-        if line_count >= 2:
-            self.font_size = length / 4.5
+        if line_count == 1:
+            y += math.floor(self.font_size / 3)
+        elif line_count == 2:
+            self.font_size *= 4 / 3
+            y -= math.floor(self.font_size / 2)
+        else: #line_count == 3, 4 and more is not regarded
+            y -= math.floor(self.font_size)
 
         self.font = ImageFont.truetype(font_path, self.font_size)
-        draw.text(xy=(x, y), text=text, font=self.font, fill=color, anchor=anchor, align=align)
+        draw.text(xy=(x, y), text=text, font=self.font, fill=color, anchor=anchor, align=align, spacing=math.floor(self.font_size / 2))
         return image
 
     def set_square_padding(self, image, gap, color, horizontalImage):
@@ -113,6 +108,47 @@ class Exif:
         result.paste(resizedImage, (newX, newY))
         return result	
     
+    def set_square_text(self, image, text, font_path, color, horizontalImage, alignment):
+        self.font_size = 46
+        if(horizontalImage) : 
+            rotateImage = image
+        else :
+            rotateImage = image.rotate(-90)
+
+        draw = ImageDraw.Draw(rotateImage)
+        x = image.width / 2
+        y = image.height - self.font_size * 3
+        anchor = "ms"
+        align = "center"
+
+        if alignment is 1:
+            x = self.ratio_image_gap
+            anchor = "ls"
+            align = "left"
+        elif alignment is 2:
+            x = image.width - self.ratio_image_gap
+            anchor = "rs"
+            align = "right"
+
+        line_count = len(text.splitlines())
+        if line_count == 1:
+            self.font_size /= 1.15
+            y += math.floor(self.font_size / 3)
+        elif line_count == 2:
+            y -= math.floor(self.font_size / 2)
+        else: #line_count == 3, 4 and more is not regarded
+            y -= math.floor(self.font_size)
+
+        self.font = ImageFont.truetype(font_path, self.font_size)
+        draw.text(xy = (x,y), text = text,font=self.font, fill=color, anchor=anchor, align=align, spacing=math.floor(self.font_size / 2))
+        if(horizontalImage) : 
+            image = rotateImage
+
+        else :
+            image = rotateImage.rotate(90)
+
+        return image
+    
     def set_45_padding(self, image, gap, color):
         #instagram 4:5 image size
         width = 1080
@@ -149,45 +185,12 @@ class Exif:
         resized_image = image.resize((image_width, image_height))
         result.paste(resized_image, (image_x, image_y))
         return result
-
-
-    def set_square_text(self, image, text, font_path, color, horizontalImage, alignment):
-        self.font_size = 46
-        self.font = ImageFont.truetype(font_path, self.font_size)
-        if(horizontalImage) : 
-            rotateImage = image
-        else :
-            rotateImage = image.rotate(-90)
-
-        draw = ImageDraw.Draw(rotateImage)
-        x = image.width / 2
-        y = image.height - self.font_size * 3
-        anchor = "ms"
-        align = "center"
-
-        if alignment is 1:
-            x = self.ratio_image_gap
-            anchor = "ls"
-            align = "left"
-        elif alignment is 2:
-            x = image.width - self.ratio_image_gap
-            anchor = "rs"
-            align = "right"
-
-        draw.text(xy = (x,y), text = text,font=self.font, fill=color, anchor=anchor, align=align)
-        if(horizontalImage) : 
-            image = rotateImage
-
-        else :
-            image = rotateImage.rotate(90)
-
-        return image
-    
+        
     def set_45_text(self, image, text, font_path, color, alignment):
         self.font_size = self.ratio_image_gap / 2
 
         x = image.width / 2
-        y = image.height - (self.ratio_image_gap * 1.125)
+        y = image.height - self.ratio_image_gap
         anchor = "ms"
         align = "center"
 
@@ -200,9 +203,19 @@ class Exif:
             anchor = "rs"
             align = "right"
 
+        line_count = len(text.splitlines())
+        if line_count == 1:
+            self.font_size /= 1.15
+            y += math.floor(self.font_size / 2)
+        elif line_count == 2:
+            y -= math.floor(self.font_size / 2.125)
+        else: #line_count == 3, 4 and more is not regarded
+            self.font_size /= 1.15
+            y -= math.floor(self.font_size)
+
         self.font = ImageFont.truetype(font_path, self.font_size)
         draw = ImageDraw.Draw(image)
-        draw.text(xy=(x, y), text=text, font=self.font, fill=color, anchor=anchor, align=align)
+        draw.text(xy=(x, y), text=text, font=self.font, fill=color, anchor=anchor, align=align, spacing=math.floor(self.font_size / 2))
         return image
 
 

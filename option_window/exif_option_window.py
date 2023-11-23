@@ -270,5 +270,5 @@ class ExifOptionWindow(QDialog, formClass):
 		self.format_preview_area.setText(text)
 
 	def get_current_font_path(self):
-		self.selected_font = self.font_combo_box.itemData(UserConfig.exif_font_index)
-		return self.selected_font
+		itemData = self.font_combo_box.itemData(UserConfig.exif_font_index)
+		return itemData[0]

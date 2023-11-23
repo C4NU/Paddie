@@ -177,7 +177,7 @@ class Converter:
             image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option)
 
         else : 
-            image = self.exif.set_image_padding2(image, top=half_padding, side=half_padding, bottom=padding, color=background_color)
+            image = self.exif.set_image_padding(image, top=half_padding, side=half_padding, bottom=padding, color=background_color)
             image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option)
 
         # Resize 하기
@@ -233,7 +233,7 @@ class Converter:
             image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option)
 
         else : 
-            image = self.exif.set_image_padding2(image, top=half_padding, side=half_padding, bottom=padding, color=background_color)
+            image = self.exif.set_image_padding(image, top=half_padding, side=half_padding, bottom=padding, color=background_color)
             image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option)
 
         if platform.system() == "Darwin":
