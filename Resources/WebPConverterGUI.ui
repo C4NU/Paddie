@@ -278,7 +278,7 @@
      <enum>Qt::NoFocus</enum>
     </property>
     <property name="text">
-     <string>Preview</string>
+     <string>Preview(X)</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="resize_option_group_box">

@@ -79,27 +79,6 @@ class WebpWindow(QMainWindow, formClass):
         # 파일 이름 변수
         self.file_name = []
 
-        # Conversion 관련 Flag 변수 초기화
-        self.loseless_option = self.webp_conversion_option_window.loseless_option
-        self.exif_option = self.webp_conversion_option_window.exif_option
-        self.icc_profile_option = self.webp_conversion_option_window.icc_profile_option
-        self.exact_option = self.webp_conversion_option_window.exact_option
-        self.image_quality_option = self.webp_conversion_option_window.image_quality_option
-
-        self.padding_option = self.exif_padding_option_window.enable_padding
-        self.square_mode_option = False# self.exif_padding_option_window.enable_square_mode
-        self.dark_mode_option = False# self.exif_padding_option_window.enable_dark_mode
-        self.line_text_option = False#self.exif_padding_option_window.enable_one_line
-        self.save_exif_data = self.exif_padding_option_window.save_exif
-        self.save_format_index = 0#self.exif_padding_option_window.save_format_index
-        self.selected_font = self.exif_padding_option_window.selected_font
-        self.background_color = self.exif_padding_option_window.background_color
-
-        # Resize 관련 변수 초기화
-        self.resize_option = False
-        self.resize_axis_option = self.resize_window.axis_option
-        self.resize_value = self.resize_window.resize_value
-
         self.setupUi(self)
         self.bind_ui()
         self.init_options()
@@ -119,7 +98,8 @@ class WebpWindow(QMainWindow, formClass):
         self.actionInformation.triggered.connect(self.on_trigger_information)
         # Exif Frame Preview 표시 기능 링킹
         self.preview_button.clicked.connect(self.on_click_preview)
-        self.preview_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
+        #self.preview_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
+        self.preview_button.setEnabled(False) # temporarily disabled
         # 종료 버튼 함수 링킹
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
         # Conversion 활성화 옵션 링킹
@@ -151,9 +131,6 @@ class WebpWindow(QMainWindow, formClass):
         self.resize_option = self.enable_resize_option_box.isChecked()
 
         UserConfig.load()
-        if UserConfig.exif_bg_color:
-            self.background_color = UserConfig.exif_bg_color
-
         if UserConfig.resize_options:
             self.enable_resize_option_box.toggle()
 
@@ -191,16 +168,15 @@ class WebpWindow(QMainWindow, formClass):
             self.save_file()
 
     def on_click_preview(self):
-        self.update_options()
-        
         self.converter.show_sample_exif_frame_image(file_path=sample_file_path,
-                                    file_name="Sample.jpg",
-                                    font_path=self.selected_font,
-                                    bg_color=self.background_color,
-                                    square_padding_option=self.square_mode_option,
-                                    dark_theme_option=self.dark_mode_option,
-                                    exif_padding_option=self.padding_option,
-                                    one_line_option=self.line_text_option)
+                                                    file_name="Sample.jpg",
+                                                    font_path=self.exif_padding_option_window.get_current_font_path(),
+                                                    text_color=UserConfig.exif_text_color,
+                                                    bg_color=UserConfig.exif_bg_color,
+                                                    ratio_option=UserConfig.exif_ratio,
+                                                    exif_padding_option=UserConfig.exif_padding,
+                                                    alignment_option=UserConfig.exif_format_alignment,
+                                                    caption_format=UserConfig.exif_format)
 
     def on_click_open_resize_option(self):
         def on_accepted_resize_option(axis_option, resize_value):
@@ -263,46 +239,6 @@ class WebpWindow(QMainWindow, formClass):
                 UserConfig.latest_load_path = load_path
                 UserConfig.save()
 
-    #################### FUNCTIONS
-    def update_options(self):
-        # note(CANU): on_call() 로 호출 후 convert ui close 시 데이터 업데이트가 안되는 문제
-        # 다시 click을 호출해야 데이터가 업데이트되는 관계로, 창을 close 시 호출되는 함수를 찾아봐야겠음
-
-        # save 버튼 클릭 후 호출할 때 option을 마지막으로 업데이트하는 형식으로 변경
-        # 어짜피 마지막 선택한 옵션만 필요한거 아닐까?
-        
-        if self.conversion_option:
-            self.loseless_option = self.webp_conversion_option_window.loseless_option
-            self.exif_option = self.webp_conversion_option_window.exif_option
-            self.icc_profile_option = self.webp_conversion_option_window.icc_profile_option
-            self.exact_option = self.webp_conversion_option_window.exact_option
-            self.image_quality_option = self.webp_conversion_option_window.image_quality_option
-                
-            print(f"Loseless Option (main): {self.loseless_option}")
-            print(f"Exif Option (main): {self.exif_option}")
-            print(f"Icc Profile Option (main): {self.icc_profile_option}")
-            print(f"Transparent RGB Option (main): {self.exact_option}")
-            print(f"Image Quality (main): {self.image_quality_option}")
-
-        elif self.exif_writing_option:
-            self.padding_option = self.exif_padding_option_window.enable_padding
-            self.square_mode_option = False# self.exif_padding_option_window.enable_square_mode
-            self.dark_mode_option = False#self.exif_padding_option_window.enable_dark_mode
-            self.line_text_option = False#self.exif_padding_option_window.enable_one_line
-            self.save_exif_data = self.exif_padding_option_window.save_exif
-            self.save_format_index = self.exif_padding_option_window.save_format_index
-            self.selected_font = self.exif_padding_option_window.selected_font
-            self.background_color = self.exif_padding_option_window.background_color
-
-            print(f"Frame Option (main): {self.padding_option}")
-            print(f"1:1 Option (main): {self.square_mode_option}")
-            print(f"White Text Option (main): {self.dark_mode_option}")
-            print(f"One line Option (main): {self.line_text_option}")
-            print(f"Save Exif Option (main): {self.save_exif_data}")
-            print(f"Save Format (main): {self.save_format_index}")
-            print(f"Selected Font (main): {self.selected_font}")
-            print(f"Background Color (main): {self.background_color}")
-
     def load_file(self, filePath):
         icon = QtGui.QIcon(filePath)
         item = QtWidgets.QListWidgetItem(icon, filePath)
@@ -325,8 +261,6 @@ class WebpWindow(QMainWindow, formClass):
         UserConfig.latest_save_path = save_path
         UserConfig.save()
 
-        self.update_options()
-
         if save_path:
             # 01 WebP 이미지로만 변환할 때
             if self.conversion_option:
@@ -334,16 +268,15 @@ class WebpWindow(QMainWindow, formClass):
                     self.converter.convert_image_to_webp(file_path=self.image_list_widget.item(index).text(),
                                                          save_path=save_path + '/',
                                                          save_name=self.file_name[index],
-                                                         loseless_option=self.loseless_option,
-                                                         image_quality_option=self.image_quality_option,
-                                                         exif_option=self.exif_option,
-                                                         icc_profile_option=self.icc_profile_option,
-                                                         exact_option=self.exact_option, watermark_text="",
-                                                         exif_view_option=self.exif_writing_option,
+                                                         loseless_option=UserConfig.conversion_loseless,
+                                                         image_quality_option=UserConfig.conversion_quality,
+                                                         exif_option=UserConfig.conversion_exif,
+                                                         icc_profile_option=UserConfig.conversion_icc,
+                                                         exact_option=UserConfig.conversion_transparent, watermark_text="",
                                                          conversion_option=self.conversion_option,
                                                          resize_option=self.resize_option,
-                                                         axis_option=self.resize_axis_option,
-                                                         resize_value=self.resize_value)
+                                                         axis_option=UserConfig.resize_options,
+                                                         resize_value=UserConfig.resize_size)
 
             # 02 Exif Padding 이미지로만 변환할때
             elif self.exif_writing_option:
@@ -351,17 +284,19 @@ class WebpWindow(QMainWindow, formClass):
                     self.converter.convert_exif_image(file_path=self.image_list_widget.item(index).text(),
                                                       save_path=save_path + '/',
                                                       save_name=self.file_name[index],
-                                                      file_format_option=self.save_format_index,
-                                                      font_path=self.selected_font,
-                                                      bg_color=self.background_color,
-                                                      square_padding_option=self.square_mode_option,
-                                                      dark_theme_option=self.dark_mode_option,
-                                                      exif_padding_option=self.padding_option,
-                                                      one_line_option=self.line_text_option,
-                                                      save_exif_data_option=self.save_exif_data,
+                                                      file_format_option=UserConfig.exif_type,
+                                                      font_path=self.exif_padding_option_window.get_current_font_path(),
+                                                      bg_color=UserConfig.exif_bg_color,
+                                                      text_color=UserConfig.exif_text_color,
+                                                      ratio_option=UserConfig.exif_ratio,
+                                                      exif_padding_option=UserConfig.exif_padding,
+                                                      save_exif_data_option=UserConfig.exif_save_exifdata,
                                                       resize_option=self.resize_option,
-                                                      axis_option=self.resize_axis_option,
-                                                      resize_value=self.resize_value)
+                                                      axis_option=UserConfig.resize_axis,
+                                                      alignment_option=UserConfig.exif_format_alignment,
+                                                      resize_value=UserConfig.resize_size,
+                                                      quality_option=UserConfig.exif_quality,
+                                                      caption_format=UserConfig.exif_format)
 
             else:
                 print("옵션 선택 에러 / 다시 선택해주세요")
@@ -395,7 +330,7 @@ class WebpWindow(QMainWindow, formClass):
 
         checked = self.enable_exif_padding_option_box.isChecked()
         self.open_exif_option_button.setEnabled(checked)
-        self.preview_button.setEnabled(checked)
+        #self.preview_button.setEnabled(checked)
         UserConfig.exif_options = checked
         UserConfig.save()
 

@@ -4,6 +4,7 @@ import platform
 import pathlib
 
 from user_config import UserConfig
+from caption_format_converter import CaptionFormatConverter
 
 from PyQt6 import uic
 from PyQt6.QtCore import Qt
@@ -37,6 +38,7 @@ class ExifOptionWindow(QDialog, formClass):
 		self.image_ratio = 0
 		self.image_type = 2
 		self.image_quality_option = 80
+		self.caption_format = ""
 
 		# UI 링킹 설정 (EXIF Options)
 		self.exif_option_button_box: QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
@@ -147,12 +149,12 @@ class ExifOptionWindow(QDialog, formClass):
 		if self.image_quality_spinbox.value() != UserConfig.exif_quality:
 			self.image_quality_spinbox.setValue(UserConfig.exif_quality)
 
-		if self.font_combo_box.currentIndex() != UserConfig.exif_font:
+		if self.font_combo_box.currentIndex() != UserConfig.exif_font_index:
 			# if folder data is changed from previous run
-			if UserConfig.exif_font >= self.font_combo_box.count():
-				UserConfig.exif_font = 1
-			self.font_combo_box.setCurrentIndex(UserConfig.exif_font)
-			self.selected_font = self.font_combo_box.itemData(UserConfig.exif_font)
+			if UserConfig.exif_font_index >= self.font_combo_box.count():
+				UserConfig.exif_font_index = 1
+			self.font_combo_box.setCurrentIndex(UserConfig.exif_font_index)
+			self.selected_font = self.font_combo_box.itemData(UserConfig.exif_font_index)
 
 		if self.alignment_combo_box.currentIndex() != UserConfig.exif_format_alignment:
 			self.alignment_combo_box.setCurrentIndex(UserConfig.exif_format_alignment)
@@ -178,7 +180,7 @@ class ExifOptionWindow(QDialog, formClass):
 		UserConfig.exif_quality = self.image_quality_option
 		UserConfig.exif_text_color = self.text_color
 		UserConfig.exif_bg_color = self.background_color
-		UserConfig.exif_font = self.font_index
+		UserConfig.exif_font_index = self.font_index
 		UserConfig.exif_format_alignment = self.font_alignment
 		UserConfig.exif_format = self.caption_format
 		UserConfig.save()
@@ -251,4 +253,9 @@ class ExifOptionWindow(QDialog, formClass):
 
 		self.format_preview_area.setAlignment(alignment)
 		self.format_preview_area.setStyleSheet(f"background-color: {self.background_color.name()}; color: {self.text_color.name()};")
-		self.format_preview_area.setText(self.format_input_area.toPlainText())
+		text = CaptionFormatConverter.convert(self.format_input_area.toPlainText())
+		self.format_preview_area.setText(text)
+
+	def get_current_font_path(self):
+		self.selected_font = self.font_combo_box.itemData(UserConfig.exif_font_index)
+		return self.selected_font
