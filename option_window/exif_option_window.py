@@ -273,9 +273,6 @@ class ExifOptionWindow(QDialog, formClass):
 
 	def on_exif_easy_mode_toggled(self, state):
 		self.easy_mode_enable = bool(state == Qt.CheckState.Checked.value)
-		self.format_input_area.setVisible(not self.easy_mode_enable)
-		self.enable_easymode_oneline_box.setVisible(self.easy_mode_enable)
-
 		self.__update_font_preview()
 
 	def on_exif_easy_mode_oneline_toggled(self, state):
@@ -283,6 +280,9 @@ class ExifOptionWindow(QDialog, formClass):
 		self.__update_font_preview() 
 
 	def __update_font_preview(self):
+		self.format_input_area.setEnabled(not self.easy_mode_enable)
+		self.enable_easymode_oneline_box.setEnabled(self.easy_mode_enable)
+
 		if self.__selected_font_style:
 			font = QFontDatabase.font(self.__selected_font_family, self.__selected_font_style, self.__font_preview_size)
 			self.format_preview_area.setFont(font)
