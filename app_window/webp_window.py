@@ -174,7 +174,9 @@ class WebpWindow(QMainWindow, formClass):
                                                     ratio_option=UserConfig.exif_ratio,
                                                     exif_padding_option=UserConfig.exif_padding,
                                                     alignment_option=UserConfig.exif_format_alignment,
-                                                    caption_format=UserConfig.exif_format)
+                                                    caption_format=UserConfig.exif_format,
+                                                    easymode_option=UserConfig.exif_easymode_options,
+                                                    easymode_oneline=UserConfig.exif_easymode_oneline)
 
     def on_click_open_resize_option(self):
         def on_accepted_resize_option(axis_option, resize_value):
@@ -294,7 +296,9 @@ class WebpWindow(QMainWindow, formClass):
                                                       alignment_option=UserConfig.exif_format_alignment,
                                                       resize_value=UserConfig.resize_size,
                                                       quality_option=UserConfig.exif_quality,
-                                                      caption_format=UserConfig.exif_format)
+                                                      caption_format=UserConfig.exif_format,
+                                                      easymode_option=UserConfig.exif_easymode_options,
+                                                      easymode_oneline=UserConfig.exif_easymode_oneline)
 
             else:
                 print("옵션 선택 에러 / 다시 선택해주세요")

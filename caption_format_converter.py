@@ -22,7 +22,7 @@ class CaptionFormatConverter():
         "{cr}": (33432, "Copyrigth (C) Text here"),
         "{ar}": (315, "Artist Name"),
     }
-
+    
     @staticmethod
     def convert(text:str, exif_data=None) -> str:
         exif_actual_dic = {}
@@ -45,6 +45,37 @@ class CaptionFormatConverter():
 
         return text_replaced
     
+    def convert_easymode(one_line:bool, exif_data=None) -> str:
+        try:
+            body_value = CaptionFormatConverter.get_value_in_key("{body}", exif_data)
+            format_text = body_value
+
+            # on iPhone or Galaxy: do not show lens data
+            if "iPhone" in body_value or "Galaxy" in body_value:
+                lens_value = CaptionFormatConverter.dump_data
+            else:
+                lens_value = CaptionFormatConverter.get_value_in_key("{lens}", exif_data)
+            
+            if lens_value != CaptionFormatConverter.dump_data:
+                format_text += " | " + lens_value
+
+            if one_line: format_text += " | "
+            else: format_text += "\n"
+
+            focal_value = CaptionFormatConverter.get_value_in_key("{focal_f}", exif_data)
+            aperture_value = CaptionFormatConverter.get_value_in_key("{aper}", exif_data)
+            iso_value = CaptionFormatConverter.get_value_in_key("{iso}", exif_data)
+            ss_value = CaptionFormatConverter.get_value_in_key("{ss}", exif_data)
+
+            format_text += f"{focal_value} | {aperture_value} | {iso_value} | {ss_value}"
+            return format_text
+        
+        except Exception as e:
+            print(e)
+            print("데이터 불량, 콘솔 창의 기록을 댓글로 남겨주세요.")
+            return ""
+        
+     
     @staticmethod
     def get_value_in_key(key, exif_data) -> str:
         if key not in CaptionFormatConverter.exif_dic:

@@ -24,16 +24,18 @@ class UserConfig:
     conversion_exif = False
     conversion_icc = False
     conversion_transparent = False
-    conversion_quality = 80
+    conversion_quality = 92
     
     exif_options = False
     exif_padding = False
     exif_save_exifdata = False
-    exif_quality = 80
+    exif_quality = 92
     exif_ratio = 0 # 0:Original, 1:Square, 2:4:5, replacement of Square Mode
     exif_type = 2 # 0:JPEG, 1:PNG, 2:WebP, name changed from format
     exif_text_color = QColor(0, 0, 0) # replacement of white text
     exif_bg_color = QColor(255, 255, 255)
+    exif_easymode_options = True
+    exif_easymode_oneline = False
     exif_format = "{body} | {lens}\n{focal_f} | {aper} | {iso} | {ss}" # replacement of 1 line text
     exif_font_index = 1 # index of font list
     exif_format_alignment = 0 # 0:Center, 1:Left, 2:Right

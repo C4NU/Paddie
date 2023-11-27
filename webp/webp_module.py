@@ -116,7 +116,7 @@ class Converter:
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, 
                             bg_color, text_color, ratio_option, exif_padding_option, save_exif_data_option,
-                            resize_option, axis_option, alignment_option, resize_value, quality_option, caption_format):
+                            resize_option, axis_option, alignment_option, resize_value, quality_option, caption_format, easymode_option, easymode_oneline):
         
         file_format = Converter.search_file_format(file_path)
 
@@ -143,7 +143,10 @@ class Converter:
         else:
             new_exif_data, image = Converter.fix_orientation(image)
             
-        full_text = CaptionFormatConverter.convert(caption_format, raw_exif_data)
+        if not easymode_option:
+            full_text = CaptionFormatConverter.convert(caption_format, raw_exif_data)
+        else:
+            full_text = CaptionFormatConverter.convert_easymode(easymode_oneline, raw_exif_data)
 
         print('--- convert_exif_image ---')
         print(' file_path: ', file_path)
@@ -195,7 +198,7 @@ class Converter:
             image.save(fullpath, format=export_extension, quality=quality_option)
 
     def show_sample_exif_frame_image(self, file_path, file_name,font_path, exif_padding_option,
-                            text_color, bg_color, ratio_option, alignment_option, caption_format):
+                            text_color, bg_color, ratio_option, alignment_option, caption_format, easymode_option, easymode_oneline):
         
         file_format = Converter.search_file_format(file_path+file_name)
 
@@ -219,7 +222,10 @@ class Converter:
         
         raw_exif_data = image._getexif()
         new_exif_data, image = Converter.fix_orientation(image)
-        full_text = CaptionFormatConverter.convert(caption_format, raw_exif_data)
+        if not easymode_option:
+            full_text = CaptionFormatConverter.convert(caption_format, raw_exif_data)
+        else:
+            full_text = CaptionFormatConverter.convert_easymode(easymode_oneline, raw_exif_data)
 
         if ratio_option == 2:
             image = self.exif.set_45_padding(image, gap = 50, color=background_color)

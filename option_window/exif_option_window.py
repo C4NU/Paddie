@@ -29,7 +29,7 @@ class ExifOptionWindow(QDialog, formClass):
 
 		# 기타 참조 변수
 		self.default_font = 'Barlow-Light'
-		self.__font_preview_size = 18
+		self.__font_preview_size = 14
 		self.text_color = QColor(0, 0, 0)
 		self.background_color = QColor(255, 255, 255)
 		self.font_alignment = 0
@@ -38,6 +38,8 @@ class ExifOptionWindow(QDialog, formClass):
 		self.image_ratio = 0
 		self.image_type = 2
 		self.image_quality_option = 80
+		self.easy_mode_enable = False
+		self.easy_mode_oneline = False
 		self.caption_format = ""
 
 		# UI 링킹 설정 (EXIF Options)
@@ -59,6 +61,8 @@ class ExifOptionWindow(QDialog, formClass):
 		self.selected_font: str
 		self.__selected_font_family: str
 		self.__selected_font_style: str
+		self.enable_easymode_option_box: QCheckBox
+		self.enable_easymode_oneline_box: QCheckBox
 		
 		# UI 불러오기
 		self.setupUi(self)
@@ -98,6 +102,12 @@ class ExifOptionWindow(QDialog, formClass):
 
 		self.format_input_area.textChanged.connect(self.on_format_input_area_changed)
 		self.format_input_area.setToolTip("사진 밑에 삽입할 텍스트 입력")
+
+		self.enable_easymode_option_box.stateChanged.connect(self.on_exif_easy_mode_toggled)
+		self.enable_easymode_option_box.setToolTip("기존의 자동 텍스트 생성을 원할 시 체크")
+
+		self.enable_easymode_oneline_box.stateChanged.connect(self.on_exif_easy_mode_oneline_toggled)
+		self.enable_easymode_oneline_box.setToolTip("기존의 한 줄 출력을 원할 시 체크")
 
 	def setup_ui_internal(self):
 		if platform.system() == "Windows":
@@ -177,10 +187,16 @@ class ExifOptionWindow(QDialog, formClass):
 		if self.alignment_combo_box.currentIndex() != UserConfig.exif_format_alignment:
 			self.alignment_combo_box.setCurrentIndex(UserConfig.exif_format_alignment)
 
+		if self.enable_easymode_oneline_box.isChecked() != UserConfig.exif_easymode_oneline:
+			self.enable_easymode_oneline_box.toggle()
+		
 		self.format_input_area.setPlainText(UserConfig.exif_format)
 		self.caption_format = UserConfig.exif_format
 		self.text_color = UserConfig.exif_text_color
 		self.background_color = UserConfig.exif_bg_color
+
+		if self.enable_easymode_option_box.isChecked() != UserConfig.exif_easymode_options:
+			self.enable_easymode_option_box.toggle()
 
 		self.__update_font_preview()
 			
@@ -207,6 +223,8 @@ class ExifOptionWindow(QDialog, formClass):
 		UserConfig.exif_font_index = self.font_combo_box.currentIndex()
 		UserConfig.exif_format_alignment = self.font_alignment
 		UserConfig.exif_format = self.caption_format
+		UserConfig.exif_easymode_options = self.easy_mode_enable
+		UserConfig.exif_easymode_oneline = self.easy_mode_oneline
 		UserConfig.save()
 	
 	def on_cancel_close(self):
@@ -250,10 +268,18 @@ class ExifOptionWindow(QDialog, formClass):
 		self.caption_format = self.format_input_area.toPlainText()
 		self.__update_font_preview()
 
+	def on_exif_easy_mode_toggled(self, state):
+		self.easy_mode_enable = bool(state == Qt.CheckState.Checked.value)
+		self.format_input_area.setVisible(not self.easy_mode_enable)
+		self.enable_easymode_oneline_box.setVisible(self.easy_mode_enable)
+
+		self.__update_font_preview()
+
+	def on_exif_easy_mode_oneline_toggled(self, state):
+		self.easy_mode_oneline = bool(state == Qt.CheckState.Checked.value)
+		self.__update_font_preview() 
+
 	def __update_font_preview(self):
-		print("Selected font family:", self.__selected_font_family)
-		print("Selected font style:", self.__selected_font_style)
-		
 		if self.__selected_font_style:
 			font = QFontDatabase.font(self.__selected_font_family, self.__selected_font_style, self.__font_preview_size)
 			self.format_preview_area.setFont(font)
@@ -266,7 +292,12 @@ class ExifOptionWindow(QDialog, formClass):
 
 		self.format_preview_area.setAlignment(alignment)
 		self.format_preview_area.setStyleSheet(f"background-color: {self.background_color.name()}; color: {self.text_color.name()};")
-		text = CaptionFormatConverter.convert(self.format_input_area.toPlainText())
+
+		if self.easy_mode_enable:
+			text = CaptionFormatConverter.convert_easymode(self.easy_mode_oneline)
+		else:
+			text = CaptionFormatConverter.convert(self.format_input_area.toPlainText())
+		
 		self.format_preview_area.setText(text)
 
 	def get_current_font_path(self):

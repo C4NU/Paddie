@@ -105,17 +105,30 @@
      </property>
     </item>
    </widget>
-   <widget class="QLabel" name="edit_caption_label">
+   <widget class="QCheckBox" name="enable_easymode_option_box">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>50</y>
-      <width>120</width>
-      <height>16</height>
+      <width>121</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="text">
-     <string>Edit Caption</string>
+     <string>EXIF Easy Mode</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="enable_easymode_oneline_box">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>50</y>
+      <width>121</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>One line</string>
     </property>
    </widget>
    <widget class="QPlainTextEdit" name="format_input_area">
@@ -147,7 +160,7 @@
     </property>
     <property name="font">
      <font>
-      <pointsize>18</pointsize>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="text">
