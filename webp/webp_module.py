@@ -22,6 +22,13 @@ class Converter:
         self.resize = resize_module.Resize()
 
     @staticmethod
+    def get_exif_data_on_path(file_path):
+        image = Image.open(file_path)
+        if image is None: return None
+
+        return image._getexif()
+
+    @staticmethod
     def fix_orientation(image):
         exif = image.getexif()
         print("Exif Type:", type(exif))

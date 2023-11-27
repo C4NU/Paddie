@@ -85,7 +85,8 @@ class WebpWindow(QMainWindow, formClass):
         # 실행 버튼 함수 링킹
         self.add_button.clicked.connect(self.open_file)
         self.add_button.setToolTip("파일 선택하기")
-        #self.delete_button.clicked.connect(None)
+        self.delete_button.clicked.connect(self.delete_file)
+        self.delete_button.setToolTip("선택된 파일 삭제하기")
         self.save_button.clicked.connect(self.on_click_save)
         self.save_button.setToolTip("파일 저장하기")
         # 파일 추가 기능 함수 링킹
@@ -200,6 +201,13 @@ class WebpWindow(QMainWindow, formClass):
         pass #self.watermark_option_window.on_call()
 
     def on_click_exif_padding_option(self):
+        selected_item_index = self.image_list_widget.currentRow()
+        if selected_item_index < 0 or selected_item_index >= self.image_list_widget.count():
+            self.exif_padding_option_window.selected_exif_data = None
+        else:
+            file_path = self.image_list_widget.currentItem().text()
+            self.exif_padding_option_window.selected_exif_data = self.converter.get_exif_data_on_path(file_path)
+
         self.exif_padding_option_window.on_call()
     
     def on_trigger_add_files(self):
@@ -212,6 +220,7 @@ class WebpWindow(QMainWindow, formClass):
 
     def on_trigger_clear_files(self):
         self.image_list_widget.clear()
+        self.file_name.clear()
 
     def on_trigger_information(self):
         self.information_window.show()
@@ -226,6 +235,8 @@ class WebpWindow(QMainWindow, formClass):
         if len(open_files) > 0:
             load_path = None
 
+            # select first item of added lists
+            latest_index = self.image_list_widget.count()
             for file in open_files[0]:
                 if "" == file: continue
                 if "All Files (*)" == file: continue
@@ -234,10 +245,25 @@ class WebpWindow(QMainWindow, formClass):
                     load_path = os.path.dirname(file)
 
                 self.load_file(file)
+            self.image_list_widget.setCurrentItem(self.image_list_widget.item(latest_index))
             
             if load_path:
                 UserConfig.latest_load_path = load_path
                 UserConfig.save()
+
+    def delete_file(self):
+        selected_index = self.image_list_widget.currentRow()
+        if selected_index < 0 or selected_index >= self.image_list_widget.count():
+            return
+        
+        # Remove the selected item from the list
+        deleted_item = self.image_list_widget.takeItem(selected_index)
+        deleted_text = deleted_item.text()
+        deleted_file_name = self.file_name.pop(selected_index)
+        print(f"Deleted item at index {selected_index}: {deleted_text} ({deleted_file_name})")
+
+        
+    
 
     def load_file(self, filePath):
         icon = QtGui.QIcon(filePath)

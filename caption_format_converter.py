@@ -36,8 +36,7 @@ class CaptionFormatConverter():
             text_replaced = text
             for key in list(exif_actual_dic.keys()):
                 value = exif_actual_dic[key]
-                if value and value != CaptionFormatConverter.dump_data:
-                    text_replaced = text_replaced.replace(key, value)
+                text_replaced = text_replaced.replace(key, value)
         except Exception as e:
             print(e)
             print("데이터 불량, 콘솔 창의 기록을 댓글로 남겨주세요.")
@@ -99,8 +98,7 @@ class CaptionFormatConverter():
         if key == "{mode}": result = CaptionFormatConverter.get_mode_text(value)
         if key == "{ar}": result = CaptionFormatConverter.get_artist_text(value)
 
-        if exif_data:
-            print("[" + key + "]: value " + result + " found (original value: " + str(value) + ")")
+        #if exif_data: print("[" + key + "]: value " + result + " found (original value: " + str(value) + ")")
 
         return result
 

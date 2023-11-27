@@ -27,6 +27,9 @@ class ExifOptionWindow(QDialog, formClass):
 	def __init__(self):
 		super().__init__()
 
+		# External EXIF data variable
+		self.selected_exif_data = None
+
 		# 기타 참조 변수
 		self.default_font = 'Barlow-Light'
 		self.__font_preview_size = 14
@@ -294,9 +297,9 @@ class ExifOptionWindow(QDialog, formClass):
 		self.format_preview_area.setStyleSheet(f"background-color: {self.background_color.name()}; color: {self.text_color.name()};")
 
 		if self.easy_mode_enable:
-			text = CaptionFormatConverter.convert_easymode(self.easy_mode_oneline)
+			text = CaptionFormatConverter.convert_easymode(self.easy_mode_oneline, self.selected_exif_data)
 		else:
-			text = CaptionFormatConverter.convert(self.format_input_area.toPlainText())
+			text = CaptionFormatConverter.convert(self.format_input_area.toPlainText(), self.selected_exif_data)
 		
 		self.format_preview_area.setText(text)
 
