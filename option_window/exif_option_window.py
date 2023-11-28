@@ -201,6 +201,7 @@ class ExifOptionWindow(QDialog, formClass):
 		if self.enable_easymode_option_box.isChecked() != UserConfig.exif_easymode_options:
 			self.enable_easymode_option_box.toggle()
 
+		self.image_padding_box.setEnabled(self.image_ratio == 0)
 		self.__update_font_preview()
 			
 	def __update_selected_font(self):
@@ -244,6 +245,7 @@ class ExifOptionWindow(QDialog, formClass):
 
 	def on_change_image_ratio(self):
 		self.image_ratio = self.image_ratio_box.currentIndex()
+		self.image_padding_box.setEnabled(self.image_ratio == 0)
 
 	def on_change_image_type(self):
 		self.image_type = self.image_type_box.currentIndex()

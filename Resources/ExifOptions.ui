@@ -211,18 +211,18 @@
      <rect>
       <x>12</x>
       <y>22</y>
-      <width>65</width>
+      <width>130</width>
       <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>Padding</string>
+     <string>Padding Option</string>
     </property>
    </widget>
    <widget class="QComboBox" name="image_padding_box">
     <property name="geometry">
      <rect>
-      <x>65</x>
+      <x>115</x>
       <y>24</y>
       <width>125</width>
       <height>25</height>
