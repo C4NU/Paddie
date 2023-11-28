@@ -36,7 +36,7 @@ class ExifOptionWindow(QDialog, formClass):
 		self.text_color = QColor(0, 0, 0)
 		self.background_color = QColor(255, 255, 255)
 		self.font_alignment = 0
-		self.enable_padding = False
+		self.image_padding = 0
 		self.save_exif = False
 		self.image_ratio = 0
 		self.image_type = 2
@@ -47,7 +47,7 @@ class ExifOptionWindow(QDialog, formClass):
 
 		# UI 링킹 설정 (EXIF Options)
 		self.exif_option_button_box: QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
-		self.enable_padding_box: QCheckBox
+		self.image_padding_box: QComboBox
 		self.save_exif_data_box: QCheckBox
 		self.image_ratio_box: QComboBox
 		self.image_type_box: QComboBox
@@ -76,8 +76,8 @@ class ExifOptionWindow(QDialog, formClass):
 		self.exif_option_button_box.accepted.connect(self.on_save_close)
 		self.exif_option_button_box.rejected.connect(self.on_cancel_close)
 
-		self.enable_padding_box.stateChanged.connect(self.on_toggle_padding_option)
-		self.enable_padding_box.setToolTip("프레임 생성 옵션")
+		self.image_padding_box.currentIndexChanged.connect(self.on_change_padding_option)
+		self.image_padding_box.setToolTip("프레임 생성 옵션")
 
 		self.save_exif_data_box.stateChanged.connect(self.on_toggle_save_exif_data_option)
 		self.save_exif_data_box.setToolTip("EXIF 저장 옵션")
@@ -165,8 +165,8 @@ class ExifOptionWindow(QDialog, formClass):
 			print(f'preview font update failed : {fullpath}')
 
 	def __update_ui(self):
-		if self.enable_padding_box.isChecked() != UserConfig.exif_padding:
-			self.enable_padding_box.toggle()
+		if self.image_padding_box.currentIndex != UserConfig.exif_padding_mode:
+			self.image_padding_box.setCurrentIndex(UserConfig.exif_padding_mode)
 
 		if self.save_exif_data_box.isChecked() != UserConfig.exif_save_exifdata:
 			self.save_exif_data_box.toggle()
@@ -216,7 +216,7 @@ class ExifOptionWindow(QDialog, formClass):
 	def on_save_close(self):
 		self.__update_selected_font()
 
-		UserConfig.exif_padding = self.enable_padding
+		UserConfig.exif_padding_mode = self.image_padding
 		UserConfig.exif_save_exifdata = self.save_exif
 		UserConfig.exif_ratio = self.image_ratio
 		UserConfig.exif_type = self.image_type
@@ -234,9 +234,10 @@ class ExifOptionWindow(QDialog, formClass):
 		self.selected_font = ""
 
 	# Exif Padding 옵션
-	def on_toggle_padding_option(self, state):
-		self.enable_padding = bool(state == Qt.CheckState.Checked.value)        
-		print(f"Padding Mode Pushed, Square Mode Opt: {self.enable_padding}")  
+	def on_change_padding_option(self):
+		#self.enable_padding = bool(state == Qt.CheckState.Checked.value)        
+		self.image_padding = self.image_padding_box.currentIndex()
+		print(f"Padding Mode Pushed, Square Mode Opt: {self.image_padding}")  
 
 	def on_toggle_save_exif_data_option(self, state):
 		self.save_exif = bool(state == Qt.CheckState.Checked.value)

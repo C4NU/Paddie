@@ -67,7 +67,7 @@
      </rect>
     </property>
    </widget>
-      <widget class="QLabel" name="alignment_combo_box_label">
+   <widget class="QLabel" name="alignment_combo_box_label">
     <property name="geometry">
      <rect>
       <x>270</x>
@@ -121,7 +121,7 @@
    <widget class="QCheckBox" name="enable_easymode_oneline_box">
     <property name="geometry">
      <rect>
-      <x>200</x>
+      <x>140</x>
       <y>50</y>
       <width>121</width>
       <height>20</height>
@@ -129,6 +129,32 @@
     </property>
     <property name="text">
      <string>One line</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="open_text_color_button">
+    <property name="geometry">
+     <rect>
+      <x>265</x>
+      <y>46</y>
+      <width>80</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Text Color</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="open_bg_color_button">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>46</y>
+      <width>80</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>BG Color</string>
     </property>
    </widget>
    <widget class="QPlainTextEdit" name="format_input_area">
@@ -180,18 +206,43 @@
    <property name="title">
     <string>EXIF Options</string>
    </property>
-   <widget class="QCheckBox" name="enable_padding_box">
+   <widget class="QLabel" name="image_padding_label">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>25</y>
-      <width>121</width>
-      <height>20</height>
+      <x>12</x>
+      <y>22</y>
+      <width>65</width>
+      <height>25</height>
      </rect>
     </property>
     <property name="text">
      <string>Padding</string>
     </property>
+   </widget>
+   <widget class="QComboBox" name="image_padding_box">
+    <property name="geometry">
+     <rect>
+      <x>65</x>
+      <y>24</y>
+      <width>125</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>No Padding</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Bottom</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Frame</string>
+     </property>
+    </item>
    </widget>
    <widget class="QCheckBox" name="save_exif_data_box">
     <property name="geometry">
@@ -209,8 +260,8 @@
    <widget class="QLabel" name="image_ratio_label">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>20</y>
+      <x>275</x>
+      <y>22</y>
       <width>50</width>
       <height>25</height>
      </rect>
@@ -222,8 +273,8 @@
    <widget class="QComboBox" name="image_ratio_box">
     <property name="geometry">
      <rect>
-      <x>170</x>
-      <y>22</y>
+      <x>315</x>
+      <y>24</y>
       <width>100</width>
       <height>25</height>
      </rect>
@@ -241,44 +292,6 @@
     <item>
      <property name="text">
       <string>4:5</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QLabel" name="image_format_label">
-    <property name="geometry">
-     <rect>
-      <x>275</x>
-      <y>20</y>
-      <width>120</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Image Type</string>
-    </property>
-   </widget>
-   <widget class="QComboBox" name="image_type_box">
-    <property name="geometry">
-     <rect>
-      <x>345</x>
-      <y>22</y>
-      <width>90</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>JPEG</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>PNG</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>WebP</string>
      </property>
     </item>
    </widget>
@@ -314,31 +327,43 @@
      <string>Quality</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="open_text_color_button">
+   <widget class="QLabel" name="image_format_label">
     <property name="geometry">
      <rect>
-      <x>265</x>
-      <y>46</y>
-      <width>80</width>
-      <height>32</height>
+      <x>275</x>
+      <y>49</y>
+      <width>120</width>
+      <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>Text Color</string>
+     <string>Image Type</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="open_bg_color_button">
+   <widget class="QComboBox" name="image_type_box">
     <property name="geometry">
      <rect>
-      <x>350</x>
-      <y>46</y>
-      <width>80</width>
-      <height>32</height>
+      <x>345</x>
+      <y>49</y>
+      <width>90</width>
+      <height>25</height>
      </rect>
     </property>
-    <property name="text">
-     <string>BG Color</string>
-    </property>
+    <item>
+     <property name="text">
+      <string>JPEG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>PNG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>WebP</string>
+     </property>
+    </item>
    </widget>
   </widget>
  </widget>

@@ -183,12 +183,14 @@ class Converter:
             image = self.exif.set_square_padding(image, gap = 60, color=background_color, horizontalImage= horizontalImage)
             image = self.exif.set_square_text(image=image, text=full_text, font_path=font_path, color=font_color, horizontalImage=horizontalImage, alignment=alignment_option)
 
-        elif exif_padding_option==False:
-            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option)
+        elif exif_padding_option==0:
+            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option, use_side_padding=False)
 
         else : 
-            image = self.exif.set_image_padding(image, top=half_padding, side=half_padding, bottom=padding, color=background_color)
-            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option)
+            top = half_padding if exif_padding_option == 2 else 0
+            side = half_padding if exif_padding_option == 2 else 0
+            image = self.exif.set_image_padding(image, top=top, side=side, bottom=padding, color=background_color)
+            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option, use_side_padding=exif_padding_option == 2)
 
         # Resize 하기
         if resize_option:
@@ -242,12 +244,14 @@ class Converter:
             image = self.exif.set_square_padding(image, gap = 60, color=background_color, horizontalImage= horizontalImage)
             image = self.exif.set_square_text(image=image, text=full_text, font_path=font_path, color=font_color, horizontalImage=horizontalImage, alignment=alignment_option)
 
-        elif exif_padding_option==False:
-            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option)
+        elif exif_padding_option==0:
+            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option, use_side_padding=False)
 
         else : 
-            image = self.exif.set_image_padding(image, top=half_padding, side=half_padding, bottom=padding, color=background_color)
-            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option)
+            top = half_padding if exif_padding_option == 2 else 0
+            side = half_padding if exif_padding_option == 2 else 0
+            image = self.exif.set_image_padding(image, top=top, side=side, bottom=padding, color=background_color)
+            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option, use_side_padding=exif_padding_option == 2)
 
         if platform.system() == "Darwin":
             save_path = file_path+"Sample_result.jpg"

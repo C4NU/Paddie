@@ -37,7 +37,7 @@ class Exif:
 
         return result
         
-    def set_image_text(self, image, text, length, font_path, color, alignment):
+    def set_image_text(self, image, text, length, font_path, color, alignment, use_side_padding):
         draw = ImageDraw.Draw(image)
 
         x = image.width / 2
@@ -45,12 +45,14 @@ class Exif:
         anchor = "ms"
         align = "center"
 
+        side_padding = length / 2 if use_side_padding else length / 6
+
         if alignment is 1:
-            x = length / 2
+            x = side_padding
             anchor = "ls"
             align = "left"
         elif alignment is 2:
-            x = image.width - (length / 2)
+            x = image.width - side_padding
             anchor = "rs"
             align = "right"
 

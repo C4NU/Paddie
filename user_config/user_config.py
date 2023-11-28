@@ -28,7 +28,7 @@ class UserConfig:
     conversion_quality = 92
     
     exif_options = False
-    exif_padding = False
+    exif_padding_mode = 0 # 0:None, 1:Under, 2:Frame
     exif_save_exifdata = False
     exif_quality = 92
     exif_ratio = 0 # 0:Original, 1:Square, 2:4:5, replacement of Square Mode
