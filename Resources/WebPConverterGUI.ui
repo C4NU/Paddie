@@ -111,7 +111,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>26</y>
        <width>81</width>
        <height>21</height>
       </rect>
@@ -156,7 +156,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>26</y>
        <width>71</width>
        <height>21</height>
       </rect>
@@ -195,7 +195,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>26</y>
        <width>151</width>
        <height>21</height>
       </rect>
@@ -221,11 +221,24 @@
      </property>
     </widget>
    </widget>
+   <widget class="QCheckBox" name="save_original_path_checkbox">
+     <property name="geometry">
+      <rect>
+       <x>25</x>
+       <y>700</y>
+       <width>300</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Save to selected photo's path</string>
+     </property>
+    </widget>
    <widget class="QDialogButtonBox" name="save_button">
     <property name="geometry">
      <rect>
-      <x>370</x>
-      <y>690</y>
+      <x>350</x>
+      <y>697</y>
       <width>81</width>
       <height>31</height>
      </rect>
@@ -297,7 +310,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>20</y>
+       <y>26</y>
        <width>81</width>
        <height>21</height>
       </rect>

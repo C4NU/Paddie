@@ -14,6 +14,7 @@ class UserConfig:
     # setting value is default value
     latest_load_path = None
     latest_save_path = None
+    save_original_path = False
 
     resize_options = False
     resize_axis = 2 # 0:Width, 1:Height, 2:Longest, 3:Shortest

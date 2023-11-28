@@ -116,6 +116,8 @@ class WebpWindow(QMainWindow, formClass):
         self.enable_resize_option_box.stateChanged.connect(self.on_toggle_resize_enable)
         self.open_resize_option_button.clicked.connect(self.on_click_open_resize_option)
         self.open_resize_option_button.setEnabled(self.enable_resize_option_box.isChecked())
+        # 원본 사진 위치 저장 옵션 링킹
+        self.save_original_path_checkbox.stateChanged.connect(self.on_toggle_save_original_path)
 
     #################### PyQt FUNCTIONS
     def init_options(self):
@@ -128,6 +130,8 @@ class WebpWindow(QMainWindow, formClass):
         self.exif_writing_option = self.enable_exif_padding_option_box.isChecked()
         ####################    리사이즈 옵션
         self.resize_option = self.enable_resize_option_box.isChecked()
+        ####################    원본 위치 저장 옵션
+        self.save_original_path = self.save_original_path_checkbox.isChecked()
 
         UserConfig.load()
         if UserConfig.resize_options:
@@ -138,6 +142,9 @@ class WebpWindow(QMainWindow, formClass):
 
         if UserConfig.exif_options:
             self.enable_exif_padding_option_box.toggle()
+
+        if UserConfig.save_original_path:
+            self.save_original_path_checkbox.toggle()
 
     def resizeEvent(self, event):
         geometry = self.image_list_widget.geometry()
@@ -282,10 +289,14 @@ class WebpWindow(QMainWindow, formClass):
         # 변환 실행 버튼 callback 함수
         # self.watermarkOption()
 
-        save_path = QFileDialog.getExistingDirectory(caption='Save Directory',
-                                                     directory=UserConfig.latest_save_path)
-        UserConfig.latest_save_path = save_path
-        UserConfig.save()
+        if self.save_original_path and self.image_list_widget.count() > 0:
+            file_path = self.image_list_widget.currentItem().text()
+            save_path = os.path.dirname(file_path)
+        else:
+            save_path = QFileDialog.getExistingDirectory(caption='Save Directory',
+                                                        directory=UserConfig.latest_save_path)
+            UserConfig.latest_save_path = save_path
+            UserConfig.save()
 
         if save_path:
             # 01 WebP 이미지로만 변환할 때
@@ -368,5 +379,10 @@ class WebpWindow(QMainWindow, formClass):
         self.open_resize_option_button.setEnabled(checked)
 
         UserConfig.resize_options = checked
+        UserConfig.save()
+
+    def on_toggle_save_original_path(self, state):
+        self.save_original_path = bool(state == Qt.CheckState.Checked.value)
+        UserConfig.save_original_path = self.save_original_path_checkbox.isChecked()
         UserConfig.save()
 
