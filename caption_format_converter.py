@@ -96,7 +96,6 @@ class CaptionFormatConverter():
         if key == "{ev}": result = CaptionFormatConverter.get_exposure_text(value)
         if key == "{meter}": result = CaptionFormatConverter.get_metering_text(value)
         if key == "{mode}": result = CaptionFormatConverter.get_mode_text(value)
-        if key == "{ar}": result = CaptionFormatConverter.get_artist_text(value)
 
         #if exif_data: print("[" + key + "]: value " + result + " found (original value: " + str(value) + ")")
 
@@ -131,9 +130,9 @@ class CaptionFormatConverter():
 
     @staticmethod
     def get_exposure_text(exposure_value) -> str:
-        str = "{:.2f}".format(float(exposure_value))
+        str = "{:.1f}".format(float(exposure_value))
         if exposure_value > 0: str = "+" + str
-        return "ev " + str
+        return str + " ev"
     
     @staticmethod
     def get_metering_text(metering_value) -> str:
@@ -145,7 +144,7 @@ class CaptionFormatConverter():
         elif metering_value == 5: val = "Multi-segment"
         elif metering_value == 6: val = "Partial"
 
-        return "Metering:" + val
+        return val
     
     @staticmethod
     def get_mode_text(mode_value) -> str:
@@ -154,15 +153,12 @@ class CaptionFormatConverter():
         if mode_value == 7: return "Portrait"
         if mode_value == 8: return "Landscape"
         
-        if mode_value == 0 or mode_value > 8: return CaptionFormatConverter.dump_data
+        if mode_value <= 0 or mode_value > 8: return CaptionFormatConverter.dump_data
 
-        val = "M"
-        if mode_value == 2: val = "P"
-        if mode_value == 3: val = "A"
-        if mode_value == 4: val = "S"
-        return "Mode:" + val
-    
-    @staticmethod
-    def get_artist_text(artist_value) -> str:
-        return "by " + str(artist_value)
+        if mode_value == 1: return "Manual"
+        if mode_value == 2: return "Program"
+        if mode_value == 3: return "Aperture Priority"
+        if mode_value == 4: return "Shutter Speed Priority"
+
+        return CaptionFormatConverter.dump_data
 
