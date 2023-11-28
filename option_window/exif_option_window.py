@@ -252,12 +252,16 @@ class ExifOptionWindow(QDialog, formClass):
 		self.image_quality_option = self.image_quality_spinbox.value()
 
 	def on_change_textcolor_picker(self):
-		self.text_color = QColorDialog.getColor(title='Pick Text Color', initial=self.text_color)
-		self.__update_font_preview()
+		picked_color = QColorDialog.getColor(title='Pick Text Color', initial=self.text_color)
+		if picked_color.isValid():
+			self.text_color = picked_color
+			self.__update_font_preview()
 		
 	def on_change_bgcolor_picker(self):
-		self.background_color = QColorDialog.getColor(title='Pick Background Color', initial=self.background_color)
-		self.__update_font_preview()
+		picked_color = QColorDialog.getColor(title='Pick Background Color', initial=self.background_color)
+		if picked_color.isValid():
+			self.background_color = picked_color
+			self.__update_font_preview()
 
 	def on_change_font(self):
 		print(f"Font Index: {self.font_combo_box.currentIndex()}")
