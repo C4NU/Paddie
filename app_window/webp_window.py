@@ -12,10 +12,10 @@ import webp
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
 from PyQt6 import QtGui, QtWidgets, QtCore
-from PyQt6.QtGui import QPalette, QColor, QFont
-from PyQt6.QtGui import QFontDatabase
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit
+from PyQt6.QtGui import QPixmap
+from PIL import ImageQt
 print("PyQt6 Package Loaded")
 
 from user_config import UserConfig
@@ -72,34 +72,24 @@ class WebpWindow(QMainWindow, formClass):
 
         # Exif Frame UI initialize
         self.exif_padding_option_window = ExifOptionWindow()
+        self.exif_padding_option_window.accepted.connect(self.show_or_refresh_preview)
 
         self.information_window = InformationWindow()
         self.resize_window = ResizeOptionWindow()
 
         # 파일 이름 변수
-        self.file_name = []
+        self.file_paths = []
+        self.file_names = []
 
-        # Conversion 관련 Flag 변수 초기화
-        self.loseless_option = self.webp_conversion_option_window.loseless_option
-        self.exif_option = self.webp_conversion_option_window.exif_option
-        self.icc_profile_option = self.webp_conversion_option_window.icc_profile_option
-        self.exact_option = self.webp_conversion_option_window.exact_option
-        self.image_quality_option = self.webp_conversion_option_window.image_quality_option
-
-        self.padding_option = self.exif_padding_option_window.enable_padding
-        self.square_mode_option = self.exif_padding_option_window.enable_square_mode
-        self.dark_mode_option = self.exif_padding_option_window.enable_dark_mode
-        self.line_text_option = self.exif_padding_option_window.enable_one_line
-        self.save_exif_data = self.exif_padding_option_window.save_exif
-        self.save_format_index = self.exif_padding_option_window.save_format_index
-        self.selected_font = self.exif_padding_option_window.selected_font
-        self.background_color = self.exif_padding_option_window.background_color
-
-        # Resize 관련 변수 초기화
-        self.resize_option = False
-        self.resize_width_option = self.resize_window.width_option
-        self.resize_height_option = self.resize_window.height_option
-        self.resize_value = self.resize_window.resize_value
+        # Preview 영역
+        self.window_width_short = 461
+        self.window_height = 764
+        self.preview_area_margin = 10
+        self.preview_area = QLabel(self)
+        
+        # set window size fixed
+        # self.size() does not work in init phase (return 640 x 480)
+        self.hide_preview()
 
         self.setupUi(self)
         self.bind_ui()
@@ -109,7 +99,8 @@ class WebpWindow(QMainWindow, formClass):
         # 실행 버튼 함수 링킹
         self.add_button.clicked.connect(self.open_file)
         self.add_button.setToolTip("파일 선택하기")
-        #self.delete_button.clicked.connect(None)
+        self.delete_button.clicked.connect(self.delete_file)
+        self.delete_button.setToolTip("선택된 파일 삭제하기")
         self.save_button.clicked.connect(self.on_click_save)
         self.save_button.setToolTip("파일 저장하기")
         # 파일 추가 기능 함수 링킹
@@ -118,26 +109,29 @@ class WebpWindow(QMainWindow, formClass):
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
         # 프로그램 정보 기능 함수 링킹
         self.actionInformation.triggered.connect(self.on_trigger_information)
-        # Exif Frame Preview 표시 기능 링킹
-        self.preview_button.clicked.connect(self.on_click_preview)
-        self.preview_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
         # 종료 버튼 함수 링킹
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
+        # 목록 선택 이벤트 링킹
+        self.image_list_widget.itemSelectionChanged.connect(self.on_image_list_widget_selection_changed)
         # Conversion 활성화 옵션 링킹
         self.enable_conversion_option_box.stateChanged.connect(self.on_toggle_conversion_enable)
-        self.enable_conversion_option_box.toggle()
         self.open_conversion_option_button.clicked.connect(self.on_click_conversion_option)
         self.open_conversion_option_button.setEnabled(self.enable_conversion_option_box.isChecked())
         # Watermark 활성화 옵션 링킹
         #self.enable_watermark_option_box.stateChanged.connect(None)
+        self.enable_watermark_option_box.setEnabled(False)
         # Exif Padding 활성화 옵션 링킹
         self.enable_exif_padding_option_box.stateChanged.connect(self.on_toggle_exif_writing_enable)
         self.open_exif_option_button.clicked.connect(self.on_click_exif_padding_option)
         self.open_exif_option_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
+        # Exif Preview 활성화 옵션 링킹
+        self.enable_exif_preview_box.stateChanged.connect(self.on_toggle_exif_preview)
         # Resize 옵션 링킹
         self.enable_resize_option_box.stateChanged.connect(self.on_toggle_resize_enable)
         self.open_resize_option_button.clicked.connect(self.on_click_open_resize_option)
         self.open_resize_option_button.setEnabled(self.enable_resize_option_box.isChecked())
+        # 원본 사진 위치 저장 옵션 링킹
+        self.save_original_path_checkbox.stateChanged.connect(self.on_toggle_save_original_path)
 
     #################### PyQt FUNCTIONS
     def init_options(self):
@@ -148,17 +142,27 @@ class WebpWindow(QMainWindow, formClass):
         # self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
         ####################	하단 EXIF 삽입 관련 옵션
         self.exif_writing_option = self.enable_exif_padding_option_box.isChecked()
+        self.exif_show_preview = self.enable_exif_preview_box.isChecked()
         ####################    리사이즈 옵션
         self.resize_option = self.enable_resize_option_box.isChecked()
+        ####################    원본 위치 저장 옵션
+        self.save_original_path = self.save_original_path_checkbox.isChecked()
 
         UserConfig.load()
-        if UserConfig.background_color:
-            self.background_color = UserConfig.background_color
+        if UserConfig.resize_options:
+            self.enable_resize_option_box.toggle()
 
-    def resizeEvent(self, event):
-        geometry = self.image_list_widget.geometry()
-        width = event.size().width()
-        self.image_list_widget.setGeometry(geometry.x(), geometry.y(), width, geometry.height())
+        if UserConfig.conversion_options:
+            self.enable_conversion_option_box.toggle()
+
+        if UserConfig.exif_options:
+            self.enable_exif_padding_option_box.toggle()
+            
+        if UserConfig.exif_show_preview:
+            self.enable_exif_preview_box.toggle()
+
+        if UserConfig.save_original_path:
+            self.save_original_path_checkbox.toggle()
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -183,29 +187,82 @@ class WebpWindow(QMainWindow, formClass):
             self.save_file()
 
     def on_click_preview(self):
-        self.update_options()
-        
         self.converter.show_sample_exif_frame_image(file_path=sample_file_path,
-                                    file_name="Sample.jpg",
-                                    font_path=self.selected_font,
-                                    bg_color=self.background_color,
-                                    square_padding_option=self.square_mode_option,
-                                    dark_theme_option=self.dark_mode_option,
-                                    exif_padding_option=self.padding_option,
-                                    one_line_option=self.line_text_option)
+                                                    file_name="Sample.jpg",
+                                                    font_path=self.exif_padding_option_window.get_current_font_path(),
+                                                    text_color=UserConfig.exif_text_color,
+                                                    bg_color=UserConfig.exif_bg_color,
+                                                    ratio_option=UserConfig.exif_ratio,
+                                                    exif_padding_option=UserConfig.exif_padding_mode,
+                                                    alignment_option=UserConfig.exif_format_alignment,
+                                                    caption_format=UserConfig.exif_format,
+                                                    easymode_option=UserConfig.exif_easymode_options,
+                                                    easymode_oneline=UserConfig.exif_easymode_oneline)
+        
+    def on_image_list_widget_selection_changed(self):
+        self.show_or_refresh_preview()
+        
+    def show_or_refresh_preview(self):
+        if not self.exif_writing_option or not self.exif_show_preview or self.conversion_option or self.image_list_widget.currentRow() < 0:
+            self.hide_preview()
+            return
+        
+        selected_path = self.file_paths[self.image_list_widget.currentRow()]
+        made_file_name = "SampleOutput.webp"
+        made_file_path = os.path.join(sample_file_path, made_file_name)
+
+        if os.path.exists(made_file_path):
+            os.remove(made_file_path)
+
+        made_image = self.converter.convert_exif_image(file_path=selected_path,
+                                                      save_path=sample_file_path,
+                                                      save_name=made_file_name,
+                                                      file_format_option=2,
+                                                      font_path=self.exif_padding_option_window.get_current_font_path(),
+                                                      bg_color=UserConfig.exif_bg_color,
+                                                      text_color=UserConfig.exif_text_color,
+                                                      ratio_option=UserConfig.exif_ratio,
+                                                      exif_padding_option=UserConfig.exif_padding_mode,
+                                                      save_exif_data_option=False,
+                                                      resize_option=True,
+                                                      axis_option=2,
+                                                      alignment_option=UserConfig.exif_format_alignment,
+                                                      resize_value=800,
+                                                      quality_option=80,
+                                                      caption_format=UserConfig.exif_format,
+                                                      easymode_option=UserConfig.exif_easymode_options,
+                                                      easymode_oneline=UserConfig.exif_easymode_oneline)
+        
+        if made_image is None:
+            self.hide_preview()
+            return
+
+        image_width, image_height = made_image.size
+        self.setFixedSize(self.window_width_short + self.preview_area_margin + image_width, max(image_height + 30, self.window_height))
+
+        q_image = ImageQt.ImageQt(made_image)
+        pixmap = QPixmap.fromImage(q_image)
+        self.preview_area.setPixmap(pixmap)
+
+        self.preview_area.setVisible(True)
+        self.preview_area.setGeometry(self.window_width_short + self.preview_area_margin, 0, image_width, image_height)
+        
+        
+    def hide_preview(self):
+        self.preview_area.setVisible(False)
+        self.setFixedSize(self.window_width_short, self.window_height)
 
     def on_click_open_resize_option(self):
-        def on_accepted_resize_option(width_option, height_option, resize_value):
+        def on_accepted_resize_option(axis_option, resize_value):
             # note(komastar) : 리사이즈 정보 쿼리 방법 1. callback
             # accept 된 경우에만 실행
-            self.resize_width_option = width_option
-            self.resize_height_option = height_option
+            self.resize_axis_option = axis_option
             self.resize_value = resize_value
 
-            print(f'width : {width_option}, height : {height_option}, resize value: {resize_value}')
+            print(f'Axis(0:Width,1:Height,2:Longest,3:Shortest) : {axis_option}, resize value: {resize_value}')
 
         self.resize_window.on_accepted = on_accepted_resize_option
-        self.resize_window.show()
+        self.resize_window.on_call()
         # note(komastar) : 리사이즈 정보 쿼리 방법 2. access public property
         # accept 되기 전에 호출하면 제대로 된 값을 불러오지 못 할 수 있음
         # print(f'w:{self.resize_option_window.width}, h:{self.resize_option_window.height}')
@@ -217,6 +274,13 @@ class WebpWindow(QMainWindow, formClass):
         pass #self.watermark_option_window.on_call()
 
     def on_click_exif_padding_option(self):
+        selected_item_index = self.image_list_widget.currentRow()
+        if selected_item_index < 0 or selected_item_index >= self.image_list_widget.count():
+            self.exif_padding_option_window.selected_exif_data = None
+        else:
+            file_path = self.file_paths[selected_item_index]
+            self.exif_padding_option_window.selected_exif_data = self.converter.get_exif_data_on_path(file_path)
+
         self.exif_padding_option_window.on_call()
     
     def on_trigger_add_files(self):
@@ -229,6 +293,8 @@ class WebpWindow(QMainWindow, formClass):
 
     def on_trigger_clear_files(self):
         self.image_list_widget.clear()
+        self.file_paths.clear()
+        self.file_names.clear()
 
     def on_trigger_information(self):
         self.information_window.show()
@@ -238,115 +304,129 @@ class WebpWindow(QMainWindow, formClass):
         sys.exit()
 
     def open_file(self):
-        open_files = QFileDialog.getOpenFileNames(self, "Open File")
+        open_files = QFileDialog.getOpenFileNames(self, caption="Open File", directory=UserConfig.latest_load_path)
 
         if len(open_files) > 0:
+            load_path = None
+
+            # select first item of added lists
+            latest_index = self.image_list_widget.count()
             for file in open_files[0]:
                 if "" == file: continue
                 if "All Files (*)" == file: continue
+
+                if not load_path:
+                    load_path = os.path.dirname(file)
+
                 self.load_file(file)
+            self.image_list_widget.setCurrentItem(self.image_list_widget.item(latest_index))
+            
+            if load_path:
+                UserConfig.latest_load_path = load_path
+                UserConfig.save()
 
-    #################### FUNCTIONS
-    def update_options(self):
-        # note(CANU): on_call() 로 호출 후 convert ui close 시 데이터 업데이트가 안되는 문제
-        # 다시 click을 호출해야 데이터가 업데이트되는 관계로, 창을 close 시 호출되는 함수를 찾아봐야겠음
-
-        # save 버튼 클릭 후 호출할 때 option을 마지막으로 업데이트하는 형식으로 변경
-        # 어짜피 마지막 선택한 옵션만 필요한거 아닐까?
+    def delete_file(self):
+        selected_index = self.image_list_widget.currentRow()
+        if selected_index < 0 or selected_index >= self.image_list_widget.count():
+            return
         
-        if self.conversion_option:
-            self.loseless_option = self.webp_conversion_option_window.loseless_option
-            self.exif_option = self.webp_conversion_option_window.exif_option
-            self.icc_profile_option = self.webp_conversion_option_window.icc_profile_option
-            self.exact_option = self.webp_conversion_option_window.exact_option
-            self.image_quality_option = self.webp_conversion_option_window.image_quality_option
-                
-            print(f"Loseless Option (main): {self.loseless_option}")
-            print(f"Exif Option (main): {self.exif_option}")
-            print(f"Icc Profile Option (main): {self.icc_profile_option}")
-            print(f"Transparent RGB Option (main): {self.exact_option}")
-            print(f"Image Quality (main): {self.image_quality_option}")
+        # Remove the selected item from the list
+        deleted_item = self.image_list_widget.takeItem(selected_index)
+        deleted_file_path = self.file_paths.pop(selected_index)
+        deleted_file_name = self.file_names.pop(selected_index)
+        print(f"Deleted item at index {selected_index}: {deleted_file_path} ({deleted_file_name})")
 
-        elif self.exif_writing_option:
-            self.padding_option = self.exif_padding_option_window.enable_padding
-            self.square_mode_option = self.exif_padding_option_window.enable_square_mode
-            self.dark_mode_option = self.exif_padding_option_window.enable_dark_mode
-            self.line_text_option = self.exif_padding_option_window.enable_one_line
-            self.save_exif_data = self.exif_padding_option_window.save_exif
-            self.save_format_index = self.exif_padding_option_window.save_format_index
-            self.selected_font = self.exif_padding_option_window.selected_font
-            self.background_color = self.exif_padding_option_window.background_color
-
-            print(f"Frame Option (main): {self.padding_option}")
-            print(f"1:1 Option (main): {self.square_mode_option}")
-            print(f"White Text Option (main): {self.dark_mode_option}")
-            print(f"One line Option (main): {self.line_text_option}")
-            print(f"Save Exif Option (main): {self.save_exif_data}")
-            print(f"Save Format (main): {self.save_format_index}")
-            print(f"Selected Font (main): {self.selected_font}")
-            print(f"Background Color (main): {self.background_color}")
+        
+    
 
     def load_file(self, filePath):
         icon = QtGui.QIcon(filePath)
-        item = QtWidgets.QListWidgetItem(icon, filePath)
+        #todo: manipulate string
+        widget_item_text = self.path_string_with_width(filePath, 54)
+        item = QtWidgets.QListWidgetItem(icon, widget_item_text)
 
         size = QtCore.QSize()
         size.setHeight(128)
         size.setWidth(128)
 
         item.setSizeHint(size)
+        self.file_paths.append(filePath)
         file_name = os.path.splitext(filePath)[0]
-        self.file_name.append(file_name.split(sep='/')[-1])
+        self.file_names.append(file_name.split(sep='/')[-1])
         self.image_list_widget.addItem(item)
+
+    def path_string_with_width(self, text, width):
+        if '/' in text:
+            split_character = '/'
+        elif '\\' in text:
+            split_character = '\\'
+        else: return text
+
+        words = text.split(split_character)
+        lines = []
+        line = ""
+        for word in words:
+            if len(line) + len(word) + 1 <= width:
+                line += word + split_character
+            else:
+                lines.append(line)
+                line = word + split_character
+        
+        lines.append(line[:-1])
+        result = '\n'.join(lines)
+        return result
 
     def save_file(self):
         # 변환 실행 버튼 callback 함수
         # self.watermarkOption()
 
-        save_path = QFileDialog.getExistingDirectory(caption='Save Directory',
-                                                     directory=UserConfig.latest_save_path)
-        UserConfig.latest_save_path = save_path
-        UserConfig.save()
-
-        self.update_options()
+        if self.save_original_path and self.image_list_widget.count() > 0:
+            file_path = self.file_paths[self.image_list_widget.currentRow()]
+            save_path = os.path.dirname(file_path)
+        else:
+            save_path = QFileDialog.getExistingDirectory(caption='Save Directory',
+                                                        directory=UserConfig.latest_save_path)
+            UserConfig.latest_save_path = save_path
+            UserConfig.save()
 
         if save_path:
             # 01 WebP 이미지로만 변환할 때
             if self.conversion_option:
                 for index in range(self.image_list_widget.count()):
-                    self.converter.convert_image_to_webp(file_path=self.image_list_widget.item(index).text(),
+                    self.converter.convert_image_to_webp(file_path=self.file_paths[index],
                                                          save_path=save_path + '/',
-                                                         save_name=self.file_name[index],
-                                                         loseless_option=self.loseless_option,
-                                                         image_quality_option=self.image_quality_option,
-                                                         exif_option=self.exif_option,
-                                                         icc_profile_option=self.icc_profile_option,
-                                                         exact_option=self.exact_option, watermark_text="",
-                                                         exif_view_option=self.exif_writing_option,
+                                                         save_name=self.file_names[index],
+                                                         loseless_option=UserConfig.conversion_loseless,
+                                                         image_quality_option=UserConfig.conversion_quality,
+                                                         exif_option=UserConfig.conversion_exif,
+                                                         icc_profile_option=UserConfig.conversion_icc,
+                                                         exact_option=UserConfig.conversion_transparent, watermark_text="",
                                                          conversion_option=self.conversion_option,
                                                          resize_option=self.resize_option,
-                                                         width_option=self.resize_width_option,
-                                                         height_option=self.resize_height_option,
-                                                         resize_value=self.resize_value)
+                                                         axis_option=UserConfig.resize_options,
+                                                         resize_value=UserConfig.resize_size)
 
             # 02 Exif Padding 이미지로만 변환할때
             elif self.exif_writing_option:
                 for index in range(self.image_list_widget.count()):
-                    self.converter.convert_exif_image(file_path=self.image_list_widget.item(index).text(),
+                    self.converter.convert_exif_image(file_path=self.file_paths[index],
                                                       save_path=save_path + '/',
-                                                      save_name=self.file_name[index],
-                                                      file_format_option=self.save_format_index,
-                                                      font_path=self.selected_font,
-                                                      bg_color=self.background_color,
-                                                      square_padding_option=self.square_mode_option,
-                                                      dark_theme_option=self.dark_mode_option,
-                                                      exif_padding_option=self.padding_option,
-                                                      one_line_option=self.line_text_option,
-                                                      save_exif_data_option=self.save_exif_data,
+                                                      save_name=self.file_names[index],
+                                                      file_format_option=UserConfig.exif_type,
+                                                      font_path=self.exif_padding_option_window.get_current_font_path(),
+                                                      bg_color=UserConfig.exif_bg_color,
+                                                      text_color=UserConfig.exif_text_color,
+                                                      ratio_option=UserConfig.exif_ratio,
+                                                      exif_padding_option=UserConfig.exif_padding_mode,
+                                                      save_exif_data_option=UserConfig.exif_save_exifdata,
                                                       resize_option=self.resize_option,
-                                                      width_option=self.resize_width_option,
-                                                      height_option=self.resize_height_option,
-                                                      resize_value=self.resize_value)
+                                                      axis_option=UserConfig.resize_axis,
+                                                      alignment_option=UserConfig.exif_format_alignment,
+                                                      resize_value=UserConfig.resize_size,
+                                                      quality_option=UserConfig.exif_quality,
+                                                      caption_format=UserConfig.exif_format,
+                                                      easymode_option=UserConfig.exif_easymode_options,
+                                                      easymode_oneline=UserConfig.exif_easymode_oneline)
 
             else:
                 print("옵션 선택 에러 / 다시 선택해주세요")
@@ -357,13 +437,19 @@ class WebpWindow(QMainWindow, formClass):
                 os.system("open " + '"' + save_path + '"')
 
             self.image_list_widget.clear()
-            self.file_name.clear()
+            self.file_names.clear()
+            self.hide_preview()
 
     # WebP 변환 옵션
     def on_toggle_conversion_enable(self, state):
         self.conversion_option = bool(state == Qt.CheckState.Checked.value)
         self.enable_exif_padding_option_box.setChecked(not state)
-        self.open_conversion_option_button.setEnabled(self.enable_conversion_option_box.isChecked())
+
+        checked = self.enable_conversion_option_box.isChecked()
+        self.open_conversion_option_button.setEnabled(checked)
+
+        UserConfig.conversion_options = checked
+        UserConfig.save()
 
     # 워터마크 옵션
     def WatermarkColorOption(self, state):
@@ -373,10 +459,41 @@ class WebpWindow(QMainWindow, formClass):
     def on_toggle_exif_writing_enable(self, state):
         self.exif_writing_option = bool(state == Qt.CheckState.Checked.value)
         self.enable_conversion_option_box.setChecked(not state)
-        self.open_exif_option_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
-        self.preview_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
+
+        checked = self.enable_exif_padding_option_box.isChecked()
+        self.open_exif_option_button.setEnabled(checked)
+        self.enable_exif_preview_box.setEnabled(checked)
+        
+        if checked and self.enable_exif_preview_box.isChecked():
+            self.show_or_refresh_preview()
+        else:
+            self.hide_preview()
+        
+        UserConfig.exif_options = checked
+        UserConfig.save()
+
+    def on_toggle_exif_preview(self, state):
+        self.exif_show_preview = bool(state == Qt.CheckState.Checked.value)
+
+        checked = self.enable_exif_preview_box.isChecked()
+        if checked:
+            self.show_or_refresh_preview()
+        else:
+            self.hide_preview()
+        
+        UserConfig.exif_show_preview = checked
+        UserConfig.save()
 
     def on_toggle_resize_enable(self, state):
         self.resize_option = bool(state == Qt.CheckState.Checked.value)
-        self.open_resize_option_button.setEnabled(self.enable_resize_option_box.isChecked())
+        checked = self.enable_resize_option_box.isChecked()
+        self.open_resize_option_button.setEnabled(checked)
+
+        UserConfig.resize_options = checked
+        UserConfig.save()
+
+    def on_toggle_save_original_path(self, state):
+        self.save_original_path = bool(state == Qt.CheckState.Checked.value)
+        UserConfig.save_original_path = self.save_original_path_checkbox.isChecked()
+        UserConfig.save()
 
