@@ -72,12 +72,14 @@ class WebpWindow(QMainWindow, formClass):
 
         # Exif Frame UI initialize
         self.exif_padding_option_window = ExifOptionWindow()
+        self.exif_padding_option_window.accepted.connect(self.show_or_refresh_preview)
 
         self.information_window = InformationWindow()
         self.resize_window = ResizeOptionWindow()
 
         # 파일 이름 변수
-        self.file_name = []
+        self.file_paths = []
+        self.file_names = []
 
         # Preview 영역
         self.window_width_short = 461
@@ -205,7 +207,7 @@ class WebpWindow(QMainWindow, formClass):
             self.hide_preview()
             return
         
-        selected_path = self.image_list_widget.currentItem().text()
+        selected_path = self.file_paths[self.image_list_widget.currentRow()]
         made_file_name = "SampleOutput.webp"
         made_file_path = os.path.join(sample_file_path, made_file_name)
 
@@ -276,7 +278,7 @@ class WebpWindow(QMainWindow, formClass):
         if selected_item_index < 0 or selected_item_index >= self.image_list_widget.count():
             self.exif_padding_option_window.selected_exif_data = None
         else:
-            file_path = self.image_list_widget.currentItem().text()
+            file_path = self.file_paths[selected_item_index]
             self.exif_padding_option_window.selected_exif_data = self.converter.get_exif_data_on_path(file_path)
 
         self.exif_padding_option_window.on_call()
@@ -291,7 +293,8 @@ class WebpWindow(QMainWindow, formClass):
 
     def on_trigger_clear_files(self):
         self.image_list_widget.clear()
-        self.file_name.clear()
+        self.file_paths.clear()
+        self.file_names.clear()
 
     def on_trigger_information(self):
         self.information_window.show()
@@ -329,32 +332,56 @@ class WebpWindow(QMainWindow, formClass):
         
         # Remove the selected item from the list
         deleted_item = self.image_list_widget.takeItem(selected_index)
-        deleted_text = deleted_item.text()
-        deleted_file_name = self.file_name.pop(selected_index)
-        print(f"Deleted item at index {selected_index}: {deleted_text} ({deleted_file_name})")
+        deleted_file_path = self.file_paths.pop(selected_index)
+        deleted_file_name = self.file_names.pop(selected_index)
+        print(f"Deleted item at index {selected_index}: {deleted_file_path} ({deleted_file_name})")
 
         
     
 
     def load_file(self, filePath):
         icon = QtGui.QIcon(filePath)
-        item = QtWidgets.QListWidgetItem(icon, filePath)
+        #todo: manipulate string
+        widget_item_text = self.path_string_with_width(filePath, 54)
+        item = QtWidgets.QListWidgetItem(icon, widget_item_text)
 
         size = QtCore.QSize()
         size.setHeight(128)
         size.setWidth(128)
 
         item.setSizeHint(size)
+        self.file_paths.append(filePath)
         file_name = os.path.splitext(filePath)[0]
-        self.file_name.append(file_name.split(sep='/')[-1])
+        self.file_names.append(file_name.split(sep='/')[-1])
         self.image_list_widget.addItem(item)
+
+    def path_string_with_width(self, text, width):
+        if '/' in text:
+            split_character = '/'
+        elif '\\' in text:
+            split_character = '\\'
+        else: return text
+
+        words = text.split(split_character)
+        lines = []
+        line = ""
+        for word in words:
+            if len(line) + len(word) + 1 <= width:
+                line += word + split_character
+            else:
+                lines.append(line)
+                line = word + split_character
+        
+        lines.append(line[:-1])
+        result = '\n'.join(lines)
+        return result
 
     def save_file(self):
         # 변환 실행 버튼 callback 함수
         # self.watermarkOption()
 
         if self.save_original_path and self.image_list_widget.count() > 0:
-            file_path = self.image_list_widget.currentItem().text()
+            file_path = self.file_paths[self.image_list_widget.currentRow()]
             save_path = os.path.dirname(file_path)
         else:
             save_path = QFileDialog.getExistingDirectory(caption='Save Directory',
@@ -366,9 +393,9 @@ class WebpWindow(QMainWindow, formClass):
             # 01 WebP 이미지로만 변환할 때
             if self.conversion_option:
                 for index in range(self.image_list_widget.count()):
-                    self.converter.convert_image_to_webp(file_path=self.image_list_widget.item(index).text(),
+                    self.converter.convert_image_to_webp(file_path=self.file_paths[index],
                                                          save_path=save_path + '/',
-                                                         save_name=self.file_name[index],
+                                                         save_name=self.file_names[index],
                                                          loseless_option=UserConfig.conversion_loseless,
                                                          image_quality_option=UserConfig.conversion_quality,
                                                          exif_option=UserConfig.conversion_exif,
@@ -382,9 +409,9 @@ class WebpWindow(QMainWindow, formClass):
             # 02 Exif Padding 이미지로만 변환할때
             elif self.exif_writing_option:
                 for index in range(self.image_list_widget.count()):
-                    self.converter.convert_exif_image(file_path=self.image_list_widget.item(index).text(),
+                    self.converter.convert_exif_image(file_path=self.file_paths[index],
                                                       save_path=save_path + '/',
-                                                      save_name=self.file_name[index],
+                                                      save_name=self.file_names[index],
                                                       file_format_option=UserConfig.exif_type,
                                                       font_path=self.exif_padding_option_window.get_current_font_path(),
                                                       bg_color=UserConfig.exif_bg_color,
@@ -410,7 +437,8 @@ class WebpWindow(QMainWindow, formClass):
                 os.system("open " + '"' + save_path + '"')
 
             self.image_list_widget.clear()
-            self.file_name.clear()
+            self.file_names.clear()
+            self.hide_preview()
 
     # WebP 변환 옵션
     def on_toggle_conversion_enable(self, state):
@@ -419,6 +447,7 @@ class WebpWindow(QMainWindow, formClass):
 
         checked = self.enable_conversion_option_box.isChecked()
         self.open_conversion_option_button.setEnabled(checked)
+
         UserConfig.conversion_options = checked
         UserConfig.save()
 
@@ -434,6 +463,12 @@ class WebpWindow(QMainWindow, formClass):
         checked = self.enable_exif_padding_option_box.isChecked()
         self.open_exif_option_button.setEnabled(checked)
         self.enable_exif_preview_box.setEnabled(checked)
+        
+        if checked and self.enable_exif_preview_box.isChecked():
+            self.show_or_refresh_preview()
+        else:
+            self.hide_preview()
+        
         UserConfig.exif_options = checked
         UserConfig.save()
 
@@ -445,7 +480,7 @@ class WebpWindow(QMainWindow, formClass):
             self.show_or_refresh_preview()
         else:
             self.hide_preview()
-
+        
         UserConfig.exif_show_preview = checked
         UserConfig.save()
 

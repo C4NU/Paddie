@@ -214,9 +214,7 @@ class ExifOptionWindow(QDialog, formClass):
 		self.__update_ui()
 		self.show()
 
-	def on_save_close(self):
-		self.__update_selected_font()
-
+	def accept(self):
 		UserConfig.exif_padding_mode = self.image_padding
 		UserConfig.exif_save_exifdata = self.save_exif
 		UserConfig.exif_ratio = self.image_ratio
@@ -230,7 +228,11 @@ class ExifOptionWindow(QDialog, formClass):
 		UserConfig.exif_easymode_options = self.easy_mode_enable
 		UserConfig.exif_easymode_oneline = self.easy_mode_oneline
 		UserConfig.save()
-	
+		super().accept()
+
+	def on_save_close(self):
+		self.__update_selected_font()
+
 	def on_cancel_close(self):
 		self.selected_font = ""
 
