@@ -28,6 +28,7 @@ class UserConfig:
     conversion_quality = 92
     
     exif_options = False
+    exif_show_preview = False
     exif_padding_mode = 0 # 0:None, 1:Under, 2:Frame
     exif_save_exifdata = False
     exif_quality = 92

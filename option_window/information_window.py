@@ -3,7 +3,6 @@ import sys
 import platform
 import pathlib
 
-import user_config
 from user_config import UserConfig
 
 from PyQt6 import uic

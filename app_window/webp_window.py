@@ -14,6 +14,8 @@ from PyQt6 import uic
 from PyQt6 import QtGui, QtWidgets, QtCore
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit
+from PyQt6.QtGui import QPixmap
+from PIL import ImageQt
 print("PyQt6 Package Loaded")
 
 from user_config import UserConfig
@@ -77,6 +79,16 @@ class WebpWindow(QMainWindow, formClass):
         # 파일 이름 변수
         self.file_name = []
 
+        # Preview 영역
+        self.window_width_short = 461
+        self.window_height = 764
+        self.preview_area_margin = 10
+        self.preview_area = QLabel(self)
+        
+        # set window size fixed
+        # self.size() does not work in init phase (return 640 x 480)
+        self.hide_preview()
+
         self.setupUi(self)
         self.bind_ui()
         self.init_options()
@@ -95,12 +107,10 @@ class WebpWindow(QMainWindow, formClass):
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
         # 프로그램 정보 기능 함수 링킹
         self.actionInformation.triggered.connect(self.on_trigger_information)
-        # Exif Frame Preview 표시 기능 링킹
-        self.preview_button.clicked.connect(self.on_click_preview)
-        #self.preview_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
-        self.preview_button.setEnabled(False) # temporarily disabled
         # 종료 버튼 함수 링킹
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
+        # 목록 선택 이벤트 링킹
+        self.image_list_widget.itemSelectionChanged.connect(self.on_image_list_widget_selection_changed)
         # Conversion 활성화 옵션 링킹
         self.enable_conversion_option_box.stateChanged.connect(self.on_toggle_conversion_enable)
         self.open_conversion_option_button.clicked.connect(self.on_click_conversion_option)
@@ -112,6 +122,8 @@ class WebpWindow(QMainWindow, formClass):
         self.enable_exif_padding_option_box.stateChanged.connect(self.on_toggle_exif_writing_enable)
         self.open_exif_option_button.clicked.connect(self.on_click_exif_padding_option)
         self.open_exif_option_button.setEnabled(self.enable_exif_padding_option_box.isChecked())
+        # Exif Preview 활성화 옵션 링킹
+        self.enable_exif_preview_box.stateChanged.connect(self.on_toggle_exif_preview)
         # Resize 옵션 링킹
         self.enable_resize_option_box.stateChanged.connect(self.on_toggle_resize_enable)
         self.open_resize_option_button.clicked.connect(self.on_click_open_resize_option)
@@ -128,6 +140,7 @@ class WebpWindow(QMainWindow, formClass):
         # self.watermarkFontColor = self.watermarkFontColorBox.isChecked()
         ####################	하단 EXIF 삽입 관련 옵션
         self.exif_writing_option = self.enable_exif_padding_option_box.isChecked()
+        self.exif_show_preview = self.enable_exif_preview_box.isChecked()
         ####################    리사이즈 옵션
         self.resize_option = self.enable_resize_option_box.isChecked()
         ####################    원본 위치 저장 옵션
@@ -142,14 +155,12 @@ class WebpWindow(QMainWindow, formClass):
 
         if UserConfig.exif_options:
             self.enable_exif_padding_option_box.toggle()
+            
+        if UserConfig.exif_show_preview:
+            self.enable_exif_preview_box.toggle()
 
         if UserConfig.save_original_path:
             self.save_original_path_checkbox.toggle()
-
-    def resizeEvent(self, event):
-        geometry = self.image_list_widget.geometry()
-        width = event.size().width()
-        self.image_list_widget.setGeometry(geometry.x(), geometry.y(), width, geometry.height())
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -185,6 +196,59 @@ class WebpWindow(QMainWindow, formClass):
                                                     caption_format=UserConfig.exif_format,
                                                     easymode_option=UserConfig.exif_easymode_options,
                                                     easymode_oneline=UserConfig.exif_easymode_oneline)
+        
+    def on_image_list_widget_selection_changed(self):
+        self.show_or_refresh_preview()
+        
+    def show_or_refresh_preview(self):
+        if not self.exif_writing_option or not self.exif_show_preview or self.conversion_option or self.image_list_widget.currentRow() < 0:
+            self.hide_preview()
+            return
+        
+        selected_path = self.image_list_widget.currentItem().text()
+        made_file_name = "SampleOutput.webp"
+        made_file_path = os.path.join(sample_file_path, made_file_name)
+
+        if os.path.exists(made_file_path):
+            os.remove(made_file_path)
+
+        made_image = self.converter.convert_exif_image(file_path=selected_path,
+                                                      save_path=sample_file_path,
+                                                      save_name=made_file_name,
+                                                      file_format_option=2,
+                                                      font_path=self.exif_padding_option_window.get_current_font_path(),
+                                                      bg_color=UserConfig.exif_bg_color,
+                                                      text_color=UserConfig.exif_text_color,
+                                                      ratio_option=UserConfig.exif_ratio,
+                                                      exif_padding_option=UserConfig.exif_padding_mode,
+                                                      save_exif_data_option=False,
+                                                      resize_option=True,
+                                                      axis_option=2,
+                                                      alignment_option=UserConfig.exif_format_alignment,
+                                                      resize_value=800,
+                                                      quality_option=80,
+                                                      caption_format=UserConfig.exif_format,
+                                                      easymode_option=UserConfig.exif_easymode_options,
+                                                      easymode_oneline=UserConfig.exif_easymode_oneline)
+        
+        if made_image is None:
+            self.hide_preview()
+            return
+
+        image_width, image_height = made_image.size
+        self.setFixedSize(self.window_width_short + self.preview_area_margin + image_width, max(image_height + 30, self.window_height))
+
+        q_image = ImageQt.ImageQt(made_image)
+        pixmap = QPixmap.fromImage(q_image)
+        self.preview_area.setPixmap(pixmap)
+
+        self.preview_area.setVisible(True)
+        self.preview_area.setGeometry(self.window_width_short + self.preview_area_margin, 0, image_width, image_height)
+        
+        
+    def hide_preview(self):
+        self.preview_area.setVisible(False)
+        self.setFixedSize(self.window_width_short, self.window_height)
 
     def on_click_open_resize_option(self):
         def on_accepted_resize_option(axis_option, resize_value):
@@ -369,8 +433,20 @@ class WebpWindow(QMainWindow, formClass):
 
         checked = self.enable_exif_padding_option_box.isChecked()
         self.open_exif_option_button.setEnabled(checked)
-        #self.preview_button.setEnabled(checked)
+        self.enable_exif_preview_box.setEnabled(checked)
         UserConfig.exif_options = checked
+        UserConfig.save()
+
+    def on_toggle_exif_preview(self, state):
+        self.exif_show_preview = bool(state == Qt.CheckState.Checked.value)
+
+        checked = self.enable_exif_preview_box.isChecked()
+        if checked:
+            self.show_or_refresh_preview()
+        else:
+            self.hide_preview()
+
+        UserConfig.exif_show_preview = checked
         UserConfig.save()
 
     def on_toggle_resize_enable(self, state):

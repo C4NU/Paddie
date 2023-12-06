@@ -206,6 +206,8 @@ class Converter:
         else:
             image.save(fullpath, format=export_extension, quality=quality_option)
 
+        return image
+
     def show_sample_exif_frame_image(self, file_path, file_name,font_path, exif_padding_option,
                             text_color, bg_color, ratio_option, alignment_option, caption_format, easymode_option, easymode_oneline):
         
