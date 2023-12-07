@@ -201,23 +201,23 @@ class WebpWindow(QMainWindow, formClass):
             os.remove(made_file_path)
 
         made_image = self.converter.convert_exif_image(file_path=selected_path,
-                                                      save_path=sample_file_path,
-                                                      save_name=made_file_name,
-                                                      file_format_option=2, # webp
-                                                      font_path=self.exif_padding_option_window.get_current_font_path(),
-                                                      bg_color=UserConfig.exif_bg_color,
-                                                      text_color=UserConfig.exif_text_color,
-                                                      ratio_option=UserConfig.exif_ratio,
-                                                      exif_padding_option=UserConfig.exif_padding_mode,
-                                                      save_exif_data_option=False,
-                                                      resize_option=True,
-                                                      axis_option=2, # longest
-                                                      alignment_option=UserConfig.exif_format_alignment,
-                                                      resize_value=800,
-                                                      quality_option=80,
-                                                      caption_format=UserConfig.exif_format,
-                                                      easymode_option=UserConfig.exif_easymode_options,
-                                                      easymode_oneline=UserConfig.exif_easymode_oneline)
+                                                       save_path=sample_file_path,
+                                                       save_name=made_file_name,
+                                                       file_format_option=2, # webp
+                                                       font_path=self.exif_padding_option_window.get_current_font_path(),
+                                                       bg_color=UserConfig.exif_bg_color,
+                                                       text_color=UserConfig.exif_text_color,
+                                                       ratio_option=UserConfig.exif_ratio,
+                                                       exif_padding_option=UserConfig.exif_padding_mode,
+                                                       save_exif_data_option=False,
+                                                       resize_option=True,
+                                                       axis_option=2, # longest
+                                                       alignment_option=UserConfig.exif_format_alignment,
+                                                       resize_value=800,
+                                                       quality_option=80,
+                                                       caption_format=UserConfig.exif_format,
+                                                       easymode_option=UserConfig.exif_easymode_options,
+                                                       easymode_oneline=UserConfig.exif_easymode_oneline)
         
         if made_image is None:
             self.hide_preview()
