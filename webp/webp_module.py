@@ -208,60 +208,6 @@ class Converter:
 
         return image
 
-    def show_sample_exif_frame_image(self, file_path, file_name,font_path, exif_padding_option,
-                            text_color, bg_color, ratio_option, alignment_option, caption_format, easymode_option, easymode_oneline):
-        
-        file_format = Converter.search_file_format(file_path+file_name)
-
-        print(file_path)
-
-        if file_format == '':
-            print("잘못된 파일 형식 입니다.")
-            return
-
-        # 02 EXIF Padding Image로 변환할 때
-        image = Image.open(file_path+file_name)
-
-        font_color = (text_color.red(), text_color.green(), text_color.blue())
-        background_color = (bg_color.red(), bg_color.green(), bg_color.blue())
-            
-        longer_length = image.width if image.width >= image.height else image.height
-        padding = int(longer_length / 10)
-        half_padding = int(padding * 0.5)
-
-        horizontalImage = True if image.width>=image.height else False
-        
-        raw_exif_data = image._getexif()
-        new_exif_data, image = Converter.fix_orientation(image)
-        if not easymode_option:
-            full_text = CaptionFormatConverter.convert(caption_format, raw_exif_data)
-        else:
-            full_text = CaptionFormatConverter.convert_easymode(easymode_oneline, raw_exif_data)
-
-        if ratio_option == 2:
-            image = self.exif.set_45_padding(image, gap = 50, color=background_color)
-            image = self.exif.set_45_text(image=image, text=full_text, font_path=font_path, color=font_color, alignment=alignment_option)
-
-        elif ratio_option == 1:
-            image = self.exif.set_square_padding(image, gap = 60, color=background_color, horizontalImage= horizontalImage)
-            image = self.exif.set_square_text(image=image, text=full_text, font_path=font_path, color=font_color, horizontalImage=horizontalImage, alignment=alignment_option)
-
-        elif exif_padding_option==0:
-            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option, use_side_padding=False)
-
-        else : 
-            top = half_padding if exif_padding_option == 2 else 0
-            side = half_padding if exif_padding_option == 2 else 0
-            image = self.exif.set_image_padding(image, top=top, side=side, bottom=padding, color=background_color)
-            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option, use_side_padding=exif_padding_option == 2)
-
-        if platform.system() == "Darwin":
-            save_path = file_path+"Sample_result.jpg"
-            image.save(save_path)
-            subprocess.run(["open", "-a", "Preview", save_path])
-        else:
-            image.show()
-
     @staticmethod
     def search_file_format(file_path) -> str:
         file_format = os.path.splitext(file_path)[1][1:]

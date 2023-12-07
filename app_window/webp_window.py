@@ -15,7 +15,6 @@ from PyQt6 import QtGui, QtWidgets, QtCore
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit
 from PyQt6.QtGui import QPixmap
-from PIL import ImageQt
 print("PyQt6 Package Loaded")
 
 from user_config import UserConfig
@@ -185,19 +184,6 @@ class WebpWindow(QMainWindow, formClass):
     def on_click_save(self):
         if self.image_list_widget.count() != 0:
             self.save_file()
-
-    def on_click_preview(self):
-        self.converter.show_sample_exif_frame_image(file_path=sample_file_path,
-                                                    file_name="Sample.jpg",
-                                                    font_path=self.exif_padding_option_window.get_current_font_path(),
-                                                    text_color=UserConfig.exif_text_color,
-                                                    bg_color=UserConfig.exif_bg_color,
-                                                    ratio_option=UserConfig.exif_ratio,
-                                                    exif_padding_option=UserConfig.exif_padding_mode,
-                                                    alignment_option=UserConfig.exif_format_alignment,
-                                                    caption_format=UserConfig.exif_format,
-                                                    easymode_option=UserConfig.exif_easymode_options,
-                                                    easymode_oneline=UserConfig.exif_easymode_oneline)
         
     def on_image_list_widget_selection_changed(self):
         self.show_or_refresh_preview()
@@ -208,7 +194,7 @@ class WebpWindow(QMainWindow, formClass):
             return
         
         selected_path = self.file_paths[self.image_list_widget.currentRow()]
-        made_file_name = "SampleOutput.webp"
+        made_file_name = "SampleOutput"
         made_file_path = os.path.join(sample_file_path, made_file_name)
 
         if os.path.exists(made_file_path):
@@ -217,7 +203,7 @@ class WebpWindow(QMainWindow, formClass):
         made_image = self.converter.convert_exif_image(file_path=selected_path,
                                                       save_path=sample_file_path,
                                                       save_name=made_file_name,
-                                                      file_format_option=2,
+                                                      file_format_option=2, # webp
                                                       font_path=self.exif_padding_option_window.get_current_font_path(),
                                                       bg_color=UserConfig.exif_bg_color,
                                                       text_color=UserConfig.exif_text_color,
@@ -225,7 +211,7 @@ class WebpWindow(QMainWindow, formClass):
                                                       exif_padding_option=UserConfig.exif_padding_mode,
                                                       save_exif_data_option=False,
                                                       resize_option=True,
-                                                      axis_option=2,
+                                                      axis_option=2, # longest
                                                       alignment_option=UserConfig.exif_format_alignment,
                                                       resize_value=800,
                                                       quality_option=80,
@@ -239,14 +225,13 @@ class WebpWindow(QMainWindow, formClass):
 
         image_width, image_height = made_image.size
         self.setFixedSize(self.window_width_short + self.preview_area_margin + image_width, max(image_height + 30, self.window_height))
-
-        q_image = ImageQt.ImageQt(made_image)
-        pixmap = QPixmap.fromImage(q_image)
+        
+        pixmap = QPixmap(made_file_path + ".webp")
+        
         self.preview_area.setPixmap(pixmap)
-
         self.preview_area.setVisible(True)
         self.preview_area.setGeometry(self.window_width_short + self.preview_area_margin, 0, image_width, image_height)
-        
+
         
     def hide_preview(self):
         self.preview_area.setVisible(False)
