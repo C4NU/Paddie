@@ -16,11 +16,16 @@ class CaptionFormatConverter():
         "{mf_l}": (42035, "Lens Maker"),
         "{focal}": (37386, 34),
         "{ev}": (37380, 1.33),
-        "{meter}": (32383, 1),
+        "{meter}": (37383, 1),
         "{mode}": (34850, 3),
         "{time}": (36867, "1972:11:21 16:16:16"),
         "{cr}": (33432, "Copyrigth (C) Text here"),
         "{ar}": (315, "Artist Name"),
+        "{wb}": (65102, "White Balance"),
+
+        #3.2.1
+        "{mode_s}": (34850, 3), # M A S P
+        "{mode_cr}": (34850, 3), # M Av Tv P
     }
     
     @staticmethod
@@ -96,6 +101,8 @@ class CaptionFormatConverter():
         if key == "{ev}": result = CaptionFormatConverter.get_exposure_text(value)
         if key == "{meter}": result = CaptionFormatConverter.get_metering_text(value)
         if key == "{mode}": result = CaptionFormatConverter.get_mode_text(value)
+        if key == "{mode_s}": result = CaptionFormatConverter.get_short_mode_text(value)
+        if key == "{mode_cr}": result = CaptionFormatConverter.get_canon_ricoh_mode_text(value)
 
         #if exif_data: print("[" + key + "]: value " + result + " found (original value: " + str(value) + ")")
 
@@ -159,6 +166,24 @@ class CaptionFormatConverter():
         if mode_value == 2: return "Program"
         if mode_value == 3: return "Aperture Priority"
         if mode_value == 4: return "Shutter Speed Priority"
+
+        return CaptionFormatConverter.dump_data
+    
+    @staticmethod
+    def get_short_mode_text(mode_value) -> str:
+        if mode_value == 1: return "M"
+        if mode_value == 2: return "P"
+        if mode_value == 3: return "A"
+        if mode_value == 4: return "S"
+
+        return CaptionFormatConverter.dump_data
+    
+    @staticmethod
+    def get_canon_ricoh_mode_text(mode_value) -> str:
+        if mode_value == 1: return "M"
+        if mode_value == 2: return "P"
+        if mode_value == 3: return "Av"
+        if mode_value == 4: return "Tv"
 
         return CaptionFormatConverter.dump_data
 
