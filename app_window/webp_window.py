@@ -422,9 +422,7 @@ class WebpWindow(QMainWindow, formClass):
             elif platform.system() == "Darwin":  # macOS
                 os.system("open " + '"' + save_path + '"')
 
-            self.image_list_widget.clear()
-            self.file_names.clear()
-            self.hide_preview()
+            self.on_trigger_clear_files()
 
     # WebP 변환 옵션
     def on_toggle_conversion_enable(self, state):
