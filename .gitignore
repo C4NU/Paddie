@@ -173,3 +173,6 @@ Test/
 .DS_Store
 /user_data.json
 .idea
+
+# venv Folder
+.venv

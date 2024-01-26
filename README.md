@@ -8,9 +8,9 @@
 ### Python Version
 ![Python 3.10.11](https://img.shields.io/badge/Python-3.10.11-yellow?style=flat)
 ### Module Version
-![PyQt6](https://img.shields.io/badge/PyQt-NULL-green?style=flat)
-![Pillows](https://img.shields.io/badge/Pillows-NULL-yellow?style=flat)
-![Pyinstaller](https://img.shields.io/badge/Pyinstaller-NULL-red?style=flat)
+![PyQt6](https://img.shields.io/badge/PyQt-6.5.3-green?style=flat)
+![Pillows](https://img.shields.io/badge/Pillows-10.0.0-yellow?style=flat)
+![Pyinstaller](https://img.shields.io/badge/Pyinstaller-6.3.0-red?style=flat)
 
 ## Description
 
@@ -32,10 +32,10 @@ A program that compresses image files into WebP format, or reads EXIF data and w
 
 ```python
 # Windows
-pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py       
+pyinstaller -w -F -n=Paddie --icon='resources/Paddie-Icon.icns' --hidden-import PyQt6 main.py       
 
 # macOS
-pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py   
+pyinstaller -w -F -n=Paddie --icon='resources/Paddie-Icon.icns' --hidden-import PyQt6 main.py   
 ```
 
 
@@ -48,7 +48,7 @@ pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import
 - -n
   - 프로그램 이름
 - --icon
-  - Resources 폴더 안에있는 ico 파일로 아이콘 표시
+  - resources 폴더 안에있는 ico 파일로 아이콘 표시
 
-## Used Resources
+## Used resources
 1. Barlow-Light Fonts

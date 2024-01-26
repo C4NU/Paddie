@@ -36,10 +36,10 @@ JPG, PNG등의 이미지 사진을 변환시켜주는 프로그램.
 
 ```python
 # Windows
-pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py       
+pyinstaller -w -F -n=Paddie --icon='resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py       
 
 # macOS
-pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py   
+pyinstaller -w -F -n=Paddie --icon='resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py   
 ```
 
 
@@ -52,4 +52,4 @@ pyinstaller -w -F -n=Paddie --icon='Resources/Icon@64X64_02.ico' --hidden-import
 - -n
   - 프로그램 이름
 - --icon
-  - Resources 폴더 안에있는 ico 파일로 아이콘 표시
+  - resources 폴더 안에있는 ico 파일로 아이콘 표시

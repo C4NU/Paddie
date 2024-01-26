@@ -21,27 +21,27 @@ from user_config import UserConfig
 
 if platform.system() == "Windows":
     program_exec_path = os.getcwd()
-    form = os.path.join(program_exec_path, "Resources/WebPConverterGUI.ui")
+    form = os.path.join(program_exec_path, "resources/WebPConverterGUI.ui")
 else:
     # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
     program_exec_path = os.path.dirname(sys.executable)
-    form = os.path.join(program_exec_path, "Resources/WebPConverterGUI.ui")
+    form = os.path.join(program_exec_path, "resources/WebPConverterGUI.ui")
 
 try:
     formClass = uic.loadUiType(form)[0]
 except:
     program_exec_path = os.getcwd()
-    formClass = uic.loadUiType(os.path.join(program_exec_path, "Resources/WebPConverterGUI.ui"))[0]
+    formClass = uic.loadUiType(os.path.join(program_exec_path, "resources/WebPConverterGUI.ui"))[0]
 
 if platform.system() == "Windows":
-    sample_file_path = os.path.join(program_exec_path, "Resources/")
+    sample_file_path = os.path.join(program_exec_path, "resources/")
 else:
     # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-    sample_file_path = os.path.join(program_exec_path, "Resources/")
+    sample_file_path = os.path.join(program_exec_path, "resources/")
     if Path(sample_file_path+"Sample.jpg").is_file() == True:
         print("Sample File Exists")
     else:
-        sample_file_path = os.path.join(program_exec_path, "Resources/")
+        sample_file_path = os.path.join(program_exec_path, "resources/")
 
 print("UI Loaded")
 

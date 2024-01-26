@@ -9,15 +9,15 @@ from PyQt6.QtWidgets import QDialogButtonBox, QSpinBox, QDialog, QComboBox
 from user_config import UserConfig
 
 if platform.system() == "Windows":
-    form = os.path.join(os.getcwd(), "Resources/ResizeOption.ui")
+    form = os.path.join(os.getcwd(), "resources/ResizeOption.ui")
 else:
     # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-    form = os.path.join(os.path.dirname(sys.executable), "Resources/ResizeOption.ui")
+    form = os.path.join(os.path.dirname(sys.executable), "resources/ResizeOption.ui")
 
 try:
     formClass = uic.loadUiType(form)[0]
 except:
-    formClass = uic.loadUiType(os.path.join(os.getcwd(), "Resources/ResizeOption.ui"))[0]
+    formClass = uic.loadUiType(os.path.join(os.getcwd(), "resources/ResizeOption.ui"))[0]
 
 
 class ResizeOptionWindow(QDialog, formClass):
