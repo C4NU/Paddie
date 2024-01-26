@@ -11,9 +11,9 @@ class ModelNameMapper:
     def replace_model_name(model_name) -> str:
 
         if platform.system() == "Windows":
-            path = os.path.join(os.getcwd(), 'Resources/model_map.csv')
+            path = os.path.join(os.getcwd(), 'resources/model_map.csv')
         else:
-            path = os.path.join(os.path.dirname(sys.executable), "Resources/model_map.csv")
+            path = os.path.join(os.path.dirname(sys.executable), "resources/model_map.csv")
 
         try:
             with open(path, newline='') as csv_file:
@@ -27,7 +27,7 @@ class ModelNameMapper:
                         return new_model_name
                     
         except:
-            path = os.path.join(os.getcwd(), 'Resources/model_map.csv')
+            path = os.path.join(os.getcwd(), 'resources/model_map.csv')
             with open(path, newline='') as csv_file:
                 map_reader = csv.DictReader(csv_file)
                 for row in map_reader:

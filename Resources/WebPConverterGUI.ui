@@ -24,7 +24,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>Resources/Icon@64X64_02.ico</normaloff>Resources/Icon@64X64_02.ico</iconset>
+    <normaloff>resources/Icon@64X64_02.ico</normaloff>resources/Icon@64X64_02.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QListWidget" name="image_list_widget">

@@ -9,15 +9,15 @@ from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPus
 from user_config import UserConfig
 
 if platform.system() == "Windows":
-	form = os.path.join(os.getcwd(), "Resources/ConversionOptions.ui")
+	form = os.path.join(os.getcwd(), "resources/ConversionOptions.ui")
 else:
 	# build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-	form = os.path.join(os.path.dirname(sys.executable), "Resources/ConversionOptions.ui")
+	form = os.path.join(os.path.dirname(sys.executable), "resources/ConversionOptions.ui")
 
 try:
 	formClass = uic.loadUiType(form)[0]
 except:
-	formClass = uic.loadUiType(os.path.join(os.getcwd(), "Resources/ConversionOptions.ui"))[0]
+	formClass = uic.loadUiType(os.path.join(os.getcwd(), "resources/ConversionOptions.ui"))[0]
 
 class WebPOptionWindow(QDialog, formClass):
 	def __init__(self):

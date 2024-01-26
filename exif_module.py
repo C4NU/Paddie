@@ -19,12 +19,12 @@ class Exif:
         self.side_padding_45 = 50
         # 폰트 (초기)
         if platform.system() == "Windows":
-            self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Resources/Barlow-Light.ttf'), self.font_size)
+            self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/Barlow-Light.ttf'), self.font_size)
         else:
             try:
-                self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "Resources/Barlow-Light.ttf"), self.font_size)
+                self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "resources/Barlow-Light.ttf"), self.font_size)
             except:
-                self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'Resources/Barlow-Light.ttf'), self.font_size)
+                self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/Barlow-Light.ttf'), self.font_size)
 
     def set_image_padding(self, image, top, side, bottom, color):
         width, height = image.size
@@ -232,7 +232,7 @@ def main():
     text = CaptionFormatConverter.convert("{body} | {lens}\n{focal_f} | {aper} | {iso} | {ss}", img._getexif())
     img = Exif.set_image_padding2(img, top=int(padding / 2), side=int(padding / 2), bottom=padding,
                                   color=(255, 255, 255))
-    img = exif_test.set_image_text(img, text=text, length=padding, font_path="Resources/Barlow-Light.ttf", color=(0,0,0), alignment=0)
+    img = exif_test.set_image_text(img, text=text, length=padding, font_path="resources/Barlow-Light.ttf", color=(0,0,0), alignment=0)
     img.show()
 
     img.save("Test.jpg")
