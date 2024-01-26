@@ -1,4 +1,3 @@
-from PIL import Image, ImageDraw, ImageFont
 from PIL.ExifTags import TAGS
 from model_name_mapper import ModelNameMapper
 
@@ -128,12 +127,12 @@ class CaptionFormatConverter():
     
     @staticmethod
     def get_shutterspeed_text(ss) -> str:
-        if ss < 1.0:
+        # note(bfs): based on camera's notation format (~1/4, 0.3")
+        if ss < 0.3:
             # note(komastar) : 1/1000s, 1/4000s ...
             return f'1/{int(round(1.0 / ss))}s'
         # note(komastar) : 1.0s, 30.0s ...
-        # note(canu): ,2 형식으로 변환시 TypeError string to Fraction.__format__ 발생..?
-        return f'{format(round(ss), ".1f")}s'
+        return f'{round(float(ss), 1)}s'
 
     @staticmethod
     def get_exposure_text(exposure_value) -> str:
