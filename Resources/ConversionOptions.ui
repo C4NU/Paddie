@@ -75,7 +75,7 @@
      <string extracomment="무압축으로 저장하는 옵션입니다."/>
     </property>
     <property name="text">
-     <string>Loseless</string>
+     <string>Lossless</string>
     </property>
    </widget>
    <widget class="QSpinBox" name="image_quality_spinbox">
