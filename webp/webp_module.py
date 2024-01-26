@@ -108,17 +108,17 @@ class Converter:
 
             if exif_option:
                 if icc_profile_option:
-                    image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
+                    image.save(dest, format="webp", lossless=loseless_option, quality=image_quality_option,
                                 exif=exif_data, exact=exact_option, icc_profile=icc_profile)
                 else:
-                    image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
+                    image.save(dest, format="webp", lossless=loseless_option, quality=image_quality_option,
                                 exif=exif_data, exact=exact_option)
             else:
                 if icc_profile_option:
-                    image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
+                    image.save(dest, format="webp", lossless=loseless_option, quality=image_quality_option,
                                    exact=exact_option, icc_profile=icc_profile)
                 else:
-                    image.save(dest, format="webp", loseless=loseless_option, quality=image_quality_option,
+                    image.save(dest, format="webp", lossless=loseless_option, quality=image_quality_option,
                                 exact=exact_option)
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, 
