@@ -89,6 +89,7 @@ class CaptionFormatConverter():
         if value == CaptionFormatConverter.dump_data:
             if exif_data:
                 print("[" + key + "]: value not found")
+                return value
             if 'focal' in key:
                 print(f'try exception handle canon aps-c to ff eqv focal length')
                 manufacturer_info = CaptionFormatConverter.exif_dic['{mf}']
@@ -97,7 +98,6 @@ class CaptionFormatConverter():
                     focal_info = CaptionFormatConverter.exif_dic['{focal}']
                     value = exif_data.get(focal_info[0], CaptionFormatConverter.dump_data)
                     value *= 1.6
-            return value
 
         result = str(value)
         if key == "{body}": result = CaptionFormatConverter.get_body_text(value)
