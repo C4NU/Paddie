@@ -89,6 +89,14 @@ class CaptionFormatConverter():
         if value == CaptionFormatConverter.dump_data:
             if exif_data:
                 print("[" + key + "]: value not found")
+            if 'focal' in key:
+                print(f'try exception handle canon aps-c to ff eqv focal length')
+                manufacturer_info = CaptionFormatConverter.exif_dic['{mf}']
+                manufacturer = exif_data.get(manufacturer_info[0], CaptionFormatConverter.dump_data)
+                if manufacturer and 'Canon' in manufacturer:
+                    focal_info = CaptionFormatConverter.exif_dic['{focal}']
+                    value = exif_data.get(focal_info[0], CaptionFormatConverter.dump_data)
+                    value *= 1.6
             return value
 
         result = str(value)
@@ -114,7 +122,9 @@ class CaptionFormatConverter():
         return ModelNameMapper.replace_model_name(str(body_value))        
     
     @staticmethod
-    def get_focal_text(focal_length) -> str:
+    def get_focal_text(focal_length, apsc_canon=False) -> str:
+        if apsc_canon:
+            focal_length *= 1.6
         return str(int(round(focal_length))) + "mm"
     
     @staticmethod
