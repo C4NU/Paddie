@@ -52,7 +52,7 @@ class Converter:
                 else:
                     new_image = image.rotate(0, expand=True)
 
-                    return exif, new_image
+                return exif, new_image
 
         except Exception as e:
             print(e)
