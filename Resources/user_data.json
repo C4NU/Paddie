@@ -1,0 +1,36 @@
+{
+    "latest_load_path": null,
+    "latest_save_path": null,
+    "save_original_path": false,
+    "resize_options": false,
+    "resize_axis": 2,
+    "resize_size": 3000,
+    "conversion_options": true,
+    "conversion_loseless": false,
+    "conversion_exif": false,
+    "conversion_icc": false,
+    "conversion_transparent": false,
+    "conversion_quality": 92,
+    "exif_options": false,
+    "exif_show_preview": false,
+    "exif_padding_mode": 0,
+    "exif_save_exifdata": false,
+    "exif_quality": 92,
+    "exif_ratio": 0,
+    "exif_type": 2,
+    "exif_easymode_options": true,
+    "exif_easymode_oneline": false,
+    "exif_format": "{body} | {lens}\n{focal_f} | {aper} | {iso} | {ss}",
+    "exif_font_index": 1,
+    "exif_format_alignment": 0,
+    "exif_text_color": [
+        0,
+        0,
+        0
+    ],
+    "exif_bg_color": [
+        255,
+        255,
+        255
+    ]
+}

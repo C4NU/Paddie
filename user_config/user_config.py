@@ -2,9 +2,11 @@
 
 import json
 import os.path
+import platform
+import sys
 
 print("User_Config Python Package Loaded")
-# comment (CANU): 호호 맥에서 패키지가 어디갓징
+
 from PyQt6 import QtGui
 from PyQt6.QtGui import QColor
 print("PyQt6 QColor Loaded")
@@ -44,31 +46,45 @@ class UserConfig:
 
     @staticmethod
     def save():
-        with open('user_data.json', 'w') as save_data:
-            data = {key: getattr(UserConfig, key) for key in UserConfig.__dict__.keys() if not key.startswith("__") and not callable(getattr(UserConfig, key)) and "_color" not in key}
+        if platform.system() == "Windows":
+            save_data = open(os.path.join(os.getcwd(), 'resources/user_data.json'), 'w')
+        else:
+            try:
+                save_data = open(os.path.join(os.path.dirname(sys.executable), 'resources/user_data.json'), 'w')
+            except:
+                save_data = open(os.path.join(os.getcwd(), 'resources/user_data.json'), 'w')
+        #with open('resources/user_data.json', 'w') as save_data:
+        data = {key: getattr(UserConfig, key) for key in UserConfig.__dict__.keys() if not key.startswith("__") and not callable(getattr(UserConfig, key)) and "_color" not in key}
 
-            # Special handling for QColor
-            data['exif_text_color'] = [UserConfig.exif_text_color.red(), UserConfig.exif_text_color.green(), UserConfig.exif_text_color.blue()]
-            data['exif_bg_color'] = [UserConfig.exif_bg_color.red(), UserConfig.exif_bg_color.green(), UserConfig.exif_bg_color.blue()]
+        # Special handling for QColor
+        data['exif_text_color'] = [UserConfig.exif_text_color.red(), UserConfig.exif_text_color.green(), UserConfig.exif_text_color.blue()]
+        data['exif_bg_color'] = [UserConfig.exif_bg_color.red(), UserConfig.exif_bg_color.green(), UserConfig.exif_bg_color.blue()]
 
-            json.dump(data, save_data, indent=4)
+        json.dump(data, save_data, indent=4)
 
     @staticmethod
     def load():
-        if not os.path.exists('user_data.json'):
+        if platform.system() == "Windows":
+            load_data = open(os.path.join(os.getcwd(), 'resources/user_data.json'), 'r')
+        else:
+            try:
+                load_data = open(os.path.join(os.path.dirname(sys.executable), 'resources/user_data.json'), 'r')
+            except:
+                load_data = open(os.path.join(os.getcwd(), 'resources/user_data.json'), 'r')
+
+        if not load_data:
             print("User Data Not loaded")
             return
 
-        with open('user_data.json', 'r') as load_data:
-            try:
-                data = json.load(load_data)
+        try:
+            data = json.load(load_data)
 
-                for key, value in data.items():
-                    # Special handling for QColor
-                    if key == 'exif_text_color' or key == 'exif_bg_color':
-                        setattr(UserConfig, key, QColor(value[0], value[1], value[2]))
-                    else:
-                        setattr(UserConfig, key, value)
+            for key, value in data.items():
+                # Special handling for QColor
+                if key == 'exif_text_color' or key == 'exif_bg_color':
+                    setattr(UserConfig, key, QColor(value[0], value[1], value[2]))
+                else:
+                    setattr(UserConfig, key, value)
 
-            except json.decoder.JSONDecodeError:
-                print('json decode error')
+        except json.decoder.JSONDecodeError:
+            print('json decode error')
