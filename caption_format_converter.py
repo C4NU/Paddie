@@ -48,8 +48,6 @@ class CaptionFormatConverter():
                 # (spaces)(one character)(spaces)NONEDATA or NONEDATA(spaces)(one character)(spaces)
                 pattern = rf'((\s.{"{1}"}\s){CaptionFormatConverter.dump_data})|({CaptionFormatConverter.dump_data}(\s.{"{1}"}\s))'
                 text_replaced = re.sub(pattern, '', text_replaced)
-
-            return text_replaced
         except Exception as e:
             print(e)
             print("데이터 불량, 콘솔 창의 기록을 댓글로 남겨주세요.")
