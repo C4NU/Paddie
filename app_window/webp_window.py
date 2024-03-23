@@ -217,7 +217,8 @@ class WebpWindow(QMainWindow, formClass):
                                                        quality_option=80,
                                                        caption_format=UserConfig.exif_format,
                                                        easymode_option=UserConfig.exif_easymode_options,
-                                                       easymode_oneline=UserConfig.exif_easymode_oneline)
+                                                       easymode_oneline=UserConfig.exif_easymode_oneline,
+                                                       auto_hide_nonedata=UserConfig.exif_auto_hide_nonedata)
         
         if made_image is None:
             self.hide_preview()
@@ -412,7 +413,8 @@ class WebpWindow(QMainWindow, formClass):
                                                       quality_option=UserConfig.exif_quality,
                                                       caption_format=UserConfig.exif_format,
                                                       easymode_option=UserConfig.exif_easymode_options,
-                                                      easymode_oneline=UserConfig.exif_easymode_oneline)
+                                                      easymode_oneline=UserConfig.exif_easymode_oneline,
+                                                      auto_hide_nonedata=UserConfig.exif_auto_hide_nonedata)
 
             else:
                 print("옵션 선택 에러 / 다시 선택해주세요")

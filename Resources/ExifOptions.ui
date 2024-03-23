@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>461</width>
-    <height>333</height>
+    <height>363</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>295</y>
+     <y>325</y>
      <width>441</width>
      <height>32</height>
     </rect>
@@ -38,7 +38,7 @@
      <x>10</x>
      <y>100</y>
      <width>441</width>
-     <height>191</height>
+     <height>221</height>
     </rect>
    </property>
    <property name="title">
@@ -191,6 +191,19 @@
     </property>
     <property name="text">
      <string>Loading...</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="auto_hide_nonedata_checkbox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>193</y>
+      <width>240</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Automatically hide NONEDATA text</string>
     </property>
    </widget>
   </widget>

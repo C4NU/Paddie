@@ -123,7 +123,8 @@ class Converter:
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, 
                             bg_color, text_color, ratio_option, exif_padding_option, save_exif_data_option,
-                            resize_option, axis_option, alignment_option, resize_value, quality_option, caption_format, easymode_option, easymode_oneline):
+                            resize_option, axis_option, alignment_option, resize_value, quality_option, caption_format, easymode_option, easymode_oneline,
+                            auto_hide_nonedata=False):
         
         file_format = Converter.search_file_format(file_path)
 
@@ -151,7 +152,7 @@ class Converter:
             new_exif_data, image = Converter.fix_orientation(image)
             
         if not easymode_option:
-            full_text = CaptionFormatConverter.convert(caption_format, raw_exif_data)
+            full_text = CaptionFormatConverter.convert(caption_format, exif_data=raw_exif_data, auto_hide_nonedata=auto_hide_nonedata)
         else:
             full_text = CaptionFormatConverter.convert_easymode(easymode_oneline, raw_exif_data)
 

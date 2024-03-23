@@ -44,6 +44,7 @@ class ExifOptionWindow(QDialog, formClass):
 		self.easy_mode_enable = False
 		self.easy_mode_oneline = False
 		self.caption_format = ""
+		self.auto_hide_nonedata = False
 
 		# UI 링킹 설정 (EXIF Options)
 		self.exif_option_button_box: QDialogButtonBox(QDialogButtonBox.Save | QDialogButtonBox.Cancel)
@@ -66,6 +67,7 @@ class ExifOptionWindow(QDialog, formClass):
 		self.__selected_font_style: str
 		self.enable_easymode_option_box: QCheckBox
 		self.enable_easymode_oneline_box: QCheckBox
+		self.auto_hide_nonedata_checkbox: QCheckBox
 		
 		# UI 불러오기
 		self.setupUi(self)
@@ -111,6 +113,9 @@ class ExifOptionWindow(QDialog, formClass):
 
 		self.enable_easymode_oneline_box.stateChanged.connect(self.on_exif_easy_mode_oneline_toggled)
 		self.enable_easymode_oneline_box.setToolTip("기존의 한 줄 출력을 원할 시 체크")
+
+		self.auto_hide_nonedata_checkbox.stateChanged.connect(self.on_auto_hide_nonedata_toggled)
+		self.auto_hide_nonedata_checkbox.setToolTip("데이터 오류로 NONEDATA가 뜨는 걸 자동으로 가리고자 할 때 체크.\n렌즈 데이터가 잡히지 않는 똑딱이와 렌즈교환식을 동시 쓰는 경우 등에 좋음")
 
 	def setup_ui_internal(self):
 		if platform.system() == "Windows":
@@ -201,6 +206,9 @@ class ExifOptionWindow(QDialog, formClass):
 		if self.enable_easymode_option_box.isChecked() != UserConfig.exif_easymode_options:
 			self.enable_easymode_option_box.toggle()
 
+		if self.auto_hide_nonedata_checkbox.isChecked() != UserConfig.exif_auto_hide_nonedata:
+			self.auto_hide_nonedata_checkbox.toggle()
+
 		self.image_padding_box.setEnabled(self.image_ratio == 0)
 		self.__update_font_preview()
 			
@@ -227,6 +235,7 @@ class ExifOptionWindow(QDialog, formClass):
 		UserConfig.exif_format = self.caption_format
 		UserConfig.exif_easymode_options = self.easy_mode_enable
 		UserConfig.exif_easymode_oneline = self.easy_mode_oneline
+		UserConfig.exif_auto_hide_nonedata = self.auto_hide_nonedata
 		UserConfig.save()
 		super().accept()
 
@@ -288,6 +297,10 @@ class ExifOptionWindow(QDialog, formClass):
 		self.easy_mode_oneline = bool(state == Qt.CheckState.Checked.value)
 		self.__update_font_preview() 
 
+	def on_auto_hide_nonedata_toggled(self, state):
+		self.auto_hide_nonedata = bool(state == Qt.CheckState.Checked.value)
+		self.__update_font_preview()
+
 	def __update_font_preview(self):
 		self.format_input_area.setEnabled(not self.easy_mode_enable)
 		self.enable_easymode_oneline_box.setEnabled(self.easy_mode_enable)
@@ -308,7 +321,7 @@ class ExifOptionWindow(QDialog, formClass):
 		if self.easy_mode_enable:
 			text = CaptionFormatConverter.convert_easymode(self.easy_mode_oneline, self.selected_exif_data)
 		else:
-			text = CaptionFormatConverter.convert(self.format_input_area.toPlainText(), self.selected_exif_data)
+			text = CaptionFormatConverter.convert(self.format_input_area.toPlainText(), self.selected_exif_data, self.auto_hide_nonedata)
 		
 		self.format_preview_area.setText(text)
 

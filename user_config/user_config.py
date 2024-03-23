@@ -43,6 +43,7 @@ class UserConfig:
     exif_format = "{body} | {lens}\n{focal_f} | {aper} | {iso} | {ss}" # replacement of 1 line text
     exif_font_index = 1 # index of font list
     exif_format_alignment = 0 # 0:Center, 1:Left, 2:Right
+    exif_auto_hide_nonedata = False
 
     @staticmethod
     def save():

@@ -1,5 +1,6 @@
 from PIL.ExifTags import TAGS
 from model_name_mapper import ModelNameMapper
+import re
 
 class CaptionFormatConverter():
     dump_data = "NONEDATA"
@@ -28,7 +29,7 @@ class CaptionFormatConverter():
     }
     
     @staticmethod
-    def convert(text:str, exif_data=None) -> str:
+    def convert(text:str, exif_data=None, auto_hide_nonedata=False) -> str:
         exif_actual_dic = {}
 
         try:
@@ -41,6 +42,14 @@ class CaptionFormatConverter():
             for key in list(exif_actual_dic.keys()):
                 value = exif_actual_dic[key]
                 text_replaced = text_replaced.replace(key, value)
+
+            if auto_hide_nonedata:
+                # this regex represents:
+                # (spaces)(one character)(spaces)NONEDATA or NONEDATA(spaces)(one character)(spaces)
+                pattern = rf'((\s.{"{1}"}\s){CaptionFormatConverter.dump_data})|({CaptionFormatConverter.dump_data}(\s.{"{1}"}\s))'
+                text_replaced = re.sub(pattern, '', text_replaced)
+
+            return text_replaced
         except Exception as e:
             print(e)
             print("데이터 불량, 콘솔 창의 기록을 댓글로 남겨주세요.")
