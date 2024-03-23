@@ -45,8 +45,17 @@ class CaptionFormatConverter():
 
             if auto_hide_nonedata:
                 # this regex represents:
-                # (spaces)(one character)(spaces)NONEDATA or NONEDATA(spaces)(one character)(spaces)
-                pattern = rf'((\s.{"{1}"}\s){CaptionFormatConverter.dump_data})|({CaptionFormatConverter.dump_data}(\s.{"{1}"}\s))'
+                # NONEDATA
+                # or (spaces)NONEDATA
+                # or NONEDATA(spaces)
+                # or (one special character)NONEDATA
+                # or NONEDATA(one special character)
+                # or (spaces)(one special character)(spaces)NONEDATA 
+                # or NONEDATA(spaces)(one special character)(spaces)
+                # BODY:{body} LENS:{lens} 이런 것도 대응하면 좋겠지만 regex가 너무 커져서...
+                regex_characters = r'[!@#$%^&*()-_+=|}{\'\"\[\]/?.>,<`~;:\n]'
+                regex_pattern = rf'((\b)|({regex_characters})|(\s{regex_characters})|({regex_characters}\s)|(\s{regex_characters}\s))'
+                pattern = f'({regex_pattern}{CaptionFormatConverter.dump_data})|({CaptionFormatConverter.dump_data}{regex_pattern})|({CaptionFormatConverter.dump_data})'
                 text_replaced = re.sub(pattern, '', text_replaced)
         except Exception as e:
             print(e)
