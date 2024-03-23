@@ -304,6 +304,7 @@ class ExifOptionWindow(QDialog, formClass):
 	def __update_font_preview(self):
 		self.format_input_area.setEnabled(not self.easy_mode_enable)
 		self.enable_easymode_oneline_box.setEnabled(self.easy_mode_enable)
+		self.auto_hide_nonedata_checkbox.setEnabled(not self.easy_mode_enable)
 
 		if self.__selected_font_style:
 			font = QFontDatabase.font(self.__selected_font_family, self.__selected_font_style, self.__font_preview_size)
