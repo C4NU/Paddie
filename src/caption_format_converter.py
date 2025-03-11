@@ -131,8 +131,6 @@ class CaptionFormatConverter():
 
         return result
 
-
-
     @staticmethod
     def get_body_text(body_value) -> str:
         return ModelNameMapper.replace_model_name(str(body_value))        

@@ -5,7 +5,6 @@ import os
 import sys
 import platform
 
-
 class ModelNameMapper:
     @staticmethod
     def replace_model_name(model_name) -> str:
@@ -39,6 +38,5 @@ class ModelNameMapper:
                         return new_model_name
 
         return model_name
-
 
 # ModelNameMapper.replace_model_name('ILCE-7RM3')

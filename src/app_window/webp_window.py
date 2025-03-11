@@ -7,7 +7,8 @@ from pathlib import Path
 from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow
 
 print("Python Package Loaded")
-import webp
+import converter
+
 
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
@@ -18,32 +19,20 @@ from PyQt6.QtGui import QPixmap
 print("PyQt6 Package Loaded")
 
 from user_config import UserConfig
+from resource_path import resource_path
 
-if platform.system() == "Windows":
-    program_exec_path = os.getcwd()
-    form = os.path.join(program_exec_path, "../resources/WebPConverterGUI.ui")
-else:
-    # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-    program_exec_path = os.path.dirname(sys.executable)
-    form = os.path.join(program_exec_path, "../resources/WebPConverterGUI.ui")
+UI_MAIN = "ui/WebPConverterGUI.ui"
 
 try:
-    formClass = uic.loadUiType(form)[0]
-except:
-    program_exec_path = os.getcwd()
-    formClass = uic.loadUiType(os.path.join(program_exec_path, "../resources/WebPConverterGUI.ui"))[0]
+    # UI 파일 로드
+    ui_path = resource_path(UI_MAIN)
+    form_class = uic.loadUiType(ui_path)[0]
+        
+except Exception as e:
+    print(f"Resource loading failed: {str(e)}")
+    sys.exit(1)
 
-if platform.system() == "Windows":
-    sample_file_path = os.path.join(program_exec_path, "../resources/")
-else:
-    # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-    sample_file_path = os.path.join(program_exec_path, "../resources/")
-    if Path(sample_file_path+"Sample.jpg").is_file() == True:
-        print("Sample File Exists")
-    else:
-        sample_file_path = os.path.join(program_exec_path, "../resources/")
-
-print("UI Loaded")
+print("UI Loaded Successfully")
 
 class WebpApp:
     def __init__(self):
@@ -56,14 +45,14 @@ class WebpApp:
     def exec(self):
         self.app.exec()
 
-class WebpWindow(QMainWindow, formClass):
+class WebpWindow(QMainWindow, form_class):
     default_font = 'Barlow-Light'
 
     def __init__(self):
         super().__init__()
 
         # Converter 모듈 initialize
-        self.converter = webp.Converter()
+        self.converter = converter.Converter()
         
         # Conversion UI initialize
         self.webp_conversion_option_window = WebPOptionWindow()

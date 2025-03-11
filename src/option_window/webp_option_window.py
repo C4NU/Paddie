@@ -7,19 +7,22 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton
 
 from user_config import UserConfig
+from resource_path import resource_path
 
-if platform.system() == "Windows":
-	form = os.path.join(os.getcwd(), "../resources/ConversionOptions.ui")
-else:
-	# build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-	form = os.path.join(os.path.dirname(sys.executable), "../resources/ConversionOptions.ui")
+UI_CONVERSION_OPTION = "ui/ConversionOptions.ui"
 
 try:
-	formClass = uic.loadUiType(form)[0]
-except:
-	formClass = uic.loadUiType(os.path.join(os.getcwd(), "../resources/ConversionOptions.ui"))[0]
+    # UI 파일 로드
+    ui_path = resource_path(UI_CONVERSION_OPTION)
+    form_class = uic.loadUiType(ui_path)[0]
 
-class WebPOptionWindow(QDialog, formClass):
+except Exception as e:
+    print(f"Resource loading failed: {str(e)}")
+    sys.exit(1)
+
+print("UI Loaded Successfully")
+
+class WebPOptionWindow(QDialog, form_class):
 	def __init__(self):
 		super().__init__()
 

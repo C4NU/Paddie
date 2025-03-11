@@ -11,7 +11,6 @@ import exif_module
 import resize_module
 from caption_format_converter import CaptionFormatConverter
 
-
 class Converter:
     FILE_FORMAT_EXTENSION = {0: 'jpeg', 1: 'png', 2: 'webp'}
     FILE_FORMAT_QUALITY_PRESET = {0: 100, 1: 100, 2: 92}
