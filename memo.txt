@@ -1,0 +1,9 @@
+pyinstaller --windowed --noconfirm --clean \
+--name "Paddie" \
+--icon resources/icon.icns \
+--add-data "resources/ui:ui" \
+--add-data "resources/fonts:fonts" \
+--add-data "resources/model_map.csv:model_map" \
+--add-data "resources/user_data.json:user_data" \
+--add-data "resources/Barlow-Light.ttf:Barlow-Light" \
+src/main.py

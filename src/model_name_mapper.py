@@ -4,15 +4,12 @@ import csv
 import os
 import sys
 import platform
+from resource_path import resource_path
 
 class ModelNameMapper:
     @staticmethod
     def replace_model_name(model_name) -> str:
-
-        if platform.system() == "Windows":
-            path = os.path.join(os.getcwd(), '../resources/model_map.csv')
-        else:
-            path = os.path.join(os.path.dirname(sys.executable), "../resources/model_map.csv")
+        path = resource_path('resources/model_map.csv')
 
         try:
             with open(path, newline='') as csv_file:
@@ -24,7 +21,7 @@ class ModelNameMapper:
                         new_model_name = model_name.replace(find_string, replace_string)
                         print(f'{model_name} -> {new_model_name}')
                         return new_model_name
-                    
+       
         except:
             path = os.path.join(os.getcwd(), '../resources/model_map.csv')
             with open(path, newline='') as csv_file:

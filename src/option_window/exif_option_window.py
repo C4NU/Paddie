@@ -15,7 +15,8 @@ from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPus
 
 from resource_path import resource_path
 
-UI_EXIF_OPTION = "ui/ExifOptions.ui"
+UI_EXIF_OPTION = "resources/ui/ExifOptions.ui"
+UI_FONTS = "resources/Fonts"
 
 try:
     # UI 파일 로드
@@ -26,7 +27,7 @@ except Exception as e:
     print(f"Resource loading failed: {str(e)}")
     sys.exit(1)
 
-print("UI Loaded Successfully")
+print("EXIF OPTION UI Loaded Successfully")
 
 class ExifOptionWindow(QDialog, form_class):
 	def __init__(self):
@@ -123,10 +124,14 @@ class ExifOptionWindow(QDialog, form_class):
 		self.auto_hide_nonedata_checkbox.setToolTip("데이터 오류로 NONEDATA가 뜨는 걸 자동으로 가리고자 할 때 체크.\n렌즈 데이터가 잡히지 않는 똑딱이와 렌즈교환식을 동시 쓰는 경우 등에 좋음")
 
 	def setup_ui_internal(self):
+		
+		font_asset_path = resource_path(UI_FONTS)
+		'''
 		if platform.system() == "Windows":
 			font_asset_path = os.path.join(os.getcwd(), "../resources/Fonts")
 		else:
-			font_asset_path = os.path.join(os.path.dirname(sys.executable), "../resources/Fonts")
+			font_asset_path = os.path.join(os.path.dirname(sys.executable), "../resources/Fonts")'
+		'''
 
 		print(f"Font_asset: {font_asset_path}")
 		fonts = pathlib.Path(font_asset_path)

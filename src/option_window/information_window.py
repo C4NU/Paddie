@@ -13,7 +13,7 @@ from PyQt6.QtGui import QPalette, QColor, QFont
 from PyQt6.QtGui import QFontDatabase
 from PyQt6.QtWidgets import QDialog, QLabel
 
-UI_INFORMATION = "ui/Information.ui"
+UI_INFORMATION = "resources/ui/Information.ui"
 
 try:
     # UI 파일 로드
@@ -24,7 +24,7 @@ except Exception as e:
     print(f"Resource loading failed: {str(e)}")
     sys.exit(1)
 
-print("UI Loaded Successfully")
+print("INFORMATION UI Loaded Successfully")
 
 class InformationWindow(QDialog, form_class):
 	def __init__(self):

@@ -7,7 +7,7 @@ from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPus
 
 from resource_path import resource_path
 
-UI_WATERMARK_OPTION = "ui/WatermarkOptions.ui"
+UI_WATERMARK_OPTION = "resources/ui/WatermarkOptions.ui"
 
 try:
     # UI 파일 로드
@@ -18,7 +18,7 @@ except Exception as e:
     print(f"Resource loading failed: {str(e)}")
     sys.exit(1)
 
-print("UI Loaded Successfully")
+print("WATERMARK OPTION UI Loaded Successfully")
 
 class WatermarkOptionWindow(QDialog, form_class):
 	def __init__(self):

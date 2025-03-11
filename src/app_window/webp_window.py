@@ -21,7 +21,7 @@ print("PyQt6 Package Loaded")
 from user_config import UserConfig
 from resource_path import resource_path
 
-UI_MAIN = "ui/WebPConverterGUI.ui"
+UI_MAIN = "resources/ui/WebPConverterGUI.ui"
 
 try:
     # UI 파일 로드
@@ -32,7 +32,7 @@ except Exception as e:
     print(f"Resource loading failed: {str(e)}")
     sys.exit(1)
 
-print("UI Loaded Successfully")
+print("Main UI Loaded Successfully")
 
 class WebpApp:
     def __init__(self):

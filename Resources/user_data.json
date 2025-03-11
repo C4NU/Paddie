@@ -12,7 +12,7 @@
     "conversion_transparent": false,
     "conversion_quality": 92,
     "exif_options": true,
-    "exif_show_preview": true,
+    "exif_show_preview": false,
     "exif_padding_mode": 1,
     "exif_save_exifdata": true,
     "exif_quality": 92,

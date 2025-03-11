@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import QDialogButtonBox, QSpinBox, QDialog, QComboBox
 from user_config import UserConfig
 from resource_path import resource_path
 
-UI_RESIZE_OPTION = "ui/ResizeOption.ui"
+UI_RESIZE_OPTION = "resources/ui/ResizeOption.ui"
 
 try:
     # UI 파일 로드
@@ -21,7 +21,7 @@ except Exception as e:
     print(f"Resource loading failed: {str(e)}")
     sys.exit(1)
 
-print("UI Loaded Successfully")
+print("RESIZE OPTION UI Loaded Successfully")
 
 class ResizeOptionWindow(QDialog, form_class):
     def __init__(self):
