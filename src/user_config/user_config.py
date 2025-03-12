@@ -9,8 +9,11 @@ print("User_Config Python Package Loaded")
 
 from PyQt6 import QtGui
 from PyQt6.QtGui import QColor
-print("PyQt6 QColor Loaded")
+print("PyQt6 QColor Loaded") 
 
+from resource_path import resource_path
+
+RESOURCE_USER_DATA = "resources/user_data.json"
 
 class UserConfig:
     # setting value is default value
@@ -47,13 +50,16 @@ class UserConfig:
 
     @staticmethod
     def save():
+        save_data = open(resource_path(RESOURCE_USER_DATA), 'w')
+        '''
         if platform.system() == "Windows":
-            save_data = open(os.path.join(os.getcwd(), 'resources/user_data.json'), 'w')
+            save_data = open(os.path.join(os.getcwd(), '../resources/user_data.json'), 'w')
         else:
             try:
-                save_data = open(os.path.join(os.path.dirname(sys.executable), 'resources/user_data.json'), 'w')
+                save_data = open(os.path.join(os.path.dirname(sys.executable), '../resources/user_data.json'), 'w')
             except:
-                save_data = open(os.path.join(os.getcwd(), 'resources/user_data.json'), 'w')
+                save_data = open(os.path.join(os.getcwd(), '../resources/user_data.json'), 'w')'
+        '''
         #with open('resources/user_data.json', 'w') as save_data:
         data = {key: getattr(UserConfig, key) for key in UserConfig.__dict__.keys() if not key.startswith("__") and not callable(getattr(UserConfig, key)) and "_color" not in key}
 
@@ -65,14 +71,16 @@ class UserConfig:
 
     @staticmethod
     def load():
+        load_data = open(resource_path(RESOURCE_USER_DATA), 'r')
+        '''
         if platform.system() == "Windows":
-            load_data = open(os.path.join(os.getcwd(), 'resources/user_data.json'), 'r')
+            load_data = open(os.path.join(os.getcwd(), '../esources/user_data.json'), 'r')
         else:
             try:
-                load_data = open(os.path.join(os.path.dirname(sys.executable), 'resources/user_data.json'), 'r')
+                load_data = open(os.path.join(os.path.dirname(sys.executable), '../resources/user_data.json'), 'r')
             except:
-                load_data = open(os.path.join(os.getcwd(), 'resources/user_data.json'), 'r')
-
+                load_data = open(os.path.join(os.getcwd(), '../resources/user_data.json'), 'r')
+        '''
         if not load_data:
             print("User Data Not loaded")
             return

@@ -50,5 +50,6 @@ pyinstaller -w -F -n=Paddie --icon='resources/Paddie-Icon.icns' --hidden-import 
 - --icon
   - resources 폴더 안에있는 ico 파일로 아이콘 표시
 
-## Used resources
-1. Barlow-Light Fonts
+## LICENCE
+1. ICON: <a href="https://www.flaticon.com/kr/free-icons/" title="폴라로이드 아이콘">폴라로이드 아이콘 제작자: Ekros - Flaticon</a>
+2. FONT FILE: Barlow-Light

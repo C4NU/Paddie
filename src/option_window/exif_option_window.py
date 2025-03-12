@@ -2,6 +2,7 @@ import os
 import sys
 import platform
 import pathlib
+from pathlib import Path
 
 from user_config import UserConfig
 from caption_format_converter import CaptionFormatConverter
@@ -12,18 +13,23 @@ from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtGui import QFontDatabase
 from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton, QComboBox, QPlainTextEdit, QColorDialog, QLabel, QVBoxLayout
 
-if platform.system() == "Windows":
-	form = os.path.join(os.getcwd(), "resources/ExifOptions.ui")
-else:
-	# build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-	form = os.path.join(os.path.dirname(sys.executable), "resources/ExifOptions.ui")
+from resource_path import resource_path
+
+UI_EXIF_OPTION = "resources/ui/ExifOptions.ui"
+UI_FONTS = "resources/Fonts"
 
 try:
-	formClass = uic.loadUiType(form)[0]
-except:
-	formClass = uic.loadUiType(os.path.join(os.getcwd(), "resources/ExifOptions.ui"))[0]
+     # UI 파일 로드
+     ui_path = resource_path(UI_EXIF_OPTION)
+     form_class = uic.loadUiType(ui_path)[0]
+          
+except Exception as e:
+     print(f"Resource loading failed: {str(e)}")
+     sys.exit(1)
 
-class ExifOptionWindow(QDialog, formClass):
+print("EXIF OPTION UI Loaded Successfully")
+
+class ExifOptionWindow(QDialog, form_class):
 	def __init__(self):
 		super().__init__()
 
@@ -118,10 +124,14 @@ class ExifOptionWindow(QDialog, formClass):
 		self.auto_hide_nonedata_checkbox.setToolTip("데이터 오류로 NONEDATA가 뜨는 걸 자동으로 가리고자 할 때 체크.\n렌즈 데이터가 잡히지 않는 똑딱이와 렌즈교환식을 동시 쓰는 경우 등에 좋음")
 
 	def setup_ui_internal(self):
+		
+		font_asset_path = resource_path(UI_FONTS)
+		'''
 		if platform.system() == "Windows":
-			font_asset_path = os.path.join(os.getcwd(), "resources/Fonts")
+			font_asset_path = os.path.join(os.getcwd(), "../resources/Fonts")
 		else:
-			font_asset_path = os.path.join(os.path.dirname(sys.executable), "resources/Fonts")
+			font_asset_path = os.path.join(os.path.dirname(sys.executable), "../resources/Fonts")'
+		'''
 
 		print(f"Font_asset: {font_asset_path}")
 		fonts = pathlib.Path(font_asset_path)
@@ -137,7 +147,7 @@ class ExifOptionWindow(QDialog, formClass):
 					self.__add_font_combobox(item, font_item)
 		except:
 			# py 형식으로 실행할 때 macOS 오류 처리용 경로 설정
-			fonts = pathlib.Path(os.path.join(os.getcwd(), "resources/Fonts"))
+			fonts = pathlib.Path(os.path.join(os.getcwd(), "../resources/Fonts"))
 			for item in fonts.iterdir():
 				if item.is_file():
 					continue
@@ -247,7 +257,7 @@ class ExifOptionWindow(QDialog, formClass):
 
 	# Exif Padding 옵션
 	def on_change_padding_option(self):
-		#self.enable_padding = bool(state == Qt.CheckState.Checked.value)        
+		#self.enable_padding = bool(state == Qt.CheckState.Checked.value)          
 		self.image_padding = self.image_padding_box.currentIndex()
 		print(f"Padding Mode Pushed, Square Mode Opt: {self.image_padding}")  
 

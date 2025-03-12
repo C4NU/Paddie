@@ -6,21 +6,24 @@ import platform
 from PyQt6 import uic
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialogButtonBox, QSpinBox, QDialog, QComboBox
-from user_config import UserConfig
 
-if platform.system() == "Windows":
-    form = os.path.join(os.getcwd(), "resources/ResizeOption.ui")
-else:
-    # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-    form = os.path.join(os.path.dirname(sys.executable), "resources/ResizeOption.ui")
+from user_config import UserConfig
+from resource_path import resource_path
+
+UI_RESIZE_OPTION = "resources/ui/ResizeOption.ui"
 
 try:
-    formClass = uic.loadUiType(form)[0]
-except:
-    formClass = uic.loadUiType(os.path.join(os.getcwd(), "resources/ResizeOption.ui"))[0]
+    # UI 파일 로드
+    ui_path = resource_path(UI_RESIZE_OPTION)
+    form_class = uic.loadUiType(ui_path)[0]
 
+except Exception as e:
+    print(f"Resource loading failed: {str(e)}")
+    sys.exit(1)
 
-class ResizeOptionWindow(QDialog, formClass):
+print("RESIZE OPTION UI Loaded Successfully")
+
+class ResizeOptionWindow(QDialog, form_class):
     def __init__(self):
         super().__init__()
         
