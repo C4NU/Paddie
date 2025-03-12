@@ -2,6 +2,46 @@ import sys
 import os
 from pathlib import Path
 
+import sys
+import os
+from pathlib import Path
+
+def resource_path(relative_path: str) -> str:
+    """
+    Cross-platform 리소스 경로 생성기 (PyInstaller 빌드/개발 모드 자동 인식)
+    
+    Parameters:
+        relative_path (str): 프로젝트 루트 기준 상대 경로 (e.g. 'resources/ui/ResizeOption.ui')
+        
+    Returns:
+        str: 실제 리소스 절대 경로
+        
+    Raises:
+        FileNotFoundError: 리소스가 존재하지 않을 때
+    """
+    # PyInstaller 번들 모드 감지
+    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+        base_path = Path(sys._MEIPASS)
+    else:
+        # 개발 모드: 현재 파일 기준 2단계 상위 디렉토리를 프로젝트 루트로 가정
+        base_path = Path(__file__).resolve().parent.parent
+
+    # 경로 조합 및 정규화
+    full_path = (base_path / relative_path).resolve()
+
+    # 존재 여부 검증 (모든 OS에서 대소문자 구분)
+    if not full_path.exists():
+        error_msg = (
+            f"[리소스 누락] '{relative_path}'를 찾을 수 없습니다.\n"
+            f"검색 위치: {'번들' if hasattr(sys, '_MEIPASS') else '개발'} 모드\n"
+            f"기준 경로: {base_path}\n"
+            f"시스템 경로: {full_path}"
+        )
+        raise FileNotFoundError(error_msg)
+
+    return os.fspath(full_path)  # 모든 OS에서 호환되는 문자열 변환
+
+'''
 def resource_path(relative_path):
     """번들/개발 환경에 맞는 절대 경로 생성"""
     try:
@@ -19,7 +59,7 @@ def resource_path(relative_path):
         raise FileNotFoundError(f"리소스 누락: {normalized_path}")
     
     return normalized_path
-
+'''
 '''
 def resource_path(relative_path):
     """ PyInstaller 번들 환경과 개발 환경 모두에서 리소스 경로 처리 """

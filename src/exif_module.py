@@ -7,6 +7,9 @@ from PIL import Image, ImageDraw, ImageFont
 import math
 
 from caption_format_converter import CaptionFormatConverter
+from resource_path import resource_path
+
+FONT_MAIN = "resources/Barlow-Light.ttf"
 
 # 폰트 vs padding 비율은 1:4?
 # 이미지파일 vs padding 비율은 10:1
@@ -18,14 +21,22 @@ class Exif:
         self.ratio_image_gap = 60
         self.side_padding_45 = 50
         # 폰트 (초기)
-        if platform.system() == "Windows":
-            self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/Barlow-Light.ttf'), self.font_size)
-        else:
-            try:
-                self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "resources/Barlow-Light.ttf"), self.font_size)
-            except:
+        try:
+            # UI 파일 로드
+            self.font = ImageFont.truetype(resource_path(FONT_MAIN), self.font_size)
+        
+        except Exception as e:
+            print(f"Resource loading failed: {str(e)}")
+            sys.exit(1)
+    '''
+            if platform.system() == "Windows":
                 self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/Barlow-Light.ttf'), self.font_size)
-
+            else:
+                try:
+                    self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "resources/Barlow-Light.ttf"), self.font_size)
+                except:
+                    self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/Barlow-Light.ttf'), self.font_size)
+    '''
     def set_image_padding(self, image, top, side, bottom, color):
         width, height = image.size
 
