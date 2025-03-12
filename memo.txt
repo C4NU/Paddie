@@ -6,4 +6,5 @@ pyinstaller --windowed --noconfirm --clean \
 --add-data "resources/model_map.csv:model_map" \
 --add-data "resources/user_data.json:user_data" \
 --add-data "resources/Barlow-Light.ttf:Barlow-Light" \
+--target-arch universal2 \
 src/main.py
