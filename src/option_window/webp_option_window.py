@@ -12,13 +12,13 @@ from resource_path import resource_path
 UI_CONVERSION_OPTION = "resources/ui/ConversionOptions.ui"
 
 try:
-    # UI 파일 로드
-    ui_path = resource_path(UI_CONVERSION_OPTION)
-    form_class = uic.loadUiType(ui_path)[0]
+     # UI 파일 로드
+     ui_path = resource_path(UI_CONVERSION_OPTION)
+     form_class = uic.loadUiType(ui_path)[0]
 
 except Exception as e:
-    print(f"Resource loading failed: {str(e)}")
-    sys.exit(1)
+     print(f"Resource loading failed: {str(e)}")
+     sys.exit(1)
 
 print("CONVERSION OPTION UI Loaded Successfully")
 

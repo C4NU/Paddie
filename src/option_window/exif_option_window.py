@@ -19,13 +19,13 @@ UI_EXIF_OPTION = "resources/ui/ExifOptions.ui"
 UI_FONTS = "resources/Fonts"
 
 try:
-    # UI 파일 로드
-    ui_path = resource_path(UI_EXIF_OPTION)
-    form_class = uic.loadUiType(ui_path)[0]
-        
+     # UI 파일 로드
+     ui_path = resource_path(UI_EXIF_OPTION)
+     form_class = uic.loadUiType(ui_path)[0]
+          
 except Exception as e:
-    print(f"Resource loading failed: {str(e)}")
-    sys.exit(1)
+     print(f"Resource loading failed: {str(e)}")
+     sys.exit(1)
 
 print("EXIF OPTION UI Loaded Successfully")
 
@@ -257,7 +257,7 @@ class ExifOptionWindow(QDialog, form_class):
 
 	# Exif Padding 옵션
 	def on_change_padding_option(self):
-		#self.enable_padding = bool(state == Qt.CheckState.Checked.value)        
+		#self.enable_padding = bool(state == Qt.CheckState.Checked.value)          
 		self.image_padding = self.image_padding_box.currentIndex()
 		print(f"Padding Mode Pushed, Square Mode Opt: {self.image_padding}")  
 
