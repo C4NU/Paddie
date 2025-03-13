@@ -1,2 +1,2 @@
-from .webp_window import WebpApp
-from .webp_window import WebpWindow
+from .app_window import WebpApp
+from .app_window import WebpWindow
