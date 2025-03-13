@@ -1,6 +1,0 @@
-EXE 묶음판
-pyinstaller --windowed --onefile --add-data --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hidden-import PyQt6 "resources\ui;resources\ui" --add-data "resources\fonts;resources\fonts" --add-data "resources\model_map.csv;resources" --add-data "resources\user_data.json;resources" --add-data "resources\Barlow-Light.ttf;resources" src\main.py
-Add-on 폴더 살아있는 판
-pyinstaller --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hidden-import PyQt6 --add-data "resources\ui;ui" --add-data "resources\fonts;fonts" --add-data "resources\model_map.csv;model_map" --add-data "resources\user_data.json;user_data" --add-data "resources\Barlow-Light.ttf;Barlow-Light" src\main.py
-
-pyinstaller --onefile --noconfirm --clean --name "Paddie" --icon "resources\icon.ico"  --add-data "resources\ui;ui" --add-data "resources\fonts;fonts" --add-data "resources\model_map.csv;model_map" --add-data "resources\user_data.json;user_data" --add-data "resources\Barlow-Light.ttf;Barlow-Light" src\main.py

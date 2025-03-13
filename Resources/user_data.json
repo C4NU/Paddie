@@ -1,5 +1,5 @@
 {
-    "latest_load_path": "/Users/canu/Pictures/Adobe Lightroom/[\uce74\ud398]",
+    "latest_load_path": "/Users/canu/Pictures/Adobe Lightroom",
     "latest_save_path": "/Users/canu/Pictures/Adobe Lightroom/2025.01.25 - 30/WebP",
     "save_original_path": true,
     "resize_options": true,
@@ -12,7 +12,7 @@
     "conversion_transparent": false,
     "conversion_quality": 92,
     "exif_options": true,
-    "exif_show_preview": false,
+    "exif_show_preview": true,
     "exif_padding_mode": 1,
     "exif_save_exifdata": true,
     "exif_quality": 92,

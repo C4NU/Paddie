@@ -45,12 +45,14 @@ pyinstaller --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hi
 pyinstaller --windowed --noconfirm --clean \
 --name "Paddie" \
 --icon resources/icon.icns \
---add-data "resources/ui:ui" \
---add-data "resources/fonts:fonts" \
---add-data "resources/model_map.csv:model_map" \
---add-data "resources/user_data.json:user_data" \
---add-data "resources/Barlow-Light.ttf:Barlow-Light" \
---target-arch universal2 \ # Universal 앱 빌드
+--add-data "resources/ui:resources/ui" \
+--add-data "resources/fonts:resources/fonts" \
+--add-data "resources/model_map.csv:resources" \
+--add-data "resources/user_data.json:resources" \
+--add-data "resources/Barlow-Light.ttf:resources" \
+--add-data "resources/sample.jpg:." \
+--osx-bundle-identifier "com.canu.paddie" \
+--target-arch universal2 \
 src/main.py
 ```
 ## 라이선스
