@@ -50,11 +50,11 @@
 ### Windows
 #### 폰트 추가 기능 X
 ```python
-pyinstaller --windowed --onefile --add-data --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hidden-import PyQt6 "resources\ui;resources\ui" --add-data "resources\fonts;resources\fonts" --add-data "resources\model_map.csv;resources" --add-data "resources\user_data.json;resources" --add-data "resources\Barlow-Light.ttf;resources" src\main.py
+pyinstaller --windowed --onefile --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hidden-import PyQt6 "resources\ui;resources\ui" --add-data "resources\fonts;resources\fonts" --add-data "resources\model_map.csv;resources" --add-data "resources\user_data.json;resources" --add-data "resources\Barlow-Light.ttf;resources" src\main.py
 ```
 #### 폰트 추가 기능 O
 ```python
-pyinstaller --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hidden-import PyQt6 --add-data "resources\ui;ui" --add-data "resources\fonts;fonts" --add-data "resources\model_map.csv;model_map" --add-data "resources\user_data.json;user_data" --add-data "resources\Barlow-Light.ttf;Barlow-Light" src\main.py
+pyinstaller --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hidden-import PyQt6 --add-data "resources\ui;resources\ui" --add-data "resources\fonts;resources\fonts" --add-data "resources\model_map.csv;resources" --add-data "resources\user_data.json;resources" --add-data "resources\Barlow-Light.ttf;resources" src\main.py
 ```
 ### macOS
 
