@@ -22,26 +22,13 @@ from user_config import UserConfig
 from resource_path import resource_path
 
 UI_MAIN = "resources/ui/WebPConverterGUI.ui"
+SAMPLE_FILE_PATH = "resources/"
 
 # 26 ~ 41줄 까지 resource sample.jpg 파일 경로 설정 코드 수정 필요함
-if platform.system() == "Windows":
-    program_exec_path = os.getcwd()
-else:
-    program_exec_path = os.path.dirname(sys.executable)
-
-if platform.system() == "Windows":
-    SAMPLE_FILE_PATH = os.path.join(program_exec_path, "Resources/")
-else:
-    # build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-    SAMPLE_FILE_PATH = os.path.join(program_exec_path, "Resources/")
-    if Path(SAMPLE_FILE_PATH+"Sample.jpg").is_file() == True:
-        print("Sample File Exists")
-    else:
-        SAMPLE_FILE_PATH = os.path.join(program_exec_path, "Resources/")
-
 try:
     # UI 파일 로드
     ui_path = resource_path(UI_MAIN)
+    sample_file_path = resource_path(SAMPLE_FILE_PATH)
     form_class = uic.loadUiType(ui_path)[0]
         
 except Exception as e:
@@ -200,13 +187,13 @@ class WebpWindow(QMainWindow, form_class):
         
         selected_path = self.file_paths[self.image_list_widget.currentRow()]
         made_file_name = "sample_output"
-        made_file_path = os.path.join(SAMPLE_FILE_PATH, made_file_name)
+        made_file_path = os.path.join(sample_file_path, made_file_name)
 
         if os.path.exists(made_file_path):
             os.remove(made_file_path)
 
         made_image = self.converter.convert_exif_image(file_path=selected_path,
-                                                       save_path=SAMPLE_FILE_PATH,
+                                                       save_path=sample_file_path,
                                                        save_name=made_file_name,
                                                        file_format_option=2, # webp
                                                        font_path=self.exif_padding_option_window.get_current_font_path(),

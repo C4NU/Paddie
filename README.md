@@ -19,6 +19,24 @@
 | WebP 변환  | - 이미지파일 -> WebP 변환 기능<br>   - 무손실 옵션<br>   - 이미지 퀄리티 옵션<br>   - 변환시 EXIF 데이터 저장 옵션<br>   - 변환시 ICC 프로파일 저장 옵션<br>   - 변환시 RGBA 데이터 저장 옵션 |
 | EXIF 프레임 | - EXIF 데이터가 존재하는 이미지파일에 카메라 정보를 기입하는 기능<br>   - JPG \| PNG \| WebP 형태로 저장 가능, 이미지 퀄리티 선택 기능<br>   - 패딩 없음 \| 하단부 패딩 \| 전체 패딩 선택 기능<br>   - 정방형 비율 \| 4:5 비율 선택 기능<br>   - 카메라 기종 \| 렌즈 이름 \| 초점 거리 \| 조리개 \| ISO \| 셔터스피드 기입 기능<br>   - 기입 폰트 선택 기능 \| 폰트 추가 기능<br>   - 텍스트 색상 및 프레임 색상 선택 기능<br>   - 왼쪽 \| 중간 \| 오른쪽 텍스트 위치 선택 기능 |
 
+| 명령어                             | 기능 설명                             |
+|---------------------------------|-----------------------------------|
+| {body}                          | 카메라 바디 정보                         |
+| {lens}                          | 카메라 렌즈 정보                         |
+| {focal_f}                       | ?                                 |
+| {iso}                           | 촬영 ISO 정보                         |
+| {ss}                            | 촬영 셔터스피드 정보                       |
+| {focal}                         | 촬영 초점 거리 정보                       |
+| {aper}                          | 촬영 조리개 정보                         |
+| {ev}                            | 촬영 노출값 정보                         |
+| {meter}                         | ?                                 |
+| {mode}<br>{mode_s}<br>{mode_cr} | 촬영 모드 정보<br>- _s: 소니<br>- _cr: 캐논 |
+| {time}                          | 촬영 타임스탬프 정보                       |
+| {wb}                            | 촬영 화이트밸런스 정보                      |
+| {cr}<br>{ar}                    | 저작권 정보                            |
+| {mf}                            | 카메라 제조사 정보                        |
+| {mf_l}                          | 렌즈 제조사 정보                         |
+
 ## 빌드
 윈도우 및 macOS 빌드 방법이 다릅니다. (파일 경로 문제)
 각 OS 별 빌드 방법에 맞춰주세요.
@@ -50,11 +68,11 @@ pyinstaller --windowed --noconfirm --clean \
 --add-data "resources/model_map.csv:resources" \
 --add-data "resources/user_data.json:resources" \
 --add-data "resources/Barlow-Light.ttf:resources" \
---add-data "resources/sample.jpg:." \
 --osx-bundle-identifier "com.canu.paddie" \
 --target-arch universal2 \
 src/main.py
 ```
+빌드 후 Paddie.spec 파일의 BUNDLE 항목에 version='버전명' 추가.
 ## 라이선스
 | 라이선스 항목      | 설                                                            |
 |--------------|--------------------------------------------------------------|
