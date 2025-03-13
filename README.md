@@ -1,16 +1,16 @@
 # Paddie。
 
-[![CodeFactor](~https://www.codefactor.io/repository/github/c4nu/paddie/badge/main~)](~https://www.codefactor.io/repository/github/c4nu/paddie/overview/main~)
-![Stable Version](~https://img.shields.io/badge/stable-v3.1.1-blue?style=flat~)
-[![Github All Releases](~https://img.shields.io/github/downloads/c4nu/paddie/total.svg~)]()
+[![CodeFactor](https://www.codefactor.io/repository/github/c4nu/paddie/badge/main)](https://www.codefactor.io/repository/github/c4nu/paddie/overview/main~)
+![Stable Version](https://img.shields.io/badge/stable-v3.1.1-blue?style=flat)
+[![Github All Releases](https://img.shields.io/github/downloads/c4nu/paddie/total.svg)]()
 
 ## Version
 ### Python Version
-![Python 3.10.11](~https://img.shields.io/badge/Python-3.10.11-yellow?style=flat~)
+![Python 3.10.11](https://img.shields.io/badge/Python-3.10.11-yellow?style=flat)
 ### Module Version
-![PyQt6](~https://img.shields.io/badge/PyQt-6.5.3-green?style=flat~)
-![Pillows](~https://img.shields.io/badge/Pillows-10.0.0-yellow?style=flat~)
-![Pyinstaller](~https://img.shields.io/badge/Pyinstaller-6.3.0-red?style=flat~)
+![PyQt6](https://img.shields.io/badge/PyQt-6.5.3-green?style=flat)
+![Pillows](https://img.shields.io/badge/Pillows-10.0.0-yellow?style=flat)
+![Pyinstaller](https://img.shields.io/badge/Pyinstaller-6.3.0-red?style=flat)
 
 ## 기능
 | 이름       | 설명                                                           |
