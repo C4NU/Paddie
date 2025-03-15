@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>461</width>
+    <height>363</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Exif Frame Options</string>
+  </property>
+  <widget class="QDialogButtonBox" name="exif_option_button_box">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>325</y>
+     <width>441</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>441</width>
+     <height>221</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Caption Options</string>
+   </property>
+   <widget class="QLabel" name="font_combo_box_label">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>26</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select Font</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="font_combo_box">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>25</y>
+      <width>150</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="alignment_combo_box_label">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>26</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Alignment</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="alignment_combo_box">
+    <property name="geometry">
+     <rect>
+      <x>335</x>
+      <y>25</y>
+      <width>100</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Center</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Left</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Right</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QCheckBox" name="enable_easymode_option_box">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>121</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>EXIF Easy Mode</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="enable_easymode_oneline_box">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>50</y>
+      <width>121</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>One line</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="open_text_color_button">
+    <property name="geometry">
+     <rect>
+      <x>265</x>
+      <y>46</y>
+      <width>80</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Text Color</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="open_bg_color_button">
+    <property name="geometry">
+     <rect>
+      <x>350</x>
+      <y>46</y>
+      <width>80</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>BG Color</string>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="format_input_area">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>75</y>
+      <width>420</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>13</pointsize>
+     </font>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="format_preview_area">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>135</y>
+      <width>420</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Loading...</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="auto_hide_nonedata_checkbox">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>193</y>
+      <width>240</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Automatically hide NONEDATA text</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="ExifOptionBox_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>441</width>
+     <height>78</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>EXIF Options</string>
+   </property>
+   <widget class="QLabel" name="image_padding_label">
+    <property name="geometry">
+     <rect>
+      <x>12</x>
+      <y>22</y>
+      <width>130</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Padding Option</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="image_padding_box">
+    <property name="geometry">
+     <rect>
+      <x>115</x>
+      <y>24</y>
+      <width>125</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>No Padding</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Bottom</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Frame</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QCheckBox" name="save_exif_data_box">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>121</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save Exif Data</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="image_ratio_label">
+    <property name="geometry">
+     <rect>
+      <x>275</x>
+      <y>22</y>
+      <width>50</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ratio</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="image_ratio_box">
+    <property name="geometry">
+     <rect>
+      <x>315</x>
+      <y>24</y>
+      <width>100</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>Original</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Square</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>4:5</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QSpinBox" name="image_quality_spinbox">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>49</y>
+      <width>60</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>100</number>
+    </property>
+    <property name="value">
+     <number>80</number>
+    </property>
+   </widget>
+   <widget class="QLabel" name="image_quality_label">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>49</y>
+      <width>44</width>
+      <height>24</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Quality</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="image_format_label">
+    <property name="geometry">
+     <rect>
+      <x>275</x>
+      <y>49</y>
+      <width>120</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Image Type</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="image_type_box">
+    <property name="geometry">
+     <rect>
+      <x>345</x>
+      <y>49</y>
+      <width>90</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <item>
+     <property name="text">
+      <string>JPEG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>PNG</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>WebP</string>
+     </property>
+    </item>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>exif_option_button_box</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>exif_option_button_box</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

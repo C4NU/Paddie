@@ -171,5 +171,8 @@ cython_debug/
 # Test Folder
 Test/
 .DS_Store
-/user_data.json
+resources/user_data.json
 .idea
+
+# venv Folder
+.venv

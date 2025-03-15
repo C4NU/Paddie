@@ -6,18 +6,23 @@ from PyQt6 import uic
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton
 
-if platform.system() == "Windows":
-	form = os.path.join(os.getcwd(), "Resources/ConversionOptions.ui")
-else:
-	# build 완료된 exec 에서는 실행이 되지만, 단순 py 로 실행할때는 라이브러리 경로를 참조함
-	form = os.path.join(os.path.dirname(sys.executable), "Resources/ConversionOptions.ui")
+from user_config import UserConfig
+from resource_path import resource_path
+
+UI_CONVERSION_OPTION = "resources/ui/ConversionOptions.ui"
 
 try:
-	formClass = uic.loadUiType(form)[0]
-except:
-	formClass = uic.loadUiType(os.path.join(os.getcwd(), "Resources/ConversionOptions.ui"))[0]
+     # UI 파일 로드
+     ui_path = resource_path(UI_CONVERSION_OPTION)
+     form_class = uic.loadUiType(ui_path)[0]
 
-class WebPOptionWindow(QDialog, formClass):
+except Exception as e:
+     print(f"Resource loading failed: {str(e)}")
+     sys.exit(1)
+
+print("CONVERSION OPTION UI Loaded Successfully")
+
+class WebPOptionWindow(QDialog, form_class):
 	def __init__(self):
 		super().__init__()
 
@@ -37,13 +42,6 @@ class WebPOptionWindow(QDialog, formClass):
 		self.icc_profile_option = False
 		self.exact_option = False
 		self.image_quality_option = 80
-
-		# Cancel 시 revert 시킬 옵션 값 backup
-		self.backup_loseless_option = False
-		self.backup_exif_option = False
-		self.backup_icc_profile_option = False
-		self.backup_exact_option = False
-		self.backup_image_quality_option = 80
 
 		self.setupUi(self)
 		self.bind_ui()
@@ -65,7 +63,7 @@ class WebPOptionWindow(QDialog, formClass):
 		self.exact_option_box.setToolTip("몰?루... 저장 옵션")
 
 		self.image_quality_spinbox.valueChanged.connect(self.on_change_image_quality)
-		self.image_quality_spinbox.setToolTip("이미지 품질 저장 옵션 \n 92 정도가 web에서 사용하기 제일 좋습니다.")
+		self.image_quality_spinbox.setToolTip("이미지 품질 저장 옵션\n92 정도가 web에서 사용하기 제일 좋습니다.")
 
 	# DEBUG LOGGER FUNCTIONS
 	def debug_log(self, options=int):
@@ -116,39 +114,37 @@ class WebPOptionWindow(QDialog, formClass):
 		self.debug_log(5)
 	
 	def __update_ui(self):
-		if self.loseless_option_box.isChecked() != self.loseless_option:
+		if self.loseless_option_box.isChecked() != UserConfig.conversion_loseless:
 			self.loseless_option_box.toggle()
 
-		if self.exif_option_box.isChecked() != self.exif_option:
+		if self.exif_option_box.isChecked() != UserConfig.conversion_exif:
 			self.exif_option_box.toggle()
 
-		if self.icc_profile_option_box.isChecked() != self.icc_profile_option:
+		if self.icc_profile_option_box.isChecked() != UserConfig.conversion_icc:
 			self.icc_profile_option_box.toggle()
 
-		if self.exact_option_box.isChecked() != self.exact_option:
+		if self.exact_option_box.isChecked() != UserConfig.conversion_transparent:
 			self.exact_option_box.toggle()
 
-		if self.image_quality_spinbox.value() != self.image_quality_option:
-			self.image_quality_spinbox.setValue(self.image_quality_option)
+		if self.image_quality_spinbox.value() != UserConfig.conversion_quality:
+			self.image_quality_spinbox.setValue(UserConfig.conversion_quality)
 
 	def on_call(self):
 		self.__update_ui()
 		self.show()
 
 	def on_save_close(self):
-		self.backup_loseless_option = self.loseless_option
-		self.backup_exif_option = self.exif_option
-		self.backup_icc_profile_option = self.icc_profile_option
-		self.backup_exact_option = self.exact_option
-		self.backup_image_quality_option = self.image_quality_option
 		self.debug_log(0)
+
+		UserConfig.conversion_loseless = self.loseless_option
+		UserConfig.conversion_exif = self.exif_option
+		UserConfig.conversion_icc = self.icc_profile_option
+		UserConfig.conversion_transparent = self.exact_option
+		UserConfig.conversion_quality = self.image_quality_option
+		UserConfig.save()
+
 		self.accept()
 	
 	def on_cancel_close(self):
-		self.loseless_option = self.backup_loseless_option
-		self.exif_option = self.backup_exif_option
-		self.icc_profile_option = self.backup_icc_profile_option
-		self.exact_option = self.backup_exact_option
-		self.image_quality_option = self.backup_image_quality_option
 		self.debug_log(0)
 		self.reject()

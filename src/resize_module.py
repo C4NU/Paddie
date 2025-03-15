@@ -4,8 +4,14 @@ class Resize:
 	def __init__(self):
 		pass
 
-	def resize(self, image, width_option, height_option, resize):
+	def resize(self, image, axis_option, resize):
 		width, height = image.size
+
+		width_option = True
+		if axis_option is 0: width_option = True
+		elif axis_option is 1: width_option = False
+		elif axis_option is 2: width_option = width >= height
+		elif axis_option is 3: width_option = width < height
 
 		if width_option == True:
 			new_width = resize
