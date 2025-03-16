@@ -61,6 +61,7 @@ pyinstaller --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hi
 ```python
 #Paddie.spec 파일로 빌드 가능
 pyinstaller --windowed --noconfirm --clean \
+--hidden-import PyQt6 \
 --name "Paddie" \
 --icon resources/icon.icns \
 --add-data "resources/ui:resources/ui" \
@@ -68,8 +69,8 @@ pyinstaller --windowed --noconfirm --clean \
 --add-data "resources/model_map.csv:resources" \
 --add-data "resources/user_data.json:resources" \
 --add-data "resources/Barlow-Light.ttf:resources" \
+--add-binary "/opt/homebrew/lib/libzstd.1.dylib:."
 --osx-bundle-identifier "com.canu.paddie" \
---target-arch universal2 \
 src/main.py
 ```
 빌드 후 Paddie.spec 파일의 BUNDLE 항목에 version='버전명' 추가.
