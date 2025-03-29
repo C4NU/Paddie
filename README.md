@@ -23,13 +23,13 @@
 |---------------------------------|-----------------------------------|
 | {body}                          | 카메라 바디 정보                         |
 | {lens}                          | 카메라 렌즈 정보                         |
-| {focal_f}                       | ?                                 |
+| {focal_f}                       | 촬영 35mm 환산 정보                                 |
 | {iso}                           | 촬영 ISO 정보                         |
 | {ss}                            | 촬영 셔터스피드 정보                       |
 | {focal}                         | 촬영 초점 거리 정보                       |
 | {aper}                          | 촬영 조리개 정보                         |
 | {ev}                            | 촬영 노출값 정보                         |
-| {meter}                         | ?                                 |
+| {meter}                         | 촬영 초점 모드 정보                                 |
 | {mode}<br>{mode_s}<br>{mode_cr} | 촬영 모드 정보<br>- _s: 소니<br>- _cr: 캐논 |
 | {time}                          | 촬영 타임스탬프 정보                       |
 | {wb}                            | 촬영 화이트밸런스 정보                      |
@@ -61,6 +61,7 @@ pyinstaller --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hi
 ```python
 #Paddie.spec 파일로 빌드 가능
 pyinstaller --windowed --noconfirm --clean \
+--hidden-import PyQt6 \
 --name "Paddie" \
 --icon resources/icon.icns \
 --add-data "resources/ui:resources/ui" \
@@ -68,8 +69,8 @@ pyinstaller --windowed --noconfirm --clean \
 --add-data "resources/model_map.csv:resources" \
 --add-data "resources/user_data.json:resources" \
 --add-data "resources/Barlow-Light.ttf:resources" \
+--add-binary "/opt/homebrew/lib/libzstd.1.dylib:."
 --osx-bundle-identifier "com.canu.paddie" \
---target-arch universal2 \
 src/main.py
 ```
 빌드 후 Paddie.spec 파일의 BUNDLE 항목에 version='버전명' 추가.
