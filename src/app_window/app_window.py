@@ -4,7 +4,7 @@ import sys
 
 from pathlib import Path
 
-from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow
+from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow, SettingWindow
 
 print("Python Package Loaded")
 import converter
@@ -66,6 +66,7 @@ class WebpWindow(QMainWindow, form_class):
         self.exif_padding_option_window.accepted.connect(self.show_or_refresh_preview)
 
         self.information_window = InformationWindow()
+        self.setting_window = SettingWindow()
         self.resize_window = ResizeOptionWindow()
 
         # 파일 이름 변수
