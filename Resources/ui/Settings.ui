@@ -35,13 +35,13 @@
      <x>10</x>
      <y>10</y>
      <width>381</width>
-     <height>80</height>
+     <height>71</height>
     </rect>
    </property>
    <property name="title">
     <string>Settings</string>
    </property>
-   <widget class="QComboBox" name="comboBox">
+   <widget class="QComboBox" name="language_combo_box">
     <property name="geometry">
      <rect>
       <x>270</x>

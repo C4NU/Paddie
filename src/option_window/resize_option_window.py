@@ -27,7 +27,7 @@ class ResizeOptionWindow(QDialog, form_class):
     def __init__(self):
         super().__init__()
         
-        self.base_size = 3000
+        self.base_size = UserConfig.resize_size
 
         self.resize_option_button_box: QDialogButtonBox
         self.axis_option_box: QComboBox

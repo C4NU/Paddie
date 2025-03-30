@@ -101,6 +101,7 @@ class WebpWindow(QMainWindow, form_class):
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
         # 프로그램 정보 기능 함수 링킹
         self.actionInformation.triggered.connect(self.on_trigger_information)
+        # 프로그램 설정 기능 함수 링킹
         self.actionSetting.triggered.connect(self.on_trigger_setting)
         # 종료 버튼 함수 링킹
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
@@ -142,6 +143,7 @@ class WebpWindow(QMainWindow, form_class):
         self.save_original_path = self.save_original_path_checkbox.isChecked()
 
         UserConfig.load()
+
         if UserConfig.resize_options:
             self.enable_resize_option_box.toggle()
 

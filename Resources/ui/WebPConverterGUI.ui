@@ -384,7 +384,7 @@
   </action>
   <action name="actionSetting">
    <property name="text">
-    <string>Setings</string>
+    <string>Settings</string>
    </property>
    <property name="iconText">
     <string>Setting</string>

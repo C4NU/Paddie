@@ -1,9 +1,6 @@
 # Copyright 2023 Eugene Kim (komastar) komastar.photo@gmail.com
 
 import json
-import os.path
-import platform
-import sys
 
 print("User_Config Python Package Loaded")
 
@@ -17,7 +14,9 @@ RESOURCE_USER_DATA = "resources/user_data.json"
 
 class UserConfig:
     # setting value is default value
-    language = None
+    version = "-1.-1.-1"
+    contact = "simple@info.com"
+    language = 0 # 0: English, 1: Korean 2: Japanese
     latest_load_path = None
     latest_save_path = None
     save_original_path = False

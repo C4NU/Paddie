@@ -1,0 +1,40 @@
+{
+    "settings": {
+        "title": "設定",
+        "language": "言語",
+        "theme": "テーマ",
+        "save": "保存",
+        "cancel": "キャンセル"
+    },
+    "conversion": {
+        "title": "変換オプション",
+        "quality": "品質",
+        "format": "フォーマット",
+        "preserve_exif": "EXIFを保持",
+        "resize": "リサイズ",
+        "watermark": "ウォーターマーク"
+    },
+    "resize": {
+        "title": "リサイズオプション",
+        "width": "幅",
+        "height": "高さ",
+        "maintain_aspect": "アスペクト比を維持"
+    },
+    "watermark": {
+        "title": "ウォーターマークオプション",
+        "text": "ウォーターマークテキスト",
+        "position": "位置",
+        "opacity": "透明度"
+    },
+    "exif": {
+        "title": "EXIFオプション",
+        "preserve": "EXIFデータを保持",
+        "strip": "EXIFデータを削除"
+    },
+    "info": {
+        "title": "情報",
+        "version": "バージョン",
+        "author": "作者",
+        "description": "説明"
+    }
+} 
