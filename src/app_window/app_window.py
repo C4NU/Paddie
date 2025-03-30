@@ -101,6 +101,7 @@ class WebpWindow(QMainWindow, form_class):
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
         # 프로그램 정보 기능 함수 링킹
         self.actionInformation.triggered.connect(self.on_trigger_information)
+        self.actionSetting.triggered.connect(self.on_trigger_setting)
         # 종료 버튼 함수 링킹
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
         # 목록 선택 이벤트 링킹
@@ -278,6 +279,9 @@ class WebpWindow(QMainWindow, form_class):
 
     def on_trigger_information(self):
         self.information_window.show()
+
+    def on_trigger_setting(self):
+        self.setting_window.show()
 
     @staticmethod
     def on_trigger_exit():

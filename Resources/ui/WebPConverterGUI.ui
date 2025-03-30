@@ -235,18 +235,18 @@
     </widget>
    </widget>
    <widget class="QCheckBox" name="save_original_path_checkbox">
-     <property name="geometry">
-      <rect>
-       <x>25</x>
-       <y>700</y>
-       <width>300</width>
-       <height>21</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Save to selected photo's path</string>
-     </property>
-    </widget>
+    <property name="geometry">
+     <rect>
+      <x>25</x>
+      <y>700</y>
+      <width>300</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Save to selected photo's path</string>
+    </property>
+   </widget>
    <widget class="QDialogButtonBox" name="save_button">
     <property name="geometry">
      <rect>
@@ -344,7 +344,7 @@
     <property name="title">
      <string>Options</string>
     </property>
-    <addaction name="actionPreferences"/>
+    <addaction name="actionSetting"/>
     <addaction name="actionInformation"/>
     <addaction name="actionExit"/>
    </widget>
@@ -382,9 +382,15 @@
     <string>Clear List</string>
    </property>
   </action>
-  <action name="actionPreferences">
+  <action name="actionSetting">
    <property name="text">
-    <string>Preferences</string>
+    <string>Setings</string>
+   </property>
+   <property name="iconText">
+    <string>Setting</string>
+   </property>
+   <property name="toolTip">
+    <string>Setting</string>
    </property>
   </action>
   <action name="actionInformation">
