@@ -33,87 +33,73 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
-     <width>381</width>
-     <height>71</height>
+     <y>0</y>
+     <width>379</width>
+     <height>231</height>
     </rect>
    </property>
    <property name="title">
     <string>Settings</string>
    </property>
-   <widget class="QComboBox" name="language_combo_box">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
-      <y>30</y>
-      <width>104</width>
-      <height>26</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>English</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Korean</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>Japanese</string>
-     </property>
-    </item>
-   </widget>
-   <widget class="QLabel" name="label">
+   <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
       <y>30</y>
-      <width>261</width>
-      <height>21</height>
+      <width>361</width>
+      <height>31</height>
      </rect>
     </property>
-    <property name="text">
-     <string>Language</string>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Language</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="language_combo_box">
+       <item>
+        <property name="text">
+         <string>English</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Korean</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Japanese</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget_2">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>361</width>
+      <height>31</height>
+     </rect>
     </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Add Text</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>Dialog</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>157</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>Dialog</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>286</x>
-     <y>274</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

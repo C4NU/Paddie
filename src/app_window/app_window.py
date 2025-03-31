@@ -102,7 +102,7 @@ class WebpWindow(QMainWindow, form_class):
         # 프로그램 정보 기능 함수 링킹
         self.actionInformation.triggered.connect(self.on_trigger_information)
         # 프로그램 설정 기능 함수 링킹
-        self.actionSetting.triggered.connect(self.on_trigger_setting)
+        self.actionPref.triggered.connect(self.on_trigger_preferences)
         # 종료 버튼 함수 링킹
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
         # 목록 선택 이벤트 링킹
@@ -228,7 +228,6 @@ class WebpWindow(QMainWindow, form_class):
         self.preview_area.setPixmap(pixmap)
         self.preview_area.setVisible(True)
         self.preview_area.setGeometry(self.window_width_short + self.preview_area_margin, 0, image_width, image_height)
-
         
     def hide_preview(self):
         self.preview_area.setVisible(False)
@@ -282,7 +281,7 @@ class WebpWindow(QMainWindow, form_class):
     def on_trigger_information(self):
         self.information_window.show()
 
-    def on_trigger_setting(self):
+    def on_trigger_preferences(self):
         self.setting_window.show()
 
     @staticmethod

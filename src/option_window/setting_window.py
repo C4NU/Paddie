@@ -25,12 +25,12 @@ print("SETTING UI Loaded Successfully")
 class SettingWindow(QDialog, form_class):
     def __init__(self):
         super().__init__()
+        self.setupUi(self) # UI 요소 초기화
 
         self.language_combo_box: QComboBox # .ui 파일 UI 요소 (이름 동일하게 설정)
         self.language_index = UserConfig.language # 언어 설정 변수
         print(f"언어 인덱스: {self.language_index}")
 
-        self.setupUi(self) # UI 요소 초기화
         self.bind_ui() # 이벤트 핸들러 연결
 
         self.on_accepted = None

@@ -344,7 +344,7 @@
     <property name="title">
      <string>Options</string>
     </property>
-    <addaction name="actionSetting"/>
+    <addaction name="actionPref"/>
     <addaction name="actionInformation"/>
     <addaction name="actionExit"/>
    </widget>
@@ -382,15 +382,15 @@
     <string>Clear List</string>
    </property>
   </action>
-  <action name="actionSetting">
+  <action name="actionPref">
    <property name="text">
-    <string>Settings</string>
+    <string>Preferences</string>
    </property>
    <property name="iconText">
-    <string>Setting</string>
+    <string>Preferences</string>
    </property>
    <property name="toolTip">
-    <string>Setting</string>
+    <string>Preferences</string>
    </property>
   </action>
   <action name="actionInformation">
