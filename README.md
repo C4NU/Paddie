@@ -1,7 +1,7 @@
 # Paddie。
 
 [![CodeFactor](https://www.codefactor.io/repository/github/c4nu/paddie/badge/main)](https://www.codefactor.io/repository/github/c4nu/paddie/overview/main~)
-![Stable Version](https://img.shields.io/badge/stable-v3.4.2-blue?style=flat)
+![Stable Version](https://img.shields.io/badge/stable-v3.6.2-blue?style=flat)
 [![Github All Releases](https://img.shields.io/github/downloads/c4nu/paddie/total.svg)]()
 
 ## Version
