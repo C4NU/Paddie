@@ -13,7 +13,7 @@ a = Analysis(
     ['src/main.py'],
     pathex=[],
     binaries=bins,
-    datas=[('resources/ui', 'resources/ui'), ('resources/fonts', 'resources/fonts'), ('resources/model_map.csv', 'resources'), ('resources/user_data.json', 'resources'), ('resources/program_data.json', 'resources'), ('resources/*.qm', 'resources'), ('resources/barlow-light.ttf', 'resources')],
+    datas=[('resources/ui', 'resources/ui'), ('resources/fonts', 'resources/fonts'), ('resources/model_map.csv', 'resources'), ('resources/program_data.json', 'resources'), ('resources/*.qm', 'resources'), ('resources/barlow-light.ttf', 'resources')],
     hiddenimports=['PyQt6'],
     hookspath=[],
     hooksconfig={},
