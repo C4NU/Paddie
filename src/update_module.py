@@ -124,9 +124,14 @@ class UpdateManager(QObject):
         
         if is_frozen:
             if system == "Darwin":
-                # macOS: .../Paddie.app/Contents/MacOS/Paddie -> .../Paddie.app
-                app_path = os.path.abspath(os.path.join(os.path.dirname(sys.executable), "../../.."))
-                executable = app_path
+                # sys.executable: .../Paddie.app/Contents/MacOS/Paddie
+                # app_bundle_path: .../Paddie.app
+                app_bundle_path = os.path.abspath(os.path.join(os.path.dirname(sys.executable), "../.."))
+                # parent_path: .../ (where Paddie.app is located)
+                parent_path = os.path.dirname(app_bundle_path)
+                
+                app_path = parent_path
+                executable = app_bundle_path
             else:
                 app_path = os.path.dirname(sys.executable)
                 executable = sys.executable

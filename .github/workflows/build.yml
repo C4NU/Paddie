@@ -42,6 +42,17 @@ jobs:
       run: |
         pyinstaller --noconfirm Paddie.spec
 
+    - name: Package for macOS (Zip)
+      if: matrix.os == 'macos-latest'
+      run: |
+        cd dist
+        zip -r ../Paddie-macOS-app.zip Paddie.app
+
+    - name: Package for macOS (DMG)
+      if: matrix.os == 'macos-latest'
+      run: |
+        hdiutil create -volname "Paddie" -srcfolder dist/Paddie.app -ov -format UDZO Paddie-macOS.dmg
+
     - name: Upload Artifact (Windows)
       if: matrix.os == 'windows-latest'
       uses: actions/upload-artifact@v4
@@ -49,12 +60,19 @@ jobs:
         name: Paddie-Windows
         path: dist/Paddie
 
-    - name: Upload Artifact (macOS)
+    - name: Upload Artifact (macOS Zip)
       if: matrix.os == 'macos-latest'
       uses: actions/upload-artifact@v4
       with:
-        name: Paddie-macOS
-        path: dist/Paddie.app
+        name: Paddie-macOS-Zip
+        path: Paddie-macOS-app.zip
+
+    - name: Upload Artifact (macOS DMG)
+      if: matrix.os == 'macos-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Paddie-macOS-DMG
+        path: Paddie-macOS.dmg
 
     - name: Upload Artifact (Linux)
       if: matrix.os == 'ubuntu-latest'
@@ -80,10 +98,11 @@ jobs:
     - name: Prepare Assets
       run: |
         mkdir -p dist
-        # Windows: Zip the executable (it's often a single file or a directory depending on spec)
+        # Windows: Zip the executable
         cd artifacts/Paddie-Windows && zip -r ../../dist/Paddie-Windows.zip . && cd ../..
-        # macOS: Zip the .app bundle
-        cd artifacts/Paddie-macOS && zip -r ../../dist/Paddie-macOS-app.zip . && cd ../..
+        # macOS: Already zipped or DMG, just move them
+        mv artifacts/Paddie-macOS-Zip/Paddie-macOS-app.zip dist/
+        mv artifacts/Paddie-macOS-DMG/Paddie-macOS.dmg dist/
         # Linux: Zip the executable
         cd artifacts/Paddie-Linux && zip -r ../../dist/Paddie-Linux.zip . && cd ../..
 
@@ -93,6 +112,7 @@ jobs:
         files: |
           dist/Paddie-Windows.zip
           dist/Paddie-macOS-app.zip
+          dist/Paddie-macOS.dmg
           dist/Paddie-Linux.zip
         generate_release_notes: true
         draft: false
