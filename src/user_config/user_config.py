@@ -2,15 +2,37 @@
 
 import json
 
+import platform
 print("User_Config Python Package Loaded")
 
 from PyQt6 import QtGui
 from PyQt6.QtGui import QColor
 print("PyQt6 QColor Loaded") 
 
+import os
+import sys
+from pathlib import Path
 from resource_path import resource_path
 
 RESOURCE_USER_DATA = "resources/user_data.json"
+
+def get_user_data_path():
+    """사용자 데이터(설정)를 저장할 쓰기 가능한 경로를 반환합니다."""
+    # PyInstaller 번들 모드인 경우 시스템의 AppData/Application Support 경로 사용 권장
+    if getattr(sys, 'frozen', False):
+        if platform.system() == "Darwin":
+            app_data_dir = Path(os.path.expanduser("~/Library/Application Support/Paddie"))
+        elif platform.system() == "Windows":
+            app_data_dir = Path(os.environ.get("APPDATA", os.path.expanduser("~"))) / "Paddie"
+        else:
+            app_data_dir = Path(os.path.expanduser("~/.paddie"))
+            
+        if not app_data_dir.exists():
+            app_data_dir.mkdir(parents=True, exist_ok=True)
+        return os.fspath(app_data_dir / "user_data.json")
+    
+    # 개발 모드에서는 기존처럼 resources 폴더 사용
+    return resource_path(RESOURCE_USER_DATA, check_exists=False)
 
 class UserConfig:
     # setting value is default value
@@ -48,7 +70,7 @@ class UserConfig:
 
     @staticmethod
     def save():
-        path = resource_path(RESOURCE_USER_DATA)
+        path = get_user_data_path()
         data = {key: getattr(UserConfig, key) for key in UserConfig.__dict__.keys() 
                 if not key.startswith("__") and not callable(getattr(UserConfig, key)) and "_color" not in key}
 
@@ -62,7 +84,7 @@ class UserConfig:
 
     @staticmethod
     def load():
-        path = resource_path(RESOURCE_USER_DATA)
+        path = get_user_data_path()
         try:
             with open(path, 'r', encoding='utf-8') as f:
                 data = json.load(f)

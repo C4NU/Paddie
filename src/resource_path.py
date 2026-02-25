@@ -6,18 +6,19 @@ import sys
 import os
 from pathlib import Path
 
-def resource_path(relative_path: str) -> str:
+def resource_path(relative_path: str, check_exists: bool = True) -> str:
     """
     Cross-platform 리소스 경로 생성기 (PyInstaller 빌드/개발 모드 자동 인식)
     
     Parameters:
         relative_path (str): 프로젝트 루트 기준 상대 경로 (e.g. 'resources/ui/resizeoption.ui')
+        check_exists (bool): 파일 존재 여부를 확인할지 여부 (기본값 True)
         
     Returns:
         str: 실제 리소스 절대 경로
         
     Raises:
-        FileNotFoundError: 리소스가 존재하지 않을 때
+        FileNotFoundError: check_exists가 True인데 리소스가 존재하지 않을 때
     """
     # PyInstaller 번들 모드 감지
     if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
@@ -30,7 +31,7 @@ def resource_path(relative_path: str) -> str:
     full_path = (base_path / relative_path).resolve()
 
     # 존재 여부 검증 (모든 OS에서 대소문자 구분)
-    if not full_path.exists():
+    if check_exists and not full_path.exists():
         error_msg = (
             f"[리소스 누락] '{relative_path}'를 찾을 수 없습니다.\n"
             f"검색 위치: {'번들' if hasattr(sys, '_MEIPASS') else '개발'} 모드\n"
