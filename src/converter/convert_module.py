@@ -57,7 +57,7 @@ class Converter:
             print(e)
             return None, new_image
 
-    def convert_image_to_webp(self, file_path, save_path, save_name, loseless_option, image_quality_option,
+    def convert_image_to_webp(self, file_path, save_path, save_name, lossless_option, image_quality_option,
                               exif_option, icc_profile_option, exact_option, watermark_text,
                               conversion_option, resize_option, axis_option, resize_value):
         file_format = Converter.search_file_format(file_path)
@@ -107,17 +107,17 @@ class Converter:
 
             if exif_option:
                 if icc_profile_option:
-                    image.save(dest, format="webp", lossless=loseless_option, quality=image_quality_option,
+                    image.save(dest, format="webp", lossless=lossless_option, quality=image_quality_option,
                                 exif=exif_data, exact=exact_option, icc_profile=icc_profile)
                 else:
-                    image.save(dest, format="webp", lossless=loseless_option, quality=image_quality_option,
+                    image.save(dest, format="webp", lossless=lossless_option, quality=image_quality_option,
                                 exif=exif_data, exact=exact_option)
             else:
                 if icc_profile_option:
-                    image.save(dest, format="webp", lossless=loseless_option, quality=image_quality_option,
+                    image.save(dest, format="webp", lossless=lossless_option, quality=image_quality_option,
                                    exact=exact_option, icc_profile=icc_profile)
                 else:
-                    image.save(dest, format="webp", lossless=loseless_option, quality=image_quality_option,
+                    image.save(dest, format="webp", lossless=lossless_option, quality=image_quality_option,
                                 exact=exact_option)
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, 

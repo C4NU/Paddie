@@ -1,7 +1,7 @@
 # Paddie。
 
 [![CodeFactor](https://www.codefactor.io/repository/github/c4nu/paddie/badge/main)](https://www.codefactor.io/repository/github/c4nu/paddie/overview/main~)
-![Stable Version](https://img.shields.io/badge/stable-v3.4.0-blue?style=flat)
+![Stable Version](https://img.shields.io/badge/stable-v3.4.2-blue?style=flat)
 [![Github All Releases](https://img.shields.io/github/downloads/c4nu/paddie/total.svg)]()
 
 ## Version
@@ -18,6 +18,7 @@
 | 리사이징     | 이미지 해상도 리사이징 기능                                              |
 | WebP 변환  | - 이미지파일 -> WebP 변환 기능<br>   - 무손실 옵션<br>   - 이미지 퀄리티 옵션<br>   - 변환시 EXIF 데이터 저장 옵션<br>   - 변환시 ICC 프로파일 저장 옵션<br>   - 변환시 RGBA 데이터 저장 옵션 |
 | EXIF 프레임 | - EXIF 데이터가 존재하는 이미지파일에 카메라 정보를 기입하는 기능<br>   - JPG \| PNG \| WebP 형태로 저장 가능, 이미지 퀄리티 선택 기능<br>   - 패딩 없음 \| 하단부 패딩 \| 전체 패딩 선택 기능<br>   - 정방형 비율 \| 4:5 비율 선택 기능<br>   - 카메라 기종 \| 렌즈 이름 \| 초점 거리 \| 조리개 \| ISO \| 셔터스피드 기입 기능<br>   - 기입 폰트 선택 기능 \| 폰트 추가 기능<br>   - 텍스트 색상 및 프레임 색상 선택 기능<br>   - 왼쪽 \| 중간 \| 오른쪽 텍스트 위치 선택 기능 |
+| 성능 및 편의성 | - **멀티스레딩**: 대량 변환 시에도 UI가 멈추지 않고 진행률 표시<br> - **다국어 지원**: 한국어, 영어, 일본어, 중국어 지원<br> - **설정 버튼**: 메인 UI에서 직접 설정(⚙️) 진입 가능 |
 
 | 명령어                             | 기능 설명                             |
 |---------------------------------|-----------------------------------|
@@ -58,8 +59,14 @@ pyinstaller --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hi
 ```
 ### macOS
 
-```python
-#Paddie.spec 파일로 빌드 가능
+```bash
+# 자동 빌드 스크립트 실행
+python3 build_paddie.py
+```
+`build_paddie.py`는 `Paddie.spec` 파일을 자동으로 업데이트하고 PyInstaller 빌드를 수행합니다.
+
+#### (수동 빌드 시 상세 옵션)
+```bash
 pyinstaller --windowed --noconfirm --clean \
 --hidden-import PyQt6 \
 --name "Paddie" \
@@ -69,11 +76,10 @@ pyinstaller --windowed --noconfirm --clean \
 --add-data "resources/model_map.csv:resources" \
 --add-data "resources/user_data.json:resources" \
 --add-data "resources/Barlow-Light.ttf:resources" \
---add-binary "/opt/homebrew/lib/libzstd.1.dylib:."
---osx-bundle-identifier "com.canu.paddie" \
+--add-binary "/opt/homebrew/lib/libzstd.1.dylib:." \
+--osx-bundle-identifier "paddie_legacy" \
 src/main.py
 ```
-빌드 후 Paddie.spec 파일의 BUNDLE 항목에 version='버전명' 추가.
 ## 라이선스
 | 라이선스 항목      | 설                                                            |
 |--------------|--------------------------------------------------------------|

@@ -58,11 +58,11 @@ class Exif:
 
           side_padding = length / 2 if use_side_padding else length / 6
 
-          if alignment is 1:
+          if alignment == 1:
                 x = side_padding
                 anchor = "ls"
                 align = "left"
-          elif alignment is 2:
+          elif alignment == 2:
                 x = image.width - side_padding
                 anchor = "rs"
                 align = "right"
@@ -70,6 +70,8 @@ class Exif:
           self.font_size = length / 6
 
           line_count = len(text.splitlines())
+          print(f"text: {text}")
+          print(f"line_count: {line_count}")
           if line_count == 1:
                 y += math.floor(self.font_size / 3)
           elif line_count == 2:
@@ -83,43 +85,54 @@ class Exif:
           return image
 
      def set_square_padding(self, image, gap, color, horizontalImage):
-          width, height = image.size
-          instaSize = 1440
-          ratio = width / height      
+            """1:1 비율 패딩 옵션에서 사용하는 함수
 
-          newWidth = 0
-          newHeight = 0
-          newX = 0
-          newY = 0
+            Args:
+                  image (_type_): _description_
+                  gap (_type_): _description_
+                  color (_type_): _description_
+                  horizontalImage (_type_): _description_
 
-          self.ratio_image_gap = gap
+            Returns:
+                  _type_: _description_
+            """
+            width, height = image.size
+            instaSize = 1440
+            ratio = width / height      
 
-          if (horizontalImage) : 			
-                newWidth = instaSize - 2*gap
-                newHeight = math.floor(newWidth / ratio)
-                
-                if (newHeight>=instaSize-10*gap) :
-                     newHeight = instaSize-10*gap
-                     newWidth= math.floor(newHeight*ratio)
- 
-                newX = math.floor((instaSize - newWidth )/2) 
-                newY = math.floor((instaSize - newHeight)/2)
-		
-          else :
-                newHeight = instaSize - 2*gap
-                newWidth = math.floor(newHeight*ratio)
+            newWidth = 0
+            newHeight = 0
+            newX = 0
+            newY = 0
 
-                if (newWidth>=instaSize-10*gap) :
-                     newWidth = instaSize-10*gap
-                     newHeight= math.floor(newWidth/ratio)
+            self.ratio_image_gap = gap
 
-                newX = math.floor((instaSize-newWidth)/2)
-                newY = math.floor((instaSize-newHeight)/2)
+            if (horizontalImage) : 			
+                  newWidth = instaSize - 2*gap
+                  newHeight = math.floor(newWidth / ratio)
+                  
+                  if (newHeight>=instaSize-10*gap) :
+                        newHeight = instaSize-10*gap
+                        newWidth= math.floor(newHeight*ratio)
 
-          result = Image.new(image.mode, (instaSize, instaSize), color)		
-          resizedImage = image.resize((newWidth,newHeight))		
-          result.paste(resizedImage, (newX, newY))
-          return result	
+                  newX = math.floor((instaSize - newWidth )/2) 
+                  newY = math.floor((instaSize - newHeight)/2)
+            
+            else :
+                  newHeight = instaSize - 2*gap
+                  newWidth = math.floor(newHeight*ratio)
+
+                  if (newWidth>=instaSize-10*gap) :
+                        newWidth = instaSize-10*gap
+                        newHeight= math.floor(newWidth/ratio)
+
+                  newX = math.floor((instaSize-newWidth)/2)
+                  newY = math.floor((instaSize-newHeight)/2)
+
+            result = Image.new(image.mode, (instaSize, instaSize), color)		
+            resizedImage = image.resize((newWidth,newHeight))		
+            result.paste(resizedImage, (newX, newY))
+            return result	
      
      def set_square_text(self, image, text, font_path, color, horizontalImage, alignment):
           self.font_size = 46
@@ -134,11 +147,11 @@ class Exif:
           anchor = "ms"
           align = "center"
 
-          if alignment is 1:
+          if alignment == 1:
                 x = self.ratio_image_gap
                 anchor = "ls"
                 align = "left"
-          elif alignment is 2:
+          elif alignment == 2:
                 x = image.width - self.ratio_image_gap
                 anchor = "rs"
                 align = "right"
@@ -207,11 +220,11 @@ class Exif:
           anchor = "ms"
           align = "center"
 
-          if alignment is 1:
+          if alignment == 1:
                 x = self.side_padding_45
                 anchor = "ls"
                 align = "left"
-          elif alignment is 2:
+          elif alignment == 2:
                 x = image.width - self.side_padding_45
                 anchor = "rs"
                 align = "right"

@@ -1,13 +1,13 @@
 from PIL import Image, ImageFont, ImageDraw
 
-import os, platform
+import os, platform, sys
 
 class Watermark():
 	def __init__(self):
 		# 변수 초기화
 
 		# 폰트 사이즈 (초기)
-		self.fontSize = 30
+		self.font_size = 30
 		# 폰트 (초기)
 		if platform.system() == "Windows":
 			self.font = ImageFont.truetype(os.path.join(os.getcwd(), '../resources/Barlow-Light.ttf'), self.font_size)
@@ -17,30 +17,30 @@ class Watermark():
 			except:
 				self.font = ImageFont.truetype(os.path.join(os.getcwd(), '../resources/Barlow-Light.ttf'), self.font_size)
 
-	def insert_watermark(self, image, fontColor, watermarkText):
+	def insert_watermark(self, image, font_color, watermark_text):
 			width, height = image.size
 
 			draw = ImageDraw.Draw(image)
 			x, y = int(width/2), int(height/2)
 
-			self.font = ImageFont.truetype("Barlow-Light.ttf", self.fontSize)
+			self.font = ImageFont.truetype("Barlow-Light.ttf", self.font_size)
 
-			if fontColor:	# FontColor가 
-				draw.text(xy=(width / 2 - (self.fontSize * 2), height / 2), text = watermarkText,font=self.font, fill=(0,0,0))
+			if font_color:	# FontColor가 
+				draw.text(xy=(width / 2 - (self.font_size * 2), height / 2), text = watermark_text,font=self.font, fill=(0,0,0))
 			else:
-				draw.text(xy=(width / 2 + (self.fontSize * 2), height / 2), text = watermarkText, font = self.font, fill = (255,255,255))
+				draw.text(xy=(width / 2 + (self.font_size * 2), height / 2), text = watermark_text, font = self.font, fill = (255,255,255))
 
 			return image
 
 	def set_font_size(self, x, y):
 		if x > y:
-			self.fontSize = y
+			self.font_size = y
 		elif y > x:
-			self.fontSize = x
+			self.font_size = x
 		else:
-			self.fontSize = x
+			self.font_size = x
 
-		self.fontSize = int(self.fontSize/6)
+		self.font_size = int(self.font_size/6)
 
 	def steganography(self, image, watermarkText):
 		'''

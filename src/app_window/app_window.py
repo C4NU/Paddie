@@ -9,20 +9,56 @@ from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow
 print("Python Package Loaded")
 import converter
 
-
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
 from PyQt6 import QtGui, QtWidgets, QtCore
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit
+from PyQt6.QtCore import Qt, QLocale, QTranslator
+from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit, QLabel, QMessageBox
 from PyQt6.QtGui import QPixmap
+from PyQt6.QtCore import QThread, pyqtSignal
+
+# Define constants directly here since relative import from src root might be tricky without package restructuring
+# ideally this should be `from constants import ...` but let's keep it simple for this file structure
+WINDOW_WIDTH_SHORT = 461
+WINDOW_HEIGHT = 764
+PREVIEW_AREA_MARGIN = 10
+UI_MAIN = "resources/ui/WebPConverterGUI.ui"
+SAMPLE_FILE_PATH = "resources/"
+
 print("PyQt6 Package Loaded")
 
 from user_config import UserConfig
 from resource_path import resource_path
 
-UI_MAIN = "resources/ui/WebPConverterGUI.ui"
-SAMPLE_FILE_PATH = "resources/"
+
+UserConfig.load()
+
+app = QApplication(sys.argv)
+system_locale = QLocale.system().name()  # 예: 'ko_KR'
+lang_code = system_locale[:2]  
+
+translator = QTranslator()
+
+# 0: English/Auto, 1: Korean, 2: Japanese, 3: Chinese
+lang_index = UserConfig.language
+
+load_code = 'en'
+if lang_index == 1:
+    load_code = 'ko'
+elif lang_index == 2:
+    load_code = 'ja'
+elif lang_index == 3:
+    load_code = 'zh'
+else:
+    # Auto fallback to system locale if supported
+    if lang_code in ['ko', 'ja', 'zh']:
+        load_code = lang_code
+    else:
+        load_code = 'en'
+
+translated_loaded = translator.load(resource_path(f'resources/translations_{load_code}.qm'))
+if translated_loaded:
+    app.installTranslator(translator)
 
 # 26 ~ 41줄 까지 resource sample.jpg 파일 경로 설정 코드 수정 필요함
 try:
@@ -37,9 +73,79 @@ except Exception as e:
 
 print("Main UI Loaded Successfully")
 
+
+
+class ConversionWorker(QThread):
+    progress = pyqtSignal(int)
+    finished_conversion = pyqtSignal(str)
+    error = pyqtSignal(str)
+
+    def __init__(self, mode, file_paths, file_names, save_path, config_options, font_path=""):
+        super().__init__()
+        self.mode = mode
+        self.file_paths = file_paths
+        self.file_names = file_names
+        self.save_path = save_path
+        self.config_options = config_options
+        self.font_path = font_path
+
+    def run(self):
+        try:
+            import converter
+            conv = converter.Converter()
+            total_files = len(self.file_paths)
+            
+            for index, (file_path, file_name) in enumerate(zip(self.file_paths, self.file_names)):
+                if self.mode == 'conversion':
+                    conv.convert_image_to_webp(
+                        file_path=file_path,
+                        save_path=self.save_path + '/',
+                        save_name=file_name,
+                        lossless_option=self.config_options['conversion_loseless'],
+                        image_quality_option=self.config_options['conversion_quality'],
+                        exif_option=self.config_options['conversion_exif'],
+                        icc_profile_option=self.config_options['conversion_icc'],
+                        exact_option=self.config_options['conversion_transparent'],
+                        watermark_text="",
+                        conversion_option=True,
+                        resize_option=self.config_options['resize_option'],
+                        axis_option=self.config_options['resize_options'],
+                        resize_value=self.config_options['resize_size']
+                    )
+                elif self.mode == 'exif':
+                    conv.convert_exif_image(
+                        file_path=file_path,
+                        save_path=self.save_path + '/',
+                        save_name=file_name,
+                        file_format_option=self.config_options['exif_type'],
+                        font_path=self.font_path,
+                        bg_color=self.config_options['exif_bg_color'],
+                        text_color=self.config_options['exif_text_color'],
+                        ratio_option=self.config_options['exif_ratio'],
+                        exif_padding_option=self.config_options['exif_padding_mode'],
+                        save_exif_data_option=self.config_options['exif_save_exifdata'],
+                        resize_option=self.config_options['resize_option'],
+                        axis_option=self.config_options['resize_axis'],
+                        alignment_option=self.config_options['exif_format_alignment'],
+                        resize_value=self.config_options['resize_size'],
+                        quality_option=self.config_options['exif_quality'],
+                        caption_format=self.config_options['exif_format'],
+                        easymode_option=self.config_options['exif_easymode_options'],
+                        easymode_oneline=self.config_options['exif_easymode_oneline'],
+                        auto_hide_nonedata=self.config_options['exif_auto_hide_nonedata']
+                    )
+                
+                self.progress.emit(int((index + 1) / total_files * 100))
+                
+            self.finished_conversion.emit(self.save_path)
+            
+        except Exception as e:
+            self.error.emit(str(e))
+
 class WebpApp:
     def __init__(self):
-        self.app = QApplication(sys.argv)
+        # app is already created at the module level
+        self.app = app
         self.window = WebpWindow()
 
     def show(self):
@@ -67,6 +173,8 @@ class WebpWindow(QMainWindow, form_class):
 
         self.information_window = InformationWindow()
         self.setting_window = SettingWindow()
+        self.setting_window.on_accepted = self.on_setting_accepted
+        
         self.resize_window = ResizeOptionWindow()
 
         # 파일 이름 변수
@@ -74,9 +182,9 @@ class WebpWindow(QMainWindow, form_class):
         self.file_names = []
 
         # Preview 영역
-        self.window_width_short = 461
-        self.window_height = 764
-        self.preview_area_margin = 10
+        self.window_width_short = WINDOW_WIDTH_SHORT
+        self.window_height = WINDOW_HEIGHT
+        self.preview_area_margin = PREVIEW_AREA_MARGIN
         self.preview_area = QLabel(self)
         
         # set window size fixed
@@ -86,6 +194,24 @@ class WebpWindow(QMainWindow, form_class):
         self.setupUi(self)
         self.bind_ui()
         self.init_options()
+        
+        # macOS 등에서 메뉴바 접근이 어려운 경우를 위해 버튼 추가 (setupUi 이후에 호출해야 함)
+        self.create_settings_button()
+
+    def create_settings_button(self):
+        """설정 버튼을 프로그램 우측 하단에 동적으로 추가합니다."""
+        from PyQt6.QtWidgets import QPushButton
+        self.pref_button = QPushButton(self.centralwidget)
+        self.pref_button.setGeometry(300, 697, 40, 31) # 위치 조정 필요할 수 있음
+        self.pref_button.setText("⚙️")
+        self.pref_button.setToolTip(self.tr("Settings"))
+        self.pref_button.clicked.connect(self.on_trigger_preferences)
+
+    def on_setting_accepted(self, index):
+        """설정이 변경되었을 때 호출됩니다."""
+        from PyQt6.QtWidgets import QMessageBox
+        QMessageBox.information(self, self.tr("Settings"), self.tr("Settings saved. Please restart the application to apply the new language."))
+
 
     def bind_ui(self):
         # 실행 버튼 함수 링킹
@@ -191,13 +317,13 @@ class WebpWindow(QMainWindow, form_class):
         
         selected_path = self.file_paths[self.image_list_widget.currentRow()]
         made_file_name = "sample_output"
-        made_file_path = os.path.join(sample_file_path, made_file_name)
+        made_file_path = os.path.join(resource_path(SAMPLE_FILE_PATH), made_file_name)
 
         if os.path.exists(made_file_path):
             os.remove(made_file_path)
 
         made_image = self.converter.convert_exif_image(file_path=selected_path,
-                                                       save_path=sample_file_path,
+                                                       save_path=resource_path(SAMPLE_FILE_PATH),
                                                        save_name=made_file_name,
                                                        file_format_option=2, # webp
                                                        font_path=self.exif_padding_option_window.get_current_font_path(),
@@ -288,7 +414,7 @@ class WebpWindow(QMainWindow, form_class):
     def on_trigger_exit():
         sys.exit()
 
-    def open_file(self):
+    def open_file(self) -> None:
         open_files = QFileDialog.getOpenFileNames(self, caption="Open File", directory=UserConfig.latest_load_path)
 
         if len(open_files) > 0:
@@ -310,7 +436,7 @@ class WebpWindow(QMainWindow, form_class):
                 UserConfig.latest_load_path = load_path
                 UserConfig.save()
 
-    def delete_file(self):
+    def delete_file(self) -> None:
         selected_index = self.image_list_widget.currentRow()
         if selected_index < 0 or selected_index >= self.image_list_widget.count():
             return
@@ -324,7 +450,7 @@ class WebpWindow(QMainWindow, form_class):
         
     
 
-    def load_file(self, filePath):
+    def load_file(self, filePath: str) -> None:
         icon = QtGui.QIcon(filePath)
         #todo: manipulate string
         widget_item_text = self.path_string_with_width(filePath, 54)
@@ -340,7 +466,7 @@ class WebpWindow(QMainWindow, form_class):
         self.file_names.append(file_name.split(sep='/')[-1])
         self.image_list_widget.addItem(item)
 
-    def path_string_with_width(self, text, width):
+    def path_string_with_width(self, text: str, width: int) -> str:
         if '/' in text:
             split_character = '/'
         elif '\\' in text:
@@ -361,10 +487,7 @@ class WebpWindow(QMainWindow, form_class):
         result = '\n'.join(lines)
         return result
 
-    def save_file(self):
-        # 변환 실행 버튼 callback 함수
-        # self.watermarkOption()
-
+    def save_file(self) -> None:
         if self.save_original_path and self.image_list_widget.count() > 0:
             file_path = self.file_paths[self.image_list_widget.currentRow()]
             save_path = os.path.dirname(file_path)
@@ -375,54 +498,72 @@ class WebpWindow(QMainWindow, form_class):
             UserConfig.save()
 
         if save_path:
-            # 01 WebP 이미지로만 변환할 때
+            mode = None
             if self.conversion_option:
-                for index in range(self.image_list_widget.count()):
-                    self.converter.convert_image_to_webp(file_path=self.file_paths[index],
-                                                         save_path=save_path + '/',
-                                                         save_name=self.file_names[index],
-                                                         loseless_option=UserConfig.conversion_loseless,
-                                                         image_quality_option=UserConfig.conversion_quality,
-                                                         exif_option=UserConfig.conversion_exif,
-                                                         icc_profile_option=UserConfig.conversion_icc,
-                                                         exact_option=UserConfig.conversion_transparent, watermark_text="",
-                                                         conversion_option=self.conversion_option,
-                                                         resize_option=self.resize_option,
-                                                         axis_option=UserConfig.resize_options,
-                                                         resize_value=UserConfig.resize_size)
-
-            # 02 Exif Padding 이미지로만 변환할때
+                mode = 'conversion'
             elif self.exif_writing_option:
-                for index in range(self.image_list_widget.count()):
-                    self.converter.convert_exif_image(file_path=self.file_paths[index],
-                                                      save_path=save_path + '/',
-                                                      save_name=self.file_names[index],
-                                                      file_format_option=UserConfig.exif_type,
-                                                      font_path=self.exif_padding_option_window.get_current_font_path(),
-                                                      bg_color=UserConfig.exif_bg_color,
-                                                      text_color=UserConfig.exif_text_color,
-                                                      ratio_option=UserConfig.exif_ratio,
-                                                      exif_padding_option=UserConfig.exif_padding_mode,
-                                                      save_exif_data_option=UserConfig.exif_save_exifdata,
-                                                      resize_option=self.resize_option,
-                                                      axis_option=UserConfig.resize_axis,
-                                                      alignment_option=UserConfig.exif_format_alignment,
-                                                      resize_value=UserConfig.resize_size,
-                                                      quality_option=UserConfig.exif_quality,
-                                                      caption_format=UserConfig.exif_format,
-                                                      easymode_option=UserConfig.exif_easymode_options,
-                                                      easymode_oneline=UserConfig.exif_easymode_oneline,
-                                                      auto_hide_nonedata=UserConfig.exif_auto_hide_nonedata)
-
+                mode = 'exif'
             else:
                 print("옵션 선택 에러 / 다시 선택해주세요")
+                return
 
-            if platform.system() == "Windows":  # Windows
-                os.startfile(save_path)
-            elif platform.system() == "Darwin":  # macOS
-                os.system("open " + '"' + save_path + '"')
+            config_options = {
+                'conversion_loseless': UserConfig.conversion_loseless,
+                'conversion_quality': UserConfig.conversion_quality,
+                'conversion_exif': UserConfig.conversion_exif,
+                'conversion_icc': UserConfig.conversion_icc,
+                'conversion_transparent': UserConfig.conversion_transparent,
+                'resize_option': self.resize_option,
+                'resize_options': UserConfig.resize_options,
+                'resize_size': UserConfig.resize_size,
+                'exif_type': UserConfig.exif_type,
+                'exif_bg_color': UserConfig.exif_bg_color,
+                'exif_text_color': UserConfig.exif_text_color,
+                'exif_ratio': UserConfig.exif_ratio,
+                'exif_padding_mode': UserConfig.exif_padding_mode,
+                'exif_save_exifdata': UserConfig.exif_save_exifdata,
+                'resize_axis': UserConfig.resize_axis,
+                'exif_format_alignment': UserConfig.exif_format_alignment,
+                'exif_quality': UserConfig.exif_quality,
+                'exif_format': UserConfig.exif_format,
+                'exif_easymode_options': UserConfig.exif_easymode_options,
+                'exif_easymode_oneline': UserConfig.exif_easymode_oneline,
+                'exif_auto_hide_nonedata': UserConfig.exif_auto_hide_nonedata
+            }
+            font_path = self.exif_padding_option_window.get_current_font_path()
 
-            self.on_trigger_clear_files()
+            self.worker = ConversionWorker(mode, self.file_paths.copy(), self.file_names.copy(), save_path, config_options, font_path)
+            self.worker.progress.connect(self.on_progress)
+            self.worker.finished_conversion.connect(self.on_conversion_finished)
+            self.worker.error.connect(self.on_conversion_error)
+            
+            self.save_button.setEnabled(False)
+            if self.save_button.buttons():
+                self.save_button.buttons()[0].setText("변환 중...")
+            self.worker.start()
+
+    def on_progress(self, value):
+        if self.save_button.buttons():
+            self.save_button.buttons()[0].setText(f"변환 중... {value}%")
+
+    def on_conversion_finished(self, save_path):
+        self.save_button.setEnabled(True)
+        if self.save_button.buttons():
+            self.save_button.buttons()[0].setText("Save")
+        
+        if platform.system() == "Windows":  # Windows
+            os.startfile(save_path)
+        elif platform.system() == "Darwin":  # macOS
+            os.system("open " + '"' + save_path + '"')
+
+        self.on_trigger_clear_files()
+
+    def on_conversion_error(self, error_msg):
+        self.save_button.setEnabled(True)
+        if self.save_button.buttons():
+            self.save_button.buttons()[0].setText("Save")
+        print(f"변환 중 오류 발생: {error_msg}")
+        QMessageBox.warning(self, "오류", f"변환 중 오류가 발생했습니다: {error_msg}")
 
     # WebP 변환 옵션
     def on_toggle_conversion_enable(self, state):

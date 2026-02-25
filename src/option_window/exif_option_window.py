@@ -3,12 +3,14 @@ import sys
 import platform
 import pathlib
 from pathlib import Path
+import locale
+
 
 from user_config import UserConfig
 from caption_format_converter import CaptionFormatConverter
 
 from PyQt6 import uic
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QLocale, QTranslator
 from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtGui import QFontDatabase
 from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton, QComboBox, QPlainTextEdit, QColorDialog, QLabel, QVBoxLayout
@@ -17,6 +19,17 @@ from resource_path import resource_path
 
 UI_EXIF_OPTION = "resources/ui/ExifOptions.ui"
 UI_FONTS = "resources/Fonts"
+
+system_locale = QLocale.system().name()  # 예: 'ko_KR'
+lang_code = system_locale[:2]  
+
+translator = QTranslator()
+if lang_code == 'ko':
+    translator.load('translations_ko.qm')
+elif lang_code == 'en':
+    translator.load('translations_en.qm')
+elif lang_code == 'ja':
+    translator.load('translations_ja.qm')
 
 try:
      # UI 파일 로드
