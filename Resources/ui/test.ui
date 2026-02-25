@@ -12,7 +12,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QLabel" name="label_program_text">
+    <widget class="QLabel" name="label_program">
      <property name="font">
       <font>
        <pointsize>20</pointsize>
@@ -30,9 +30,6 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
      <item>
       <widget class="QLabel" name="label_version">
        <property name="text">
@@ -45,18 +42,12 @@
        <property name="text">
         <string>3.4.1</string>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignJustify|Qt::AlignVCenter</set>
-       </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <property name="spacing">
-      <number>0</number>
-     </property>
      <item>
       <widget class="QLabel" name="label_contact">
        <property name="text">
@@ -69,18 +60,12 @@
        <property name="text">
         <string>paddie.application@gmail.com</string>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignJustify|Qt::AlignVCenter</set>
-       </property>
       </widget>
      </item>
     </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <property name="spacing">
-      <number>0</number>
-     </property>
      <item>
       <widget class="QLabel" name="label_license">
        <property name="text">
@@ -93,14 +78,15 @@
        <property name="text">
         <string>몰?루...</string>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignJustify|Qt::AlignVCenter</set>
-       </property>
       </widget>
      </item>
     </layout>
    </item>
   </layout>
+  <zorder>horizontalLayoutWidget</zorder>
+  <zorder>label_program</zorder>
+  <zorder>horizontalLayoutWidget_2</zorder>
+  <zorder>horizontalLayoutWidget_3</zorder>
  </widget>
  <resources/>
  <connections/>

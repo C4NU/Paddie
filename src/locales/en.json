@@ -1,0 +1,40 @@
+{
+    "settings": {
+        "title": "Settings",
+        "language": "Language",
+        "theme": "Theme",
+        "save": "Save",
+        "cancel": "Cancel"
+    },
+    "conversion": {
+        "title": "Conversion Options",
+        "quality": "Quality",
+        "format": "Format",
+        "preserve_exif": "Preserve EXIF",
+        "resize": "Resize",
+        "watermark": "Watermark"
+    },
+    "resize": {
+        "title": "Resize Options",
+        "width": "Width",
+        "height": "Height",
+        "maintain_aspect": "Maintain Aspect Ratio"
+    },
+    "watermark": {
+        "title": "Watermark Options",
+        "text": "Watermark Text",
+        "position": "Position",
+        "opacity": "Opacity"
+    },
+    "exif": {
+        "title": "EXIF Options",
+        "preserve": "Preserve EXIF Data",
+        "strip": "Strip EXIF Data"
+    },
+    "info": {
+        "title": "Information",
+        "version": "Version",
+        "author": "Author",
+        "description": "Description"
+    }
+} 

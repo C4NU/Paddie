@@ -64,6 +64,7 @@ class CaptionFormatConverter():
 
         return text_replaced
     
+    @staticmethod
     def convert_easymode(one_line:bool, exif_data=None) -> str:
         try:
             body_value = CaptionFormatConverter.get_value_in_key("{body}", exif_data)

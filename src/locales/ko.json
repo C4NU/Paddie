@@ -1,0 +1,40 @@
+{
+    "settings": {
+        "title": "설정",
+        "language": "언어",
+        "theme": "테마",
+        "save": "저장",
+        "cancel": "취소"
+    },
+    "conversion": {
+        "title": "변환 옵션",
+        "quality": "품질",
+        "format": "형식",
+        "preserve_exif": "EXIF 유지",
+        "resize": "크기 조정",
+        "watermark": "워터마크"
+    },
+    "resize": {
+        "title": "크기 조정 옵션",
+        "width": "너비",
+        "height": "높이",
+        "maintain_aspect": "종횡비 유지"
+    },
+    "watermark": {
+        "title": "워터마크 옵션",
+        "text": "워터마크 텍스트",
+        "position": "위치",
+        "opacity": "투명도"
+    },
+    "exif": {
+        "title": "EXIF 옵션",
+        "preserve": "EXIF 데이터 유지",
+        "strip": "EXIF 데이터 제거"
+    },
+    "info": {
+        "title": "정보",
+        "version": "버전",
+        "author": "제작자",
+        "description": "설명"
+    }
+} 
