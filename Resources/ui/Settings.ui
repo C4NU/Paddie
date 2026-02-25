@@ -62,7 +62,7 @@
       <widget class="QComboBox" name="language_combo_box">
        <item>
         <property name="text">
-         <string>English</string>
+         <string>Auto</string>
         </property>
        </item>
        <item>
@@ -78,6 +78,11 @@
        <item>
         <property name="text">
          <string>Chinese</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>English</string>
         </property>
        </item>
       </widget>

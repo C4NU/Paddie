@@ -14,7 +14,7 @@ RESOURCE_USER_DATA = "resources/user_data.json"
 
 class UserConfig:
     # setting value is default value
-    language = 0 # 0: English, 1: Korean 2: Japanese
+    language = 1 # 0: English, 1: Korean 2: Japanese
     latest_load_path = None
     latest_save_path = None
     save_original_path = False

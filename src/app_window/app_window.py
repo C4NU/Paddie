@@ -39,7 +39,7 @@ lang_code = system_locale[:2]
 
 translator = QTranslator()
 
-# 0: English/Auto, 1: Korean, 2: Japanese, 3: Chinese
+# 0: Auto (System Locale), 1: Korean, 2: Japanese, 3: Chinese, 4: English
 lang_index = UserConfig.language
 
 load_code = 'en'
@@ -49,16 +49,28 @@ elif lang_index == 2:
     load_code = 'ja'
 elif lang_index == 3:
     load_code = 'zh'
+elif lang_index == 4:
+    load_code = 'en'
 else:
-    # Auto fallback to system locale if supported
+    # Auto (0) or invalid value: Detect from system locale
     if lang_code in ['ko', 'ja', 'zh']:
         load_code = lang_code
     else:
         load_code = 'en'
 
+# If loading default English when system is Korean, but somehow failed
+if load_code == 'en' and lang_code == 'ko':
+    # Force Korean if system is clearly Korean but index was 0 or invalid
+    load_code = 'ko'
+
 translated_loaded = translator.load(resource_path(f'resources/translations_{load_code}.qm'))
 if translated_loaded:
     app.installTranslator(translator)
+else:
+    # Fallback to English if the specific QM file is missing
+    if load_code != 'en':
+        translator.load(resource_path('resources/translations_en.qm'))
+        app.installTranslator(translator)
 
 # 26 ~ 41줄 까지 resource sample.jpg 파일 경로 설정 코드 수정 필요함
 try:
