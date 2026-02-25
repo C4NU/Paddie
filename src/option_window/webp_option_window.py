@@ -9,7 +9,7 @@ from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPus
 from user_config import UserConfig
 from resource_path import resource_path
 
-UI_CONVERSION_OPTION = "resources/ui/ConversionOptions.ui"
+UI_CONVERSION_OPTION = "resources/ui/conversionoptions.ui"
 
 try:
      # UI 파일 로드

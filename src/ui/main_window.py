@@ -9,7 +9,7 @@ class MainWindow(TranslatableWidget, QMainWindow):
         TranslatableWidget.__init__(self)
         
         # UI 파일 로드
-        loadUi("resources/ui/WebPConverterGUI.ui", self)
+        loadUi("resources/ui/webpconvertergui.ui", self)
         
         # 번역 키 설정
         self.set_translation_key(self.conversionGroup, "conversion.title")

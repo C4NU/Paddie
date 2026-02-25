@@ -22,7 +22,7 @@ from PyQt6.QtCore import QThread, pyqtSignal
 WINDOW_WIDTH_SHORT = 461
 WINDOW_HEIGHT = 764
 PREVIEW_AREA_MARGIN = 10
-UI_MAIN = "resources/ui/WebPConverterGUI.ui"
+UI_MAIN = "resources/ui/webpconvertergui.ui"
 SAMPLE_FILE_PATH = "resources/"
 
 print("PyQt6 Package Loaded")

@@ -9,7 +9,7 @@ class SettingsDialog(TranslatableWidget, QDialog):
         TranslatableWidget.__init__(self)
         
         # UI 파일 로드
-        loadUi("resources/ui/Settings.ui", self)
+        loadUi("resources/ui/settings.ui", self)
         
         # 번역 키 설정
         self.set_translation_key(self.groupBox, "settings.title")

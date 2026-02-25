@@ -12,7 +12,7 @@ from PyQt6 import uic
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QDialog, QLabel, QWidget
 
-UI_INFORMATION = "resources/ui/Information.ui"
+UI_INFORMATION = "resources/ui/information.ui"
 PROGRAM_DATA = "resources/program_data.json"
 
 try:

@@ -7,9 +7,9 @@ PREVIEW_AREA_MARGIN = 10
 RESIZE_VALUE_DEFAULT = 800
 
 # File Paths
-UI_MAIN_PATH = "resources/ui/WebPConverterGUI.ui"
+UI_MAIN_PATH = "resources/ui/webpconvertergui.ui"
 SAMPLE_FILE_PATH = "resources/"
-FONT_MAIN_PATH = "resources/Barlow-Light.ttf"
+FONT_MAIN_PATH = "resources/barlow-light.ttf"
 
 # Default Values
 DEFAULT_FONT_SIZE = 50

@@ -9,7 +9,7 @@ from PyQt6.QtGui import QPalette, QColor, QFont
 from PyQt6.QtGui import QFontDatabase
 from PyQt6.QtWidgets import QDialog, QLabel
 
-UI_SETTING = "resources/ui/Settings.ui"
+UI_SETTING = "resources/ui/settings.ui"
 
 try:
      # UI 파일 로드

@@ -9,7 +9,7 @@ import math
 from caption_format_converter import CaptionFormatConverter
 from resource_path import resource_path
 
-FONT_MAIN = "resources/Barlow-Light.ttf"
+FONT_MAIN = "resources/barlow-light.ttf"
 
 # 폰트 vs padding 비율은 1:4?
 # 이미지파일 vs padding 비율은 10:1
@@ -30,12 +30,12 @@ class Exif:
                 sys.exit(1)
      '''
                 if platform.system() == "Windows":
-                     self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/Barlow-Light.ttf'), self.font_size)
+                     self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/barlow-light.ttf'), self.font_size)
                 else:
                      try:
-                          self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "resources/Barlow-Light.ttf"), self.font_size)
+                          self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "resources/barlow-light.ttf"), self.font_size)
                      except:
-                          self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/Barlow-Light.ttf'), self.font_size)
+                          self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/barlow-light.ttf'), self.font_size)
      '''
      def set_image_padding(self, image, top, side, bottom, color):
           width, height = image.size
@@ -256,7 +256,7 @@ def main():
                text = CaptionFormatConverter.convert("{body} | {lens}\n{focal_f} | {aper} | {iso} | {ss}", img._getexif())
                img = exif_test.set_image_padding(img, top=int(padding / 2), side=int(padding / 2), bottom=padding,
                                                        color=(255, 255, 255))
-               img = exif_test.set_image_text(img, text=text, length=padding, font_path="resources/Barlow-Light.ttf", color=(0,0,0), alignment=0, use_side_padding=False)
+               img = exif_test.set_image_text(img, text=text, length=padding, font_path="resources/barlow-light.ttf", color=(0,0,0), alignment=0, use_side_padding=False)
                img.show()
                img.save("Test.jpg")
      except FileNotFoundError:

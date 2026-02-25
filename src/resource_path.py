@@ -11,7 +11,7 @@ def resource_path(relative_path: str) -> str:
     Cross-platform 리소스 경로 생성기 (PyInstaller 빌드/개발 모드 자동 인식)
     
     Parameters:
-        relative_path (str): 프로젝트 루트 기준 상대 경로 (e.g. 'resources/ui/ResizeOption.ui')
+        relative_path (str): 프로젝트 루트 기준 상대 경로 (e.g. 'resources/ui/resizeoption.ui')
         
     Returns:
         str: 실제 리소스 절대 경로

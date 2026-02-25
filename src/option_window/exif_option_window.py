@@ -17,8 +17,8 @@ from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPus
 
 from resource_path import resource_path
 
-UI_EXIF_OPTION = "resources/ui/ExifOptions.ui"
-UI_FONTS = "resources/Fonts"
+UI_EXIF_OPTION = "resources/ui/exifoptions.ui"
+UI_FONTS = "resources/fonts"
 
 system_locale = QLocale.system().name()  # 예: 'ko_KR'
 lang_code = system_locale[:2]  
