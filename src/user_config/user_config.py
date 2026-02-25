@@ -27,11 +27,11 @@ class UserConfig:
     conversion_loseless = False
     conversion_exif = False
     conversion_icc = False
-    conversion_transparent = False
     conversion_quality = 92
     
     exif_options = False
     exif_show_preview = False
+    exif_detached_preview = False
     exif_padding_mode = 0 # 0:None, 1:Under, 2:Frame
     exif_save_exifdata = False
     exif_quality = 92

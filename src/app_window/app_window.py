@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow, SettingWindow
+from app_window.preview_window import PreviewWindow
 
 print("Python Package Loaded")
 import converter
@@ -121,6 +122,7 @@ class WebpWindow(QMainWindow, form_class):
         self.information_window = InformationWindow()
         self.setting_window = SettingWindow()
         self.setting_window.on_accepted = self.on_setting_accepted
+        self.setting_window.on_config_changed = self.show_or_refresh_preview
         
         self.resize_window = ResizeOptionWindow()
 
@@ -133,6 +135,7 @@ class WebpWindow(QMainWindow, form_class):
         self.window_height = WINDOW_HEIGHT
         self.preview_area_margin = PREVIEW_AREA_MARGIN
         self.preview_area = QLabel(self)
+        self.detached_preview_window = PreviewWindow()
         
         # set window size fixed
         # self.size() does not work in init phase (return 640 x 480)
@@ -156,8 +159,56 @@ class WebpWindow(QMainWindow, form_class):
 
     def on_setting_accepted(self, index):
         """설정이 변경되었을 때 호출됩니다."""
-        from PyQt6.QtWidgets import QMessageBox
-        QMessageBox.information(self, self.tr("Settings"), self.tr("Settings saved. Please restart the application to apply the new language."))
+        self.change_language(index)
+
+    def change_language(self, lang_index):
+        """프로그램 재시작 없이 언어를 변경합니다."""
+        load_code = 'en'
+        if lang_index == 1: load_code = 'ko'
+        elif lang_index == 2: load_code = 'ja'
+        elif lang_index == 3: load_code = 'zh'
+        elif lang_index == 4: load_code = 'en'
+        else:
+            system_locale = QLocale.system().name()[:2]
+            load_code = system_locale if system_locale in ['ko', 'ja', 'zh'] else 'en'
+
+        new_translator = QTranslator()
+        if new_translator.load(resource_path(f'resources/translations_{load_code}.qm')):
+            # 기존 트랜슬레이터 제거 후 새 트랜슬레이터 설치
+            global translator
+            app_inst = QtWidgets.QApplication.instance()
+            app_inst.removeTranslator(translator)
+            translator = new_translator
+            app_inst.installTranslator(translator)
+            
+            # 모든 활성 UI 요소 재번역
+            self.retranslate_all_ui()
+            print(f"Language changed to: {load_code}")
+
+    def retranslate_all_ui(self):
+        """모든 윈도우의 UI를 현재 언어로 다시 로드합니다."""
+        # 메인 윈도우
+        self.retranslateUi(self)
+        
+        # 설정 버튼 등 동적 생성 요소 갱신
+        self.pref_button.setToolTip(self.tr("Settings"))
+        
+        # 서브 윈도우들
+        windows = [
+            self.webp_conversion_option_window,
+            self.exif_padding_option_window,
+            self.information_window,
+            self.setting_window,
+            self.resize_window,
+            self.detached_preview_window
+        ]
+        
+        for win in windows:
+            if hasattr(win, 'retranslateUi'):
+                win.retranslateUi(win)
+            # PreviewWindow 같은 커스텀 클래스의 경우 제목 등 수동 갱신
+            if isinstance(win, PreviewWindow):
+                win.setWindowTitle(self.tr("Paddie - Preview"))
 
 
     def bind_ui(self):
@@ -294,17 +345,33 @@ class WebpWindow(QMainWindow, form_class):
             return
 
         image_width, image_height = made_image.size
-        self.setFixedSize(self.window_width_short + self.preview_area_margin + image_width, max(image_height + 30, self.window_height))
+        sample_webp_path = made_file_path + ".webp"
         
-        pixmap = QPixmap(made_file_path + ".webp")
+        if UserConfig.exif_detached_preview:
+            # Detached preview mode
+            self.hide_internal_preview()
+            self.detached_preview_window.set_image(sample_webp_path)
+            self.detached_preview_window.show()
+            self.detached_preview_window.raise_()
+        else:
+            # Internal preview mode
+            if self.detached_preview_window.isVisible():
+                self.detached_preview_window.hide()
+                
+            self.setFixedSize(self.window_width_short + self.preview_area_margin + image_width, max(image_height + 30, self.window_height))
+            pixmap = QPixmap(sample_webp_path)
+            self.preview_area.setPixmap(pixmap)
+            self.preview_area.setVisible(True)
+            self.preview_area.setGeometry(self.window_width_short + self.preview_area_margin, 0, image_width, image_height)
         
-        self.preview_area.setPixmap(pixmap)
-        self.preview_area.setVisible(True)
-        self.preview_area.setGeometry(self.window_width_short + self.preview_area_margin, 0, image_width, image_height)
-        
-    def hide_preview(self):
+    def hide_internal_preview(self):
         self.preview_area.setVisible(False)
         self.setFixedSize(self.window_width_short, self.window_height)
+
+    def hide_preview(self):
+        self.hide_internal_preview()
+        if self.detached_preview_window:
+            self.detached_preview_window.hide()
 
     def on_click_open_resize_option(self):
         def on_accepted_resize_option(axis_option, resize_value):
