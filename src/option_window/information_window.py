@@ -63,6 +63,10 @@ class InformationWindow(QWidget, form_class):
 		has_update, latest_v, url, body = self.update_manager.check_for_update()
 		
 		if has_update:
+			# 서버 정보를 로컬 program_data.json에 동기화
+			self.update_manager.sync_program_data(latest_v)
+			self.label_version_text.setText(latest_v)
+			
 			reply = QMessageBox.question(self, self.tr("Update Available"),
 										self.tr(f"A new version ({latest_v}) is available.\nDo you want to download and update?"),
 										QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)

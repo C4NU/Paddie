@@ -94,6 +94,39 @@ class UpdateManager(QObject):
         self.update_worker.finished_signal.connect(finished_callback)
         self.update_worker.start()
 
+    def sync_program_data(self, latest_version):
+        """서버에서 받은 최신 버전 정보를 program_data.json에 기록합니다."""
+        try:
+            # 실제 파일 시스템의 경로를 찾기 위해 resource_path 활용 (frozen 모드 고려)
+            if getattr(sys, 'frozen', False):
+                # frozen 모드일 때 sys._MEIPASS는 임시 폴더이므로, 실제 실행 파일 위치 기준 경로 계산
+                if platform.system() == "Darwin":
+                    # Paddie.app/Contents/MacOS/Paddie -> Paddie.app/Contents/Resources/resources/program_data.json
+                    base_dir = os.path.abspath(os.path.join(os.path.dirname(sys.executable), "..", "Resources"))
+                else:
+                    # Windows/Linux: executable_dir/_internal/resources/program_data.json (onedir 기준)
+                    base_dir = os.path.dirname(sys.executable)
+                
+                path = os.path.join(base_dir, "resources", "program_data.json")
+            else:
+                # 개발 모드
+                from resource_path import resource_path
+                path = resource_path("resources/program_data.json")
+
+            if os.path.exists(path):
+                with open(path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                
+                data['version'] = latest_version
+                
+                with open(path, 'w', encoding='utf-8') as f:
+                    json.dump(data, f, indent=4, ensure_ascii=False)
+                print(f"program_data.json updated to version {latest_version}")
+                return True
+        except Exception as e:
+            print(f"Failed to sync program_data: {e}")
+        return False
+
     def apply_update(self, zip_path):
         """
         압축을 풀고 업데이터를 실행합니다.
