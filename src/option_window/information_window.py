@@ -9,8 +9,8 @@ from user_config import UserConfig
 from resource_path import resource_path
 
 from PyQt6 import uic
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QDialog, QLabel, QWidget
+from PyQt6.QtWidgets import QDialog, QLabel, QWidget, QPushButton, QProgressBar, QMessageBox
+from update_module import UpdateManager
 
 UI_INFORMATION = "resources/ui/information.ui"
 PROGRAM_DATA = "resources/program_data.json"
@@ -43,7 +43,56 @@ class InformationWindow(QWidget, form_class):
 		print(f"Program Name: {self.program_name}, Version: {self.program_version}")
 		self.default_font = 'Barlow-Light'
 
+		self.update_manager = UpdateManager(self.program_version)
+		
+		# 업데이트 관련 UI 추가
+		self.btn_check_update = QPushButton(self.tr("Check for Updates"))
+		self.btn_check_update.clicked.connect(self.on_check_update)
+		self.verticalLayout.addWidget(self.btn_check_update)
+		
+		self.progress_bar = QProgressBar()
+		self.progress_bar.setVisible(False)
+		self.verticalLayout.addWidget(self.progress_bar)
+
 		self.init()
+
+	def on_check_update(self):
+		self.btn_check_update.setEnabled(False)
+		self.btn_check_update.setText(self.tr("Checking..."))
+		
+		has_update, latest_v, url, body = self.update_manager.check_for_update()
+		
+		if has_update:
+			reply = QMessageBox.question(self, self.tr("Update Available"),
+										self.tr(f"A new version ({latest_v}) is available.\nDo you want to download and update?"),
+										QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+			
+			if reply == QMessageBox.StandardButton.Yes:
+				self.btn_check_update.setText(self.tr("Downloading..."))
+				self.progress_bar.setVisible(True)
+				self.update_manager.start_download(url, self.update_progress, self.update_finished)
+			else:
+				self.btn_check_update.setEnabled(True)
+				self.btn_check_update.setText(self.tr("Check for Updates"))
+		else:
+			QMessageBox.information(self, self.tr("No Update"), self.tr("You are using the latest version."))
+			self.btn_check_update.setEnabled(True)
+			self.btn_check_update.setText(self.tr("Check for Updates"))
+
+	def update_progress(self, value):
+		self.progress_bar.setValue(value)
+
+	def update_finished(self, success, message):
+		if success:
+			self.btn_check_update.setText(self.tr("Installing..."))
+			QMessageBox.information(self, self.tr("Download Complete"), 
+									self.tr("Download finished. The app will restart to apply the update."))
+			self.update_manager.apply_update(message)
+		else:
+			QMessageBox.warning(self, self.tr("Update Failed"), self.tr(f"Error: {message}"))
+			self.btn_check_update.setEnabled(True)
+			self.btn_check_update.setText(self.tr("Check for Updates"))
+			self.progress_bar.setVisible(False)
 
 	def init(self):
 		# 프로그램 정보 텍스트 설정

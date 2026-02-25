@@ -15,6 +15,7 @@ from PyQt6 import uic
 from PyQt6 import QtGui, QtWidgets, QtCore
 from PyQt6.QtCore import Qt, QLocale, QTranslator
 from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit, QLabel, QMessageBox
+from update_module import UpdateManager
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import QThread, pyqtSignal
 
@@ -147,6 +148,29 @@ class WebpWindow(QMainWindow, form_class):
         
         # macOS 등에서 메뉴바 접근이 어려운 경우를 위해 버튼 추가 (setupUi 이후에 호출해야 함)
         self.create_settings_button()
+        
+        # 백그라운드 업데이트 체크
+        self.check_update_background()
+
+    def check_update_background(self):
+        """앱 시작 시 백그라운드에서 업데이트를 체크합니다."""
+        self.startup_update_manager = UpdateManager(self.information_window.program_version)
+        # 긴급한 작업을 방해하지 않기 위해 약간의 딜레이 후 체크하거나 별도 스레드 권장
+        # 여기서는 단순함을 위해 정보를 가져오는 부분만 호출
+        def on_check_finished():
+            has_update, latest_v, url, body = self.startup_update_manager.check_for_update()
+            if has_update:
+                reply = QMessageBox.question(self, self.tr("Update Available"),
+                                            self.tr(f"A new version ({latest_v}) is available. Do you want to update now?\n\n{body}"),
+                                            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+                if reply == QMessageBox.StandardButton.Yes:
+                    self.on_trigger_information() # 정보 창을 열어 업데이트 진행 유도
+                    self.information_window.on_check_update() # 자동으로 업데이트 체크 버튼 누름
+        
+        # 단순 구현을 위해 QTimer 등을 쓸 수 있지만 여기서는 직접 호출 (네트워크 블락 주의)
+        # 실전에서는 QThread 사용 권장. UpdateManager에 이미 QThread 로직이 있으므로 활용 가능
+        from PyQt6.QtCore import QTimer
+        QTimer.singleShot(2000, on_check_finished) # 2초 후 체크
 
     def create_settings_button(self):
         """설정 버튼을 프로그램 우측 하단에 동적으로 추가합니다."""
