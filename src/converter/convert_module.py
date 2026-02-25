@@ -22,10 +22,11 @@ class Converter:
 
     @staticmethod
     def get_exif_data_on_path(file_path):
-        image = Image.open(file_path)
-        if image is None: return None
-
-        return image._getexif()
+        try:
+            with Image.open(file_path) as image:
+                return image._getexif()
+        except (OSError, AttributeError):
+            return None
 
     @staticmethod
     def fix_orientation(image):
@@ -65,60 +66,58 @@ class Converter:
         
         # 01 일반 WebP 형식 Image로 변환할 때
         if conversion_option:
-            image = Image.open(file_path)
-            dest = save_path + save_name + ".webp"
-
-            raw_exif_data = image._getexif()
-            if raw_exif_data is None:
-                exif_option = False
-                new_exif_data = None
-
-            else:
-                new_exif_data, image = Converter.fix_orientation(image)
-
-            # Reize 하기
-            if resize_option:
-                image = self.resize.resize(image, 
-                                    axis_option,
-                                    resize_value)
-
-            # Exif Option 데이터 읽어오기 / 오류시 except
-            if new_exif_data is not None:
-                try:
-                    exif_data = new_exif_data
-                    print(f"Get Exif Data: {exif_data}")
-                except:
-                    print(f'No exif data:{save_name}')
-                    exif_option = False
-                    exif_data = None
-            else:
-                print("NO new exif data")
-                exif_option = False
-                exif_data = None
-
-            # Icc profile 데이터 읽어오기 / 오류시 Except
             try:
-                icc_profile = image.info['icc_profile']
-                print("Get ICC Profile")
-            except:
-                print(f'No ICC Profile Data: {save_name}')
-                icc_profile = None
-                icc_profile_option = False
+                with Image.open(file_path) as image:
+                    dest = save_path + save_name + ".webp"
 
-            if exif_option:
-                if icc_profile_option:
-                    image.save(dest, format="webp", lossless=lossless_option, quality=image_quality_option,
-                                exif=exif_data, exact=exact_option, icc_profile=icc_profile)
-                else:
-                    image.save(dest, format="webp", lossless=lossless_option, quality=image_quality_option,
-                                exif=exif_data, exact=exact_option)
-            else:
-                if icc_profile_option:
-                    image.save(dest, format="webp", lossless=lossless_option, quality=image_quality_option,
-                                   exact=exact_option, icc_profile=icc_profile)
-                else:
-                    image.save(dest, format="webp", lossless=lossless_option, quality=image_quality_option,
-                                exact=exact_option)
+                    raw_exif_data = image._getexif()
+                    if raw_exif_data is None:
+                        exif_option = False
+                        new_exif_data = None
+                    else:
+                        new_exif_data, image = Converter.fix_orientation(image)
+
+                    # Reize 하기
+                    if resize_option:
+                        image = self.resize.resize(image, 
+                                            axis_option,
+                                            resize_value)
+
+                    # Exif Option 데이터 읽어오기
+                    if new_exif_data is not None:
+                        exif_data = new_exif_data
+                        print(f"Get Exif Data: {exif_data}")
+                    else:
+                        print("NO new exif data")
+                        exif_option = False
+                        exif_data = None
+
+                    # Icc profile 데이터 읽어오기
+                    try:
+                        icc_profile = image.info.get('icc_profile')
+                        if icc_profile:
+                            print("Get ICC Profile")
+                        else:
+                            icc_profile_option = False
+                    except (AttributeError, KeyError):
+                        print(f'No ICC Profile Data: {save_name}')
+                        icc_profile = None
+                        icc_profile_option = False
+
+                    save_params = {
+                        "format": "webp",
+                        "lossless": lossless_option,
+                        "quality": image_quality_option,
+                        "exact": exact_option
+                    }
+                    if exif_option and exif_data:
+                        save_params["exif"] = exif_data
+                    if icc_profile_option and icc_profile:
+                        save_params["icc_profile"] = icc_profile
+                    
+                    image.save(dest, **save_params)
+            except OSError as e:
+                print(f"Failed to convert {file_path}: {e}")
 
     def convert_exif_image(self, file_path, save_path, save_name, file_format_option, font_path, 
                             bg_color, text_color, ratio_option, exif_padding_option, save_exif_data_option,
@@ -132,81 +131,63 @@ class Converter:
             return
 
         # 02 EXIF Padding Image로 변환할 때
-        image = Image.open(file_path)
+        try:
+            with Image.open(file_path) as image:
+                font_color = (text_color.red(), text_color.green(), text_color.blue())
+                background_color = (bg_color.red(), bg_color.green(), bg_color.blue())
+                    
+                longer_length = image.width if image.width >= image.height else image.height
+                padding = int(longer_length / 10)
+                half_padding = int(padding * 0.5)
 
-        font_color = (text_color.red(), text_color.green(), text_color.blue())
-        background_color = (bg_color.red(), bg_color.green(), bg_color.blue())
-            
-        longer_length = image.width if image.width >= image.height else image.height
-        padding = int(longer_length / 10)
-        half_padding = int(padding * 0.5)
+                horizontalImage = True if image.width>=image.height else False
+                
+                raw_exif_data = image._getexif()
+                if raw_exif_data == None:
+                    return None
 
-        horizontalImage = True if image.width>=image.height else False
-        
-        raw_exif_data = image._getexif()
-        if raw_exif_data == None:
-            return
+                new_exif_data, image = Converter.fix_orientation(image)
+                    
+                if not easymode_option:
+                    full_text = CaptionFormatConverter.convert(caption_format, exif_data=raw_exif_data, auto_hide_nonedata=auto_hide_nonedata)
+                else:
+                    full_text = CaptionFormatConverter.convert_easymode(easymode_oneline, raw_exif_data)
 
-        else:
-            new_exif_data, image = Converter.fix_orientation(image)
-            
-        if not easymode_option:
-            full_text = CaptionFormatConverter.convert(caption_format, exif_data=raw_exif_data, auto_hide_nonedata=auto_hide_nonedata)
-        else:
-            full_text = CaptionFormatConverter.convert_easymode(easymode_oneline, raw_exif_data)
+                if ratio_option == 2:
+                    image = self.exif.set_45_padding(image, gap = 50, color=background_color)
+                    image = self.exif.set_45_text(image=image, text=full_text, font_path=font_path, color=font_color, alignment=alignment_option)
 
-        print('--- convert_exif_image ---')
-        print(' file_path: ', file_path)
-        print(' save_path: ', save_path)
-        print(' save_name: ', save_name)
-        print(' file_format_option: ', file_format_option)
-        print(' font_path: ', font_path)
-        print(' bg_color: ', bg_color)
-        print(' text_color: ', text_color)
-        print(' ratio_option: ', ratio_option)
-        print(' exif_padding_option: ', exif_padding_option)
-        print(' save_exif_data_option: ', save_exif_data_option)
-        print(' resize_option: ', resize_option)
-        print(' axis_option: ', axis_option)
-        print(' alignment_option: ', alignment_option)
-        print(' resize_value: ', resize_value)
-        print(' quality_option: ', quality_option)
-        print(' caption_format: ', caption_format)
-        print(' > full_text: ', full_text)
-        print('---------------------------')
+                elif ratio_option == 1:
+                    image = self.exif.set_square_padding(image, gap = 60, color=background_color, horizontalImage= horizontalImage)
+                    image = self.exif.set_square_text(image=image, text=full_text, font_path=font_path, color=font_color, horizontalImage=horizontalImage, alignment=alignment_option)
 
-        if ratio_option == 2:
-            image = self.exif.set_45_padding(image, gap = 50, color=background_color)
-            image = self.exif.set_45_text(image=image, text=full_text, font_path=font_path, color=font_color, alignment=alignment_option)
+                elif exif_padding_option==0:
+                    image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option, use_side_padding=False)
 
-        elif ratio_option == 1:
-            image = self.exif.set_square_padding(image, gap = 60, color=background_color, horizontalImage= horizontalImage)
-            image = self.exif.set_square_text(image=image, text=full_text, font_path=font_path, color=font_color, horizontalImage=horizontalImage, alignment=alignment_option)
+                else : 
+                    top = half_padding if exif_padding_option == 2 else 0
+                    side = half_padding if exif_padding_option == 2 else 0
+                    image = self.exif.set_image_padding(image, top=top, side=side, bottom=padding, color=background_color)
+                    image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option, use_side_padding=exif_padding_option == 2)
 
-        elif exif_padding_option==0:
-            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option, use_side_padding=False)
+                # Resize 하기
+                if resize_option:
+                    image = self.resize.resize(image, 
+                                        axis_option,
+                                        resize_value)
+                # 파일 형식 선택
+                export_extension = Converter.FILE_FORMAT_EXTENSION[file_format_option]
+                fullpath = os.path.join(save_path, save_name) + '.' + export_extension
 
-        else : 
-            top = half_padding if exif_padding_option == 2 else 0
-            side = half_padding if exif_padding_option == 2 else 0
-            image = self.exif.set_image_padding(image, top=top, side=side, bottom=padding, color=background_color)
-            image = self.exif.set_image_text(image=image, text=full_text, length=padding, font_path=font_path, color=font_color, alignment=alignment_option, use_side_padding=exif_padding_option == 2)
+                if save_exif_data_option is True:
+                    image.save(fullpath, format=export_extension, quality=quality_option, exif=new_exif_data)
+                else:
+                    image.save(fullpath, format=export_extension, quality=quality_option)
 
-        # Resize 하기
-        if resize_option:
-            image = self.resize.resize(image, 
-                                axis_option,
-                                resize_value)
-        # 파일 형식 선택
-        export_extension = Converter.FILE_FORMAT_EXTENSION[file_format_option]
-        fullpath = os.path.join(save_path, save_name) + '.' + export_extension
-
-        if save_exif_data_option is True:
-            image.save(fullpath, format=export_extension, quality=quality_option, exif=new_exif_data)
-        else:
-            image.save(fullpath, format=export_extension, quality=quality_option)
-
-        return image
+                return image
+        except OSError as e:
+            print(f"Failed to process EXIF image {file_path}: {e}")
+            return None
 
     @staticmethod
     def search_file_format(file_path) -> str:

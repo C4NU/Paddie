@@ -248,18 +248,21 @@ class Exif:
 def main():
      exif_test = Exif()
 
-     img = Image.open("Error-Test/IMG_0058.jpeg")
+     try:
+          with Image.open("Error-Test/IMG_0058.jpeg") as img:
+               longer_length = img.width if img.width >= img.height else img.height
+               padding = int(longer_length / 10)
 
-     longer_length = img.width if img.width >= img.height else img.height
-     padding = int(longer_length / 10)
-
-     text = CaptionFormatConverter.convert("{body} | {lens}\n{focal_f} | {aper} | {iso} | {ss}", img._getexif())
-     img = Exif.set_image_padding2(img, top=int(padding / 2), side=int(padding / 2), bottom=padding,
-                                             color=(255, 255, 255))
-     img = exif_test.set_image_text(img, text=text, length=padding, font_path="resources/Barlow-Light.ttf", color=(0,0,0), alignment=0)
-     img.show()
-
-     img.save("Test.jpg")
+               text = CaptionFormatConverter.convert("{body} | {lens}\n{focal_f} | {aper} | {iso} | {ss}", img._getexif())
+               img = exif_test.set_image_padding(img, top=int(padding / 2), side=int(padding / 2), bottom=padding,
+                                                       color=(255, 255, 255))
+               img = exif_test.set_image_text(img, text=text, length=padding, font_path="resources/Barlow-Light.ttf", color=(0,0,0), alignment=0, use_side_padding=False)
+               img.show()
+               img.save("Test.jpg")
+     except FileNotFoundError:
+          print("Error: Test image not found.")
+     except Exception as e:
+          print(f"An unexpected error occurred during test: {e}")
 
 if __name__ == "__main__":
      main()
