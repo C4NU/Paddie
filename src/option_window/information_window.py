@@ -13,7 +13,7 @@ from PyQt6.QtWidgets import QDialog, QLabel, QWidget, QPushButton, QProgressBar,
 from update_module import UpdateManager
 
 UI_INFORMATION = "resources/ui/information.ui"
-PROGRAM_DATA = "resources/program_data.json"
+PROGRAM_DATA = "resources/data/program_data.json"
 
 try:
 	# UI 파일 로드

@@ -17,12 +17,16 @@ class Translator:
     
     def _load_translations(self):
         """번역 파일들을 로드합니다."""
-        locales_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "locales")
-        for filename in os.listdir(locales_dir):
-            if filename.endswith(".json"):
-                lang_code = filename[:-5]  # .json 확장자 제거
-                with open(os.path.join(locales_dir, filename), 'r', encoding='utf-8') as f:
-                    self._translations[lang_code] = json.load(f)
+        from resource_path import resource_path
+        try:
+            locales_dir = resource_path("resources/i18n")
+            for filename in os.listdir(locales_dir):
+                if filename.endswith(".json"):
+                    lang_code = filename[:-5]  # .json 확장자 제거
+                    with open(os.path.join(locales_dir, filename), 'r', encoding='utf-8') as f:
+                        self._translations[lang_code] = json.load(f)
+        except Exception as e:
+            print(f"Translation loading failed: {e}")
     
     def _load_language_config(self):
         """저장된 언어 설정을 로드합니다."""

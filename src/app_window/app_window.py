@@ -65,13 +65,13 @@ if load_code == 'en' and lang_code == 'ko':
     # Force Korean if system is clearly Korean but index was 0 or invalid
     load_code = 'ko'
 
-translated_loaded = translator.load(resource_path(f'resources/translations_{load_code}.qm'))
+translated_loaded = translator.load(resource_path(f'resources/i18n/translations_{load_code}.qm'))
 if translated_loaded:
     app.installTranslator(translator)
 else:
     # Fallback to English if the specific QM file is missing
     if load_code != 'en':
-        translator.load(resource_path('resources/translations_en.qm'))
+        translator.load(resource_path('resources/i18n/translations_en.qm'))
         app.installTranslator(translator)
 
 # 26 ~ 41줄 까지 resource sample.jpg 파일 경로 설정 코드 수정 필요함

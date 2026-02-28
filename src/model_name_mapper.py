@@ -9,7 +9,7 @@ from resource_path import resource_path
 class ModelNameMapper:
     @staticmethod
     def replace_model_name(model_name) -> str:
-        path = resource_path('resources/model_map.csv')
+        path = resource_path('resources/data/model_map.csv')
 
         try:
             with open(path, newline='', encoding='utf-8') as csv_file:

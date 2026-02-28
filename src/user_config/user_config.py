@@ -14,7 +14,7 @@ import sys
 from pathlib import Path
 from resource_path import resource_path
 
-RESOURCE_USER_DATA = "resources/user_data.json"
+RESOURCE_USER_DATA = "resources/data/user_data.json"
 
 def get_user_data_path():
     """사용자 데이터(설정)를 저장할 쓰기 가능한 경로를 반환합니다."""
