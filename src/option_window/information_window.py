@@ -32,7 +32,7 @@ class InformationWindow(QWidget, form_class):
 		super().__init__()
 		self.setupUi(self) # UI 초기화
 
-		with open(program_data_path, 'r') as f:
+		with open(program_data_path, 'r', encoding='utf-8') as f:
 			program_data = json.load(f)
 			self.program_name = program_data["name"]
 			self.program_version = program_data["version"]

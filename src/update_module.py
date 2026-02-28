@@ -215,7 +215,7 @@ try:
         subprocess.Popen(["{executable}"])
         
 except Exception as e:
-    with open(os.path.join(os.path.expanduser("~"), "paddie_update_error.log"), "w") as f:
+    with open(os.path.join(os.path.expanduser("~"), "paddie_update_error.log"), "w", encoding='utf-8') as f:
         f.write(str(e))
 finally:
     # 임시 디렉토리 삭제 시도 (선택 사항)
