@@ -1,0 +1,78 @@
+import argparse
+import os
+import platform
+import subprocess
+import sys
+from pathlib import Path
+
+
+APP_NAME = "Paddie"
+APP_ID = "com.canu.paddie"
+ROOT_DIR = Path(__file__).resolve().parents[1]
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Build Paddie with PyInstaller.")
+    parser.add_argument("--onefile", action="store_true", help="Build a single executable instead of an app folder.")
+    args = parser.parse_args()
+
+    command = [
+        sys.executable,
+        "-m",
+        "PyInstaller",
+        "--noconfirm",
+        "--clean",
+        "--windowed",
+        "--name",
+        APP_NAME,
+        "--hidden-import",
+        "PySide6.QtUiTools",
+    ]
+
+    if args.onefile:
+        command.append("--onefile")
+
+    icon_path = icon_for_platform()
+    if icon_path is not None:
+        command.extend(["--icon", str(icon_path)])
+
+    if sys.platform == "darwin":
+        command.extend(["--osx-bundle-identifier", APP_ID])
+
+    for source, target in data_paths():
+        command.extend(["--add-data", f"{source}{data_separator()}{target}"])
+
+    command.append(str(ROOT_DIR / "src" / "main.py"))
+    env = os.environ.copy()
+    env.setdefault("PYINSTALLER_CONFIG_DIR", os.fspath(Path("/tmp") / "paddie-pyinstaller-cache"))
+    subprocess.run(command, cwd=ROOT_DIR, check=True, env=env)
+
+
+def icon_for_platform():
+    if sys.platform == "darwin":
+        return ROOT_DIR / "resources" / "icons" / "icon.icns"
+    if sys.platform == "win32":
+        return ROOT_DIR / "resources" / "icons" / "icon.ico"
+
+    png_icon = ROOT_DIR / "resources" / "icons" / "paddie.png"
+    return png_icon if png_icon.exists() else None
+
+
+def data_paths():
+    resources = ROOT_DIR / "resources"
+    return [
+        (resources / "ui", "resources/ui"),
+        (resources / "fonts", "resources/fonts"),
+        (resources / "data", "resources/data"),
+        (resources / "i18n", "resources/i18n"),
+        (resources / "icons", "resources/icons"),
+        (resources / "barlow-light.ttf", "resources"),
+    ]
+
+
+def data_separator():
+    return ";" if platform.system() == "Windows" else ":"
+
+
+if __name__ == "__main__":
+    main()

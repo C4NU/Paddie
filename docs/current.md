@@ -7,7 +7,7 @@
 
 - 안정 버전인 `v3.4.1` 태그에서 직접 브랜치를 만들었다.
 - 복구 작업을 추적하기 위해 `docs/`를 추가했다.
-- 현재 앱은 PySide6 단일 UI 런타임 기준으로 전환했고, macOS PyInstaller 빌드까지 통과했다.
+- 현재 앱은 PySide6 단일 UI 런타임 기준으로 전환했고, 공통 PyInstaller 빌드 스크립트와 GitHub Actions 릴리즈 빌드 workflow를 추가했다.
 
 ## 지금까지 확인한 내용
 
@@ -18,10 +18,10 @@
 
 ## 다음 단계
 
-1. 새 빌드 산출물에서 파일 추가, 리사이즈 옵션, 저장 폴더 선택, 색상 선택, EXIF 분리 프리뷰를 실제 이미지로 스모크 테스트한다.
-2. 언어 설정 UI는 별도 단계로 추가한다. 현재는 `UserConfig.language`와 시스템 언어 기준으로 앱 시작 시 번역 파일을 적용한다.
-3. 업데이트 기능은 자동 설치가 아니라 GitHub Releases 최신 버전 확인과 브라우저 열기부터 구현한다.
-4. `program_data.json`은 정보 창 메타데이터와 업데이트 확인이 필요해지는 시점에 읽기 전용 데이터 파일로 다시 도입한다.
+1. GitHub Actions를 원격에서 실행해 macOS Intel, macOS Apple Silicon, Windows x64, Linux x64 산출물이 모두 생성되는지 확인한다.
+2. 새 빌드 산출물에서 파일 추가, 리사이즈 옵션, 저장 폴더 선택, 색상 선택, EXIF 분리 프리뷰를 실제 이미지로 스모크 테스트한다.
+3. 실제 라이선스를 확정한 뒤 `LICENSE` 파일과 정보 창 라이선스 값을 갱신한다.
+4. 자동 업데이트 설치는 별도 단계로 검토한다. 현재는 GitHub Releases 최신 버전 확인과 브라우저 열기까지만 구현한다.
 
 ## 적용한 변경
 
@@ -46,6 +46,13 @@
 - 정보 창을 고정 좌표 `.ui` 레이아웃에서 아이콘, 설명, 버전 배지, 메타데이터 패널을 가진 코드 기반 레이아웃으로 교체했다.
 - 정보 창 메타데이터에 라이선스 행을 추가했다. 현재 저장소에 라이선스 파일이 없어 `Unspecified`/`별도 명시 없음`으로 표시한다.
 - 정보 창은 현재 언어 코드 기준으로 제목, 설명, 라벨, 닫기 버튼을 다시 적용한다.
+- `PySide6`를 `6.10.3`으로 올려 `.venv`에서 발생하던 Qt `neon` 런타임 오류를 해소했다.
+- PyInstaller/altgraph가 요구하는 `pkg_resources` 호환성을 위해 `setuptools==80.9.0`을 명시했다.
+- 사용자 설정 저장 위치를 번들 내부 `resources/data/user_data.json`에서 OS별 사용자 설정 폴더로 옮겼다.
+- `PADDIE_CONFIG_DIR` 환경변수로 테스트/CI 설정 저장 위치를 임시 폴더로 지정할 수 있게 했다.
+- `scripts/build_release.py`와 `scripts/package_release.py`를 추가해 OS별 PyInstaller 옵션과 산출물 압축을 공통화했다.
+- `.github/workflows/build-release.yml`을 추가해 태그 `v*` push 또는 수동 실행으로 4개 플랫폼 산출물을 만들고, 태그 빌드에서는 draft release를 생성하도록 했다.
+- `Options` 메뉴에 GitHub Releases 최신 버전 확인 항목을 추가했다. 새 버전이 있으면 릴리스 페이지를 열 수 있다.
 
 ## 검증
 
@@ -62,4 +69,6 @@
 - 영어 전환 후 `Options`, `Preferences`, `Information`, `Exit`, `Files`, `Add Files`, `Clear List` 메뉴 텍스트가 유지되는 것을 확인했다.
 - `Preferences`, `Information`, `Exit` 액션의 menu role이 각각 `PreferencesRole`, `AboutRole`, `QuitRole`로 설정되는 것을 확인했다.
 - 오프스크린 Qt 스모크 테스트에서 정보 창 생성과 영어/한국어 재번역이 예외 없이 통과했다.
-- 현재 `.venv`의 `PySide6==6.8.2.1`은 Qt 초기화 전 `Incompatible processor ... neon` 오류가 발생해 런타임 스모크 테스트에 실패했다.
+- `.venv`의 `PySide6==6.10.3` 기준 오프스크린 앱 생성과 영어 전환 스모크 테스트가 통과했다.
+- `.venv/bin/python scripts/build_release.py`로 로컬 macOS PyInstaller 빌드가 완료되어 `dist/Paddie`, `dist/Paddie.app`이 생성됐다.
+- `.venv/bin/python scripts/package_release.py --artifact-name Paddie-local-macos-arm64 --format zip`로 로컬 zip 산출물을 만들었다.

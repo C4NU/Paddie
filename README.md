@@ -1,16 +1,16 @@
 # Paddie。
 
 [![CodeFactor](https://www.codefactor.io/repository/github/c4nu/paddie/badge/main)](https://www.codefactor.io/repository/github/c4nu/paddie/overview/main~)
-![Stable Version](https://img.shields.io/badge/stable-v3.4.0-blue?style=flat)
+![Stable Version](https://img.shields.io/badge/stable-v3.4.1-blue?style=flat)
 [![Github All Releases](https://img.shields.io/github/downloads/c4nu/paddie/total.svg)]()
 
 ## Version
 ### Python Version
 ![Python 3](https://img.shields.io/badge/Python-3-yellow?style=flat)
 ### Module Version
-![PySide6](https://img.shields.io/badge/PySide-6.8.2-green?style=flat)
-![Pillows](https://img.shields.io/badge/Pillows-10.0.0-yellow?style=flat)
-![Pyinstaller](https://img.shields.io/badge/Pyinstaller-6.3.0-red?style=flat)
+![PySide6](https://img.shields.io/badge/PySide-6.10.3-green?style=flat)
+![Pillows](https://img.shields.io/badge/Pillow-11.1.0-yellow?style=flat)
+![Pyinstaller](https://img.shields.io/badge/PyInstaller-6.12.0-red?style=flat)
 
 ## 기능
 | 이름       | 설명                                                           |
@@ -38,41 +38,17 @@
 | {mf_l}                          | 렌즈 제조사 정보                         |
 
 ## 빌드
-윈도우 및 macOS 빌드 방법이 다릅니다. (파일 경로 문제)
-각 OS 별 빌드 방법에 맞춰주세요.
-### 공통
-| 순서  | 내용           |
-|-----|--------------|
-| 1   | Python 설치    |
-| 2   | `.venv/bin/python -m pip install -r src/requirements.txt` |
-| 3   |              |
-| 4   | dist 폴더 확인   |
-### Windows
-#### 폰트 추가 기능 X
-```python
-.venv\Scripts\python -m PyInstaller --windowed --onefile --noconfirm --clean --name "Paddie" --icon "resources\icons\icon.ico" --hidden-import PySide6 --add-data "resources\ui;resources\ui" --add-data "resources\fonts;resources\fonts" --add-data "resources\data;resources\data" --add-data "resources\i18n;resources\i18n" --add-data "resources\barlow-light.ttf;resources" src\main.py
-```
-#### 폰트 추가 기능 O
-```python
-.venv\Scripts\python -m PyInstaller --noconfirm --clean --name "Paddie" --icon "resources\icons\icon.ico" --hidden-import PySide6 --add-data "resources\ui;resources\ui" --add-data "resources\fonts;resources\fonts" --add-data "resources\data;resources\data" --add-data "resources\i18n;resources\i18n" --add-data "resources\barlow-light.ttf;resources" src\main.py
-```
-### macOS
 
-```python
-#Paddie.spec 파일로 빌드 가능
-.venv/bin/python -m PyInstaller --windowed --noconfirm --clean \
---name "Paddie" \
---icon resources/icons/icon.icns \
---add-data "resources/ui:resources/ui" \
---add-data "resources/fonts:resources/fonts" \
---add-data "resources/data:resources/data" \
---add-data "resources/i18n:resources/i18n" \
---add-data "resources/barlow-light.ttf:resources" \
---osx-bundle-identifier "com.canu.paddie" \
---target-arch universal2 \
-src/main.py
+로컬 빌드는 OS별 PyInstaller 옵션을 직접 입력하지 않고 공통 스크립트를 사용합니다.
+
+```bash
+python -m pip install -r src/requirements.txt
+python -m compileall -q src docs scripts
+python scripts/build_release.py
+python scripts/package_release.py --artifact-name Paddie-local --format zip
 ```
-빌드 후 Paddie.spec 파일의 BUNDLE 항목에 version='버전명' 추가.
+
+GitHub Actions는 태그 `v*` push 또는 수동 실행으로 macOS Intel, macOS Apple Silicon, Windows x64, Linux x64 산출물을 빌드합니다. 태그 빌드에서는 산출물을 첨부한 draft release를 생성합니다.
 ## 라이선스
 | 라이선스 항목      | 설                                                            |
 |--------------|--------------------------------------------------------------|

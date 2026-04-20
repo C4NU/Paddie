@@ -9,6 +9,7 @@ from app_window.preview_window import PreviewWindow
 
 print("Python Package Loaded")
 import converter
+import update_checker
 
 
 from PySide6.QtWidgets import *
@@ -20,10 +21,26 @@ print("PySide6 Package Loaded")
 from user_config import UserConfig
 from resource_path import resource_path
 from ui_loader import load_ui, retranslate_loaded_ui
-from localization import apply_language, install_translator
+from localization import apply_language, get_current_language_code, install_translator
 
 UI_MAIN = "resources/ui/webpconvertergui.ui"
 SAMPLE_FILE_PATH = "resources/"
+WINDOW_TEXT = {
+    "en": {
+        "check_updates": "Check for Updates...",
+        "update_title": "Software Update",
+        "update_available": "Paddie {version} is available.",
+        "up_to_date": "Paddie is up to date.",
+        "update_failed": "Unable to check for updates.\n{error}",
+    },
+    "ko": {
+        "check_updates": "업데이트 확인...",
+        "update_title": "소프트웨어 업데이트",
+        "update_available": "Paddie {version} 버전을 사용할 수 있습니다.",
+        "up_to_date": "Paddie가 최신 버전입니다.",
+        "update_failed": "업데이트를 확인할 수 없습니다.\n{error}",
+    },
+}
 
 # 26 ~ 41줄 까지 resource sample.jpg 파일 경로 설정 코드 수정 필요함
 try:
@@ -101,6 +118,9 @@ class WebpWindow(QMainWindow):
         # 파일 일괄 비우기 기능 함수 링킹
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
         # 프로그램 정보 기능 함수 링킹
+        self.actionCheck_For_Updates = QtGui.QAction(self)
+        self.actionCheck_For_Updates.triggered.connect(self.on_trigger_check_updates)
+        self.menuOptions.insertAction(self.actionInformation, self.actionCheck_For_Updates)
         self.actionPreferences.setMenuRole(QtGui.QAction.MenuRole.PreferencesRole)
         self.actionInformation.setMenuRole(QtGui.QAction.MenuRole.AboutRole)
         self.actionPreferences.triggered.connect(self.on_trigger_preferences)
@@ -129,6 +149,7 @@ class WebpWindow(QMainWindow):
         self.open_resize_option_button.setEnabled(self.enable_resize_option_box.isChecked())
         # 원본 사진 위치 저장 옵션 링킹
         self.save_original_path_checkbox.stateChanged.connect(self.on_toggle_save_original_path)
+        self.retranslate_dynamic_ui()
 
     #################### Qt FUNCTIONS
     def init_options(self):
@@ -282,6 +303,31 @@ class WebpWindow(QMainWindow):
     def on_trigger_information(self):
         self.information_window.show()
 
+    def on_trigger_check_updates(self):
+        text = self.localized_window_text()
+        try:
+            release_info = update_checker.fetch_latest_release()
+        except Exception as error:
+            QMessageBox.warning(
+                self,
+                text["update_title"],
+                text["update_failed"].format(error=error),
+            )
+            return
+
+        if update_checker.has_newer_release(release_info.version):
+            result = QMessageBox.information(
+                self,
+                text["update_title"],
+                text["update_available"].format(version=release_info.version),
+                QMessageBox.StandardButton.Open | QMessageBox.StandardButton.Cancel,
+            )
+            if result == QMessageBox.StandardButton.Open:
+                update_checker.open_release_page(release_info)
+            return
+
+        QMessageBox.information(self, text["update_title"], text["up_to_date"])
+
     def on_trigger_preferences(self):
         self.setting_window.on_call()
 
@@ -295,6 +341,7 @@ class WebpWindow(QMainWindow):
 
     def retranslate_ui(self):
         retranslate_loaded_ui(self)
+        self.retranslate_dynamic_ui()
 
         for window in (
             self.webp_conversion_option_window,
@@ -307,6 +354,13 @@ class WebpWindow(QMainWindow):
                 window.retranslate_ui()
             else:
                 retranslate_loaded_ui(window)
+
+    def retranslate_dynamic_ui(self):
+        self.actionCheck_For_Updates.setText(self.localized_window_text()["check_updates"])
+
+    def localized_window_text(self):
+        language_code = get_current_language_code()
+        return WINDOW_TEXT.get(language_code, WINDOW_TEXT["en"])
 
     @staticmethod
     def on_trigger_exit():

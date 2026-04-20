@@ -56,7 +56,8 @@
 
 3. PyInstaller 최소 빌드 설정
    - 범위: 재배치된 `resources/data`, `resources/fonts`, `resources/icons`, `resources/ui`, `resources/i18n` 구조를 기준으로 빌드 명령을 정리한다.
-   - 상태: `.venv/bin/python -m PyInstaller ... src/main.py` 기준 macOS 빌드 통과.
+   - 상태: `scripts/build_release.py`와 `scripts/package_release.py`로 공통 빌드/패키징 경로를 만들었다.
+   - 상태: `.venv/bin/python scripts/build_release.py` 기준 macOS 빌드 통과.
 
 4. PySide6 단일화
    - 범위: PyQt6 의존성을 제거하고 기존 `.ui` 파일을 PySide6 `QUiLoader`로 읽는다.
@@ -71,7 +72,9 @@
 
 6. GitHub Actions 빌드 스모크 체크
    - 범위: `.venv` 또는 CI 가상환경 의존성 설치와 PyInstaller 빌드까지만.
-   - 주의: 자동 릴리스 생성은 나중에 분리한다.
+   - 상태: macOS Intel, macOS Apple Silicon, Windows x64, Linux x64 빌드 matrix를 추가했다.
+   - 상태: 태그 `v*` 빌드에서는 산출물을 첨부한 draft release를 생성한다.
+   - 주의: 원격 GitHub Actions 실행 결과는 아직 확인하지 않았다.
 
 ### 검토 후 적용 후보
 
@@ -94,7 +97,7 @@
 4. 업데이트 확인
    - 장점: GitHub Releases의 최신 버전을 안내할 수 있다.
    - 위험: 자동 설치까지 한 번에 붙이면 앱 교체와 롤백 문제가 커진다.
-   - 기준: 첫 단계는 최신 릴리스 확인과 브라우저 열기까지만 구현한다.
+   - 상태: 최신 릴리스 확인과 브라우저 열기까지만 구현했다.
 
 5. 분리 프리뷰 창
    - 장점: 큰 프리뷰 때문에 메인 창이 과도하게 커지는 문제를 줄인다.
@@ -105,6 +108,7 @@
 
 1. 자동 업데이트 설치
    - 이유: 네트워크, 릴리스 자산 구조, 앱 교체 로직, 롤백 처리가 한 번에 들어간다.
+   - 상태: 자동 설치는 아직 구현하지 않았다.
 
 2. 추가 리소스 구조 확장
    - 이유: 현재 재배치 범위를 넘어서는 `i18n`과 빌드 자산 확장은 경로 참조 누락 위험이 크다.

@@ -2,19 +2,19 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/c4nu/paddie/badge/main)](https://www.codefactor.io/repository/github/c4nu/paddie/overview/main)
 
-![](https://img.shields.io/badge/stable-v3.1.1-blue?style=flat)
+![](https://img.shields.io/badge/stable-v3.4.1-blue?style=flat)
 
 [![Github All Releases](https://img.shields.io/github/downloads/c4nu/paddie/total.svg)]()
 
 ## Package Version
 
-Python 3.10.11
+Python 3.11 for release builds
 
-PySide6
+PySide6 6.10.3
 
-Pillows
+Pillow 11.1.0
 
-Pyinstaller
+PyInstaller 6.12.0
 
 ## Description
 
@@ -34,22 +34,14 @@ JPG, PNG등의 이미지 사진을 변환시켜주는 프로그램.
 
 ## Build
 
-```python
-# Windows
-.venv\Scripts\python -m PyInstaller -w -F -n=Paddie --icon='resources/icons/icon.ico' --hidden-import PySide6 src/main.py
-
-# macOS
-.venv/bin/python -m PyInstaller -w -F -n=Paddie --icon='resources/icons/icon.icns' --hidden-import PySide6 src/main.py
+```bash
+python -m pip install -r src/requirements.txt
+python -m compileall -q src docs scripts
+python scripts/build_release.py
+python scripts/package_release.py --artifact-name Paddie-local --format zip
 ```
 
 
 
 
-- -w
-  - 터미널 없이 프로그램 형태로 실행
-- -F
-  - 프로그램 하나의 파일로 묶음 (.app / .exe)
-- -n
-  - 프로그램 이름
-- --icon
-  - resources 폴더 안에있는 ico 파일로 아이콘 표시
+GitHub Actions는 태그 `v*` push 또는 수동 실행으로 macOS Intel, macOS Apple Silicon, Windows x64, Linux x64 산출물을 빌드합니다. 태그 빌드에서는 산출물을 첨부한 draft release를 생성합니다.
