@@ -3,19 +3,18 @@ import os
 import sys
 import platform
 
-from PyQt6 import uic
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QDialogButtonBox, QSpinBox, QDialog, QComboBox
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QDialogButtonBox, QSpinBox, QDialog, QComboBox
 
 from user_config import UserConfig
 from resource_path import resource_path
+from ui_loader import load_ui
 
 UI_RESIZE_OPTION = "resources/ui/resizeoption.ui"
 
 try:
     # UI 파일 로드
     ui_path = resource_path(UI_RESIZE_OPTION)
-    form_class = uic.loadUiType(ui_path)[0]
 
 except Exception as e:
     print(f"Resource loading failed: {str(e)}")
@@ -23,7 +22,7 @@ except Exception as e:
 
 print("RESIZE OPTION UI Loaded Successfully")
 
-class ResizeOptionWindow(QDialog, form_class):
+class ResizeOptionWindow(QDialog):
     def __init__(self):
         super().__init__()
         
@@ -36,7 +35,7 @@ class ResizeOptionWindow(QDialog, form_class):
         self.axis_option = 2
         self.resize_value = self.base_size
 
-        self.setupUi(self)
+        load_ui(self, ui_path)
         self.bind_ui()
         # 기본 리사이징 사이즈 (3000px)
 

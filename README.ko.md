@@ -10,7 +10,7 @@
 
 Python 3.10.11
 
-PyQt6
+PySide6
 
 Pillows
 
@@ -36,10 +36,10 @@ JPG, PNG등의 이미지 사진을 변환시켜주는 프로그램.
 
 ```python
 # Windows
-pyinstaller -w -F -n=Paddie --icon='resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py       
+.venv\Scripts\python -m PyInstaller -w -F -n=Paddie --icon='resources/icons/icon.ico' --hidden-import PySide6 src/main.py
 
 # macOS
-pyinstaller -w -F -n=Paddie --icon='resources/Icon@64X64_02.ico' --hidden-import PyQt6 main.py   
+.venv/bin/python -m PyInstaller -w -F -n=Paddie --icon='resources/icons/icon.icns' --hidden-import PySide6 src/main.py
 ```
 
 

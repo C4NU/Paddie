@@ -8,7 +8,7 @@
 ### Python Version
 ![Python 3](https://img.shields.io/badge/Python-3-yellow?style=flat)
 ### Module Version
-![PyQt6](https://img.shields.io/badge/PyQt-6.5.3-green?style=flat)
+![PySide6](https://img.shields.io/badge/PySide-6.8.2-green?style=flat)
 ![Pillows](https://img.shields.io/badge/Pillows-10.0.0-yellow?style=flat)
 ![Pyinstaller](https://img.shields.io/badge/Pyinstaller-6.3.0-red?style=flat)
 
@@ -44,30 +44,30 @@
 | 순서  | 내용           |
 |-----|--------------|
 | 1   | Python 설치    |
-| 2   | pip install  |
+| 2   | `.venv/bin/python -m pip install -r src/requirements.txt` |
 | 3   |              |
 | 4   | dist 폴더 확인   |
 ### Windows
 #### 폰트 추가 기능 X
 ```python
-pyinstaller --windowed --onefile --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hidden-import PyQt6 "resources\ui;resources\ui" --add-data "resources\fonts;resources\fonts" --add-data "resources\model_map.csv;resources" --add-data "resources\user_data.json;resources" --add-data "resources\Barlow-Light.ttf;resources" src\main.py
+.venv\Scripts\python -m PyInstaller --windowed --onefile --noconfirm --clean --name "Paddie" --icon "resources\icons\icon.ico" --hidden-import PySide6 --add-data "resources\ui;resources\ui" --add-data "resources\fonts;resources\fonts" --add-data "resources\data;resources\data" --add-data "resources\i18n;resources\i18n" --add-data "resources\barlow-light.ttf;resources" src\main.py
 ```
 #### 폰트 추가 기능 O
 ```python
-pyinstaller --noconfirm --clean --name "Paddie" --icon "resources\icon.ico" --hidden-import PyQt6 --add-data "resources\ui;resources\ui" --add-data "resources\fonts;resources\fonts" --add-data "resources\model_map.csv;resources" --add-data "resources\user_data.json;resources" --add-data "resources\Barlow-Light.ttf;resources" src\main.py
+.venv\Scripts\python -m PyInstaller --noconfirm --clean --name "Paddie" --icon "resources\icons\icon.ico" --hidden-import PySide6 --add-data "resources\ui;resources\ui" --add-data "resources\fonts;resources\fonts" --add-data "resources\data;resources\data" --add-data "resources\i18n;resources\i18n" --add-data "resources\barlow-light.ttf;resources" src\main.py
 ```
 ### macOS
 
 ```python
 #Paddie.spec 파일로 빌드 가능
-pyinstaller --windowed --noconfirm --clean \
+.venv/bin/python -m PyInstaller --windowed --noconfirm --clean \
 --name "Paddie" \
---icon resources/icon.icns \
+--icon resources/icons/icon.icns \
 --add-data "resources/ui:resources/ui" \
 --add-data "resources/fonts:resources/fonts" \
---add-data "resources/model_map.csv:resources" \
---add-data "resources/user_data.json:resources" \
---add-data "resources/Barlow-Light.ttf:resources" \
+--add-data "resources/data:resources/data" \
+--add-data "resources/i18n:resources/i18n" \
+--add-data "resources/barlow-light.ttf:resources" \
 --osx-bundle-identifier "com.canu.paddie" \
 --target-arch universal2 \
 src/main.py
@@ -79,6 +79,4 @@ src/main.py
 | 아이콘          | <a href=“https://www.flaticon.com/kr/free-icons/“ title=“폴라로이드 아이콘”>폴라로이드 아이콘 제작자: Ekros - Flaticon</a> |
 | Barlow-Light |                                                              |
 | LineSeedKR   | 넣을 예정                                                        |
-| Qt6          |                                                              |
-
-
+| Qt for Python |                                                            |

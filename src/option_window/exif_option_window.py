@@ -7,13 +7,13 @@ from pathlib import Path
 from user_config import UserConfig
 from caption_format_converter import CaptionFormatConverter
 
-from PyQt6 import uic
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QColor, QFont
-from PyQt6.QtGui import QFontDatabase
-from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton, QComboBox, QPlainTextEdit, QColorDialog, QLabel, QVBoxLayout
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QColor, QFont
+from PySide6.QtGui import QFontDatabase
+from PySide6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton, QComboBox, QPlainTextEdit, QColorDialog, QLabel, QVBoxLayout
 
 from resource_path import resource_path
+from ui_loader import load_ui
 
 UI_EXIF_OPTION = "resources/ui/exifoptions.ui"
 UI_FONTS = "resources/fonts"
@@ -21,7 +21,6 @@ UI_FONTS = "resources/fonts"
 try:
      # UI 파일 로드
      ui_path = resource_path(UI_EXIF_OPTION)
-     form_class = uic.loadUiType(ui_path)[0]
           
 except Exception as e:
      print(f"Resource loading failed: {str(e)}")
@@ -29,7 +28,7 @@ except Exception as e:
 
 print("EXIF OPTION UI Loaded Successfully")
 
-class ExifOptionWindow(QDialog, form_class):
+class ExifOptionWindow(QDialog):
 	def __init__(self):
 		super().__init__()
 
@@ -76,7 +75,7 @@ class ExifOptionWindow(QDialog, form_class):
 		self.auto_hide_nonedata_checkbox: QCheckBox
 		
 		# UI 불러오기
-		self.setupUi(self)
+		load_ui(self, ui_path)
 		self.bind_ui()
 		self.setup_ui_internal()
 
@@ -275,13 +274,13 @@ class ExifOptionWindow(QDialog, form_class):
 		self.image_quality_option = self.image_quality_spinbox.value()
 
 	def on_change_textcolor_picker(self):
-		picked_color = QColorDialog.getColor(title='Pick Text Color', initial=self.text_color)
+		picked_color = QColorDialog.getColor(self.text_color, self, 'Pick Text Color')
 		if picked_color.isValid():
 			self.text_color = picked_color
 			self.__update_font_preview()
 		
 	def on_change_bgcolor_picker(self):
-		picked_color = QColorDialog.getColor(title='Pick Background Color', initial=self.background_color)
+		picked_color = QColorDialog.getColor(self.background_color, self, 'Pick Background Color')
 		if picked_color.isValid():
 			self.background_color = picked_color
 			self.__update_font_preview()

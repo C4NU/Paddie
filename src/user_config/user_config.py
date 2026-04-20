@@ -7,9 +7,8 @@ import sys
 
 print("User_Config Python Package Loaded")
 
-from PyQt6 import QtGui
-from PyQt6.QtGui import QColor
-print("PyQt6 QColor Loaded") 
+from PySide6.QtGui import QColor
+print("PySide6 QColor Loaded")
 
 from resource_path import resource_path
 
@@ -19,6 +18,7 @@ class UserConfig:
     # setting value is default value
     latest_load_path = None
     latest_save_path = None
+    language = 0 # 0:Auto, 1:Korean, 2:Japanese, 3:Chinese, 4:English
     save_original_path = False
 
     resize_options = False

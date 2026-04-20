@@ -11,15 +11,16 @@ print("Python Package Loaded")
 import converter
 
 
-from PyQt6.QtWidgets import *
-from PyQt6 import uic
-from PyQt6 import QtGui, QtWidgets, QtCore
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit
-print("PyQt6 Package Loaded")
+from PySide6.QtWidgets import *
+from PySide6 import QtGui, QtWidgets, QtCore
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit
+print("PySide6 Package Loaded")
 
 from user_config import UserConfig
 from resource_path import resource_path
+from ui_loader import load_ui
+from localization import install_translator
 
 UI_MAIN = "resources/ui/webpconvertergui.ui"
 SAMPLE_FILE_PATH = "resources/"
@@ -29,7 +30,6 @@ try:
     # UI 파일 로드
     ui_path = resource_path(UI_MAIN)
     sample_file_path = resource_path(SAMPLE_FILE_PATH)
-    form_class = uic.loadUiType(ui_path)[0]
         
 except Exception as e:
     print(f"Resource loading failed: {str(e)}")
@@ -40,6 +40,7 @@ print("Main UI Loaded Successfully")
 class WebpApp:
     def __init__(self):
         self.app = QApplication(sys.argv)
+        self.language_code = install_translator(self.app)
         self.window = WebpWindow()
 
     def show(self):
@@ -48,7 +49,7 @@ class WebpApp:
     def exec(self):
         self.app.exec()
 
-class WebpWindow(QMainWindow, form_class):
+class WebpWindow(QMainWindow):
     default_font = 'Barlow-Light'
 
     def __init__(self):
@@ -81,7 +82,7 @@ class WebpWindow(QMainWindow, form_class):
         # self.size() does not work in init phase (return 640 x 480)
         self.hide_preview()
 
-        self.setupUi(self)
+        load_ui(self, ui_path)
         self.bind_ui()
         self.init_options()
 
@@ -123,7 +124,7 @@ class WebpWindow(QMainWindow, form_class):
         # 원본 사진 위치 저장 옵션 링킹
         self.save_original_path_checkbox.stateChanged.connect(self.on_toggle_save_original_path)
 
-    #################### PyQt FUNCTIONS
+    #################### Qt FUNCTIONS
     def init_options(self):
         ####################	이미지 품질 관련 옵션
         self.conversion_option = self.enable_conversion_option_box.isChecked()
@@ -280,7 +281,7 @@ class WebpWindow(QMainWindow, form_class):
         sys.exit()
 
     def open_file(self):
-        open_files = QFileDialog.getOpenFileNames(self, caption="Open File", directory=UserConfig.latest_load_path)
+        open_files = QFileDialog.getOpenFileNames(self, "Open File", UserConfig.latest_load_path or "")
 
         if len(open_files) > 0:
             load_path = None
@@ -360,8 +361,7 @@ class WebpWindow(QMainWindow, form_class):
             file_path = self.file_paths[self.image_list_widget.currentRow()]
             save_path = os.path.dirname(file_path)
         else:
-            save_path = QFileDialog.getExistingDirectory(caption='Save Directory',
-                                                        directory=UserConfig.latest_save_path)
+            save_path = QFileDialog.getExistingDirectory(self, "Save Directory", UserConfig.latest_save_path or "")
             UserConfig.latest_save_path = save_path
             UserConfig.save()
 

@@ -7,11 +7,11 @@ from pathlib import Path
 from user_config import UserConfig
 from resource_path import resource_path
 
-from PyQt6 import uic
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QPalette, QColor, QFont
-from PyQt6.QtGui import QFontDatabase
-from PyQt6.QtWidgets import QDialog, QLabel
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QPalette, QColor, QFont
+from PySide6.QtGui import QFontDatabase
+from PySide6.QtWidgets import QDialog, QLabel
+from ui_loader import load_ui
 
 UI_INFORMATION = "resources/ui/information.ui"
 PROGRAM_NAME = "Paddie。"
@@ -21,7 +21,6 @@ PROGRAM_EMAIL = "paddie.application@gmail.com"
 try:
      # UI 파일 로드
      ui_path = resource_path(UI_INFORMATION)
-     form_class = uic.loadUiType(ui_path)[0]
      
 except Exception as e:
      print(f"Resource loading failed: {str(e)}")
@@ -29,7 +28,7 @@ except Exception as e:
 
 print("INFORMATION UI Loaded Successfully")
 
-class InformationWindow(QDialog, form_class):
+class InformationWindow(QDialog):
 	def __init__(self):
 		super().__init__()
 		
@@ -40,7 +39,7 @@ class InformationWindow(QDialog, form_class):
 		self.program_name: QLabel
 		self.program_version: QLabel
 
-		self.setupUi(self)
+		load_ui(self, ui_path)
 		self.program_name.setText(PROGRAM_NAME)
 		self.program_version.setText(PROGRAM_VERSION)
 		self.program_email.setText(PROGRAM_EMAIL)
