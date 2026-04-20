@@ -53,7 +53,13 @@ def write_zip(source_path, archive_path):
 
 def write_tar(source_path, archive_path):
     with tarfile.open(archive_path, "w:gz") as archive:
-        archive.add(source_path, arcname=os.fspath(source_path.name))
+        archive.add(source_path, arcname=os.fspath(source_path.name), recursive=False)
+        if not source_path.is_dir():
+            return
+
+        for path in source_path.rglob("*"):
+            archive_name = Path(source_path.name) / path.relative_to(source_path)
+            archive.add(path, arcname=os.fspath(archive_name), recursive=False)
 
 
 if __name__ == "__main__":

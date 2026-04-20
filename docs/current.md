@@ -72,3 +72,5 @@
 - `.venv`의 `PySide6==6.10.3` 기준 오프스크린 앱 생성과 영어 전환 스모크 테스트가 통과했다.
 - `.venv/bin/python scripts/build_release.py`로 로컬 macOS PyInstaller 빌드가 완료되어 `dist/Paddie`, `dist/Paddie.app`이 생성됐다.
 - `.venv/bin/python scripts/package_release.py --artifact-name Paddie-local-macos-arm64 --format zip`로 로컬 zip 산출물을 만들었다.
+- Codacy가 지적한 critical/high 항목 중 실제 위험도가 있는 XML 파서,
+  업데이트 확인 네트워크 호출, 임시 빌드 캐시, 명시 import 문제를 정리했다.

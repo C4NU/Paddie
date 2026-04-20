@@ -6,7 +6,6 @@ import platform
 from PIL import Image, ImageDraw, ImageFont
 import math
 
-from caption_format_converter import CaptionFormatConverter
 from resource_path import resource_path
 
 FONT_MAIN = "resources/barlow-light.ttf"
@@ -230,23 +229,3 @@ class Exif:
           draw = ImageDraw.Draw(image)
           draw.text(xy=(x, y), text=text, font=self.font, fill=color, anchor=anchor, align=align, spacing=math.floor(self.font_size / 2))
           return image
-
-
-def main():
-     exif_test = Exif()
-
-     img = Image.open("Error-Test/IMG_0058.jpeg")
-
-     longer_length = img.width if img.width >= img.height else img.height
-     padding = int(longer_length / 10)
-
-     text = CaptionFormatConverter.convert("{body} | {lens}\n{focal_f} | {aper} | {iso} | {ss}", img._getexif())
-     img = Exif.set_image_padding2(img, top=int(padding / 2), side=int(padding / 2), bottom=padding,
-                                             color=(255, 255, 255))
-     img = exif_test.set_image_text(img, text=text, length=padding, font_path="resources/barlow-light.ttf", color=(0,0,0), alignment=0)
-     img.show()
-
-     img.save("Test.jpg")
-
-if __name__ == "__main__":
-     main()

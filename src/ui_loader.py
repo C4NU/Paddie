@@ -1,4 +1,4 @@
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree
 
 from PySide6.QtCore import QCoreApplication, QFile, QObject
 from PySide6.QtUiTools import QUiLoader
@@ -72,7 +72,7 @@ def load_ui(base_instance, ui_path):
 
 
 def read_ui_translation_sources(ui_path):
-    tree = ET.parse(str(ui_path))
+    tree = ElementTree.parse(str(ui_path))
     root = tree.getroot()
     context = root.findtext("class") or ""
     sources = {}

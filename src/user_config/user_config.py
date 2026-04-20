@@ -72,16 +72,6 @@ class UserConfig:
 
     @staticmethod
     def save():
-        '''
-        if platform.system() == "Windows":
-            save_data = open(os.path.join(os.getcwd(), '../resources/data/user_data.json'), 'w')
-        else:
-            try:
-                save_data = open(os.path.join(os.path.dirname(sys.executable), '../resources/data/user_data.json'), 'w')
-            except:
-                save_data = open(os.path.join(os.getcwd(), '../resources/data/user_data.json'), 'w')'
-        '''
-        #with open('resources/data/user_data.json', 'w') as save_data:
         data = {key: getattr(UserConfig, key) for key in UserConfig.__dict__.keys() if not key.startswith("__") and not callable(getattr(UserConfig, key)) and "_color" not in key}
 
         # Special handling for QColor
@@ -93,15 +83,6 @@ class UserConfig:
 
     @staticmethod
     def load():
-        '''
-        if platform.system() == "Windows":
-            load_data = open(os.path.join(os.getcwd(), '../esources/user_data.json'), 'r')
-        else:
-            try:
-                load_data = open(os.path.join(os.path.dirname(sys.executable), '../resources/data/user_data.json'), 'r')
-            except:
-                load_data = open(os.path.join(os.getcwd(), '../resources/data/user_data.json'), 'r')
-        '''
         try:
             config_path = user_config_path()
             if not config_path.exists():

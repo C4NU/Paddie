@@ -3,6 +3,7 @@ import os
 import platform
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 
@@ -13,7 +14,11 @@ ROOT_DIR = Path(__file__).resolve().parents[1]
 
 def main():
     parser = argparse.ArgumentParser(description="Build Paddie with PyInstaller.")
-    parser.add_argument("--onefile", action="store_true", help="Build a single executable instead of an app folder.")
+    parser.add_argument(
+        "--onefile",
+        action="store_true",
+        help="Build a single executable instead of an app folder.",
+    )
     args = parser.parse_args()
 
     command = [
@@ -44,8 +49,10 @@ def main():
 
     command.append(str(ROOT_DIR / "src" / "main.py"))
     env = os.environ.copy()
-    env.setdefault("PYINSTALLER_CONFIG_DIR", os.fspath(Path("/tmp") / "paddie-pyinstaller-cache"))
-    subprocess.run(command, cwd=ROOT_DIR, check=True, env=env)
+    # Command arguments are fixed by this script; no user input is executed.
+    with tempfile.TemporaryDirectory(prefix="paddie-pyinstaller-cache-") as cache_dir:
+        env.setdefault("PYINSTALLER_CONFIG_DIR", cache_dir)
+        subprocess.run(command, cwd=ROOT_DIR, check=True, env=env)
 
 
 def icon_for_platform():

@@ -2,7 +2,7 @@ import os
 import sys
 import platform
 
-from PySide6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton
+from PySide6.QtWidgets import QDialog
 
 from resource_path import resource_path
 from ui_loader import load_ui

@@ -10,7 +10,7 @@ from caption_format_converter import CaptionFormatConverter
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QFont
 from PySide6.QtGui import QFontDatabase
-from PySide6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton, QComboBox, QPlainTextEdit, QColorDialog, QLabel, QVBoxLayout
+from PySide6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton, QComboBox, QPlainTextEdit, QColorDialog, QLabel
 
 from resource_path import resource_path
 from ui_loader import load_ui

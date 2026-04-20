@@ -3,7 +3,6 @@ import os
 import sys
 import platform
 
-from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QDialogButtonBox, QSpinBox, QDialog, QComboBox
 
 from user_config import UserConfig
