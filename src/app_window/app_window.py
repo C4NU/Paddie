@@ -4,7 +4,7 @@ import sys
 
 from pathlib import Path
 
-from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow
+from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow, SettingWindow
 from app_window.preview_window import PreviewWindow
 
 print("Python Package Loaded")
@@ -19,8 +19,8 @@ print("PySide6 Package Loaded")
 
 from user_config import UserConfig
 from resource_path import resource_path
-from ui_loader import load_ui
-from localization import install_translator
+from ui_loader import load_ui, retranslate_loaded_ui
+from localization import apply_language, install_translator
 
 UI_MAIN = "resources/ui/webpconvertergui.ui"
 SAMPLE_FILE_PATH = "resources/"
@@ -67,6 +67,8 @@ class WebpWindow(QMainWindow):
         self.exif_padding_option_window.accepted.connect(self.show_or_refresh_preview)
 
         self.information_window = InformationWindow()
+        self.setting_window = SettingWindow()
+        self.setting_window.on_language_changed = self.on_language_changed
         self.resize_window = ResizeOptionWindow()
 
         # 파일 이름 변수
@@ -99,8 +101,12 @@ class WebpWindow(QMainWindow):
         # 파일 일괄 비우기 기능 함수 링킹
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
         # 프로그램 정보 기능 함수 링킹
+        self.actionPreferences.setMenuRole(QtGui.QAction.MenuRole.PreferencesRole)
+        self.actionInformation.setMenuRole(QtGui.QAction.MenuRole.AboutRole)
+        self.actionPreferences.triggered.connect(self.on_trigger_preferences)
         self.actionInformation.triggered.connect(self.on_trigger_information)
         # 종료 버튼 함수 링킹
+        self.actionExit.setMenuRole(QtGui.QAction.MenuRole.QuitRole)
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
         # 목록 선택 이벤트 링킹
         self.image_list_widget.itemSelectionChanged.connect(self.on_image_list_widget_selection_changed)
@@ -275,6 +281,32 @@ class WebpWindow(QMainWindow):
 
     def on_trigger_information(self):
         self.information_window.show()
+
+    def on_trigger_preferences(self):
+        self.setting_window.on_call()
+
+    def on_language_changed(self, language_index):
+        app = QApplication.instance()
+        if app is None:
+            return
+
+        apply_language(app, language_index)
+        self.retranslate_ui()
+
+    def retranslate_ui(self):
+        retranslate_loaded_ui(self)
+
+        for window in (
+            self.webp_conversion_option_window,
+            self.exif_padding_option_window,
+            self.information_window,
+            self.setting_window,
+            self.resize_window,
+        ):
+            if hasattr(window, "retranslate_ui"):
+                window.retranslate_ui()
+            else:
+                retranslate_loaded_ui(window)
 
     @staticmethod
     def on_trigger_exit():

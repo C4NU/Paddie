@@ -38,6 +38,14 @@
 - `resources/ui/resizeoption.ui`의 중복 `stringlist` 태그를 제거해 PySide6 `QUiLoader`가 파일을 읽지 못하는 문제를 정리했다.
 - PySide6에서 keyword 인자를 받지 않는 `QFileDialog`, `QColorDialog` static 호출을 positional 호출로 변경했다.
 - 분리 프리뷰 창은 생성된 프리뷰 이미지 크기를 기준으로 화면 안에 맞게 비율 축소하고, 사용자가 창 크기를 바꿀 수 없도록 고정했다.
+- `Preferences` 메뉴에 언어 선택만 제공하는 최소 설정 창을 연결했다.
+- 언어 변경 시 Qt 번역기를 즉시 교체하고 이미 로드된 `.ui` 창의 텍스트를 다시 번역하도록 했다.
+- 영어는 `.ui` 원문 언어이므로 `translations_en.qm`을 설치하지 않고 번역기를 제거한 상태로 표시한다.
+- 미완성 번역이 빈 문자열을 반환하는 경우 메뉴/버튼이 사라지지 않도록 `.ui` 원문 텍스트로 fallback한다.
+- macOS 메뉴 재배치가 번역 문자열에 따라 달라지지 않도록 `Preferences`, `Information`, `Exit` 액션에 Qt menu role을 명시했다.
+- 정보 창을 고정 좌표 `.ui` 레이아웃에서 아이콘, 설명, 버전 배지, 메타데이터 패널을 가진 코드 기반 레이아웃으로 교체했다.
+- 정보 창 메타데이터에 라이선스 행을 추가했다. 현재 저장소에 라이선스 파일이 없어 `Unspecified`/`별도 명시 없음`으로 표시한다.
+- 정보 창은 현재 언어 코드 기준으로 제목, 설명, 라벨, 닫기 버튼을 다시 적용한다.
 
 ## 검증
 
@@ -49,4 +57,9 @@
 - `.venv/bin/python -m PyInstaller ... src/main.py`로 macOS 빌드가 완료되어 `dist/Paddie`, `dist/Paddie.app`이 생성됐다.
 - 새 빌드 산출물 안의 `resizeoption.ui`에도 `stringlist` 태그가 제거된 것을 확인했다.
 - 파일 열기/저장 폴더/색상 선택 대화상자 호출부가 PySide6 positional API 형태로 정리된 것을 확인했다.
-- `python3 -m compileall -q src docs`와 `git diff --check`가 통과했다.
+- `PYTHONPYCACHEPREFIX=/tmp/paddie-pycache python3 -m compileall -q src docs`와 `git diff --check`가 통과했다.
+- 시스템 Python의 `PySide6==6.10.3` 기준 오프스크린 스모크 테스트에서 설정 언어를 영어/한국어로 바꾸고 현재 창을 재번역하는 흐름이 통과했다.
+- 영어 전환 후 `Options`, `Preferences`, `Information`, `Exit`, `Files`, `Add Files`, `Clear List` 메뉴 텍스트가 유지되는 것을 확인했다.
+- `Preferences`, `Information`, `Exit` 액션의 menu role이 각각 `PreferencesRole`, `AboutRole`, `QuitRole`로 설정되는 것을 확인했다.
+- 오프스크린 Qt 스모크 테스트에서 정보 창 생성과 영어/한국어 재번역이 예외 없이 통과했다.
+- 현재 `.venv`의 `PySide6==6.8.2.1`은 Qt 초기화 전 `Incompatible processor ... neon` 오류가 발생해 런타임 스모크 테스트에 실패했다.
