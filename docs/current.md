@@ -37,6 +37,7 @@
 - `resources/i18n`의 Qt 번역 파일을 복원하고 앱 시작 시 시스템/설정 언어에 맞춰 `QTranslator`를 설치하도록 했다.
 - `resources/ui/resizeoption.ui`의 중복 `stringlist` 태그를 제거해 PySide6 `QUiLoader`가 파일을 읽지 못하는 문제를 정리했다.
 - PySide6에서 keyword 인자를 받지 않는 `QFileDialog`, `QColorDialog` static 호출을 positional 호출로 변경했다.
+- 분리 프리뷰 창은 생성된 프리뷰 이미지 크기를 기준으로 화면 안에 맞게 비율 축소하고, 사용자가 창 크기를 바꿀 수 없도록 고정했다.
 
 ## 검증
 
