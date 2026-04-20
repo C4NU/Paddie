@@ -15,8 +15,8 @@ from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPus
 
 from resource_path import resource_path
 
-UI_EXIF_OPTION = "resources/ui/ExifOptions.ui"
-UI_FONTS = "resources/Fonts"
+UI_EXIF_OPTION = "resources/ui/exifoptions.ui"
+UI_FONTS = "resources/fonts"
 
 try:
      # UI 파일 로드
@@ -128,9 +128,9 @@ class ExifOptionWindow(QDialog, form_class):
 		font_asset_path = resource_path(UI_FONTS)
 		'''
 		if platform.system() == "Windows":
-			font_asset_path = os.path.join(os.getcwd(), "../resources/Fonts")
+			font_asset_path = os.path.join(os.getcwd(), "../resources/fonts")
 		else:
-			font_asset_path = os.path.join(os.path.dirname(sys.executable), "../resources/Fonts")'
+			font_asset_path = os.path.join(os.path.dirname(sys.executable), "../resources/fonts")'
 		'''
 
 		print(f"Font_asset: {font_asset_path}")
@@ -147,7 +147,7 @@ class ExifOptionWindow(QDialog, form_class):
 					self.__add_font_combobox(item, font_item)
 		except:
 			# py 형식으로 실행할 때 macOS 오류 처리용 경로 설정
-			fonts = pathlib.Path(os.path.join(os.getcwd(), "../resources/Fonts"))
+			fonts = pathlib.Path(os.path.join(os.getcwd(), "../resources/fonts"))
 			for item in fonts.iterdir():
 				if item.is_file():
 					continue

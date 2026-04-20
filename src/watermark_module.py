@@ -10,12 +10,12 @@ class Watermark():
 		self.fontSize = 30
 		# 폰트 (초기)
 		if platform.system() == "Windows":
-			self.font = ImageFont.truetype(os.path.join(os.getcwd(), '../resources/Barlow-Light.ttf'), self.font_size)
+			self.font = ImageFont.truetype(os.path.join(os.getcwd(), '../resources/barlow-light.ttf'), self.font_size)
 		else:
 			try:
-				self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "../resources/Barlow-Light.ttf"), self.font_size)
+				self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "../resources/barlow-light.ttf"), self.font_size)
 			except:
-				self.font = ImageFont.truetype(os.path.join(os.getcwd(), '../resources/Barlow-Light.ttf'), self.font_size)
+				self.font = ImageFont.truetype(os.path.join(os.getcwd(), '../resources/barlow-light.ttf'), self.font_size)
 
 	def insert_watermark(self, image, fontColor, watermarkText):
 			width, height = image.size

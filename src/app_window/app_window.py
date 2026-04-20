@@ -5,6 +5,7 @@ import sys
 from pathlib import Path
 
 from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow
+from app_window.preview_window import PreviewWindow
 
 print("Python Package Loaded")
 import converter
@@ -15,13 +16,12 @@ from PyQt6 import uic
 from PyQt6 import QtGui, QtWidgets, QtCore
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit
-from PyQt6.QtGui import QPixmap
 print("PyQt6 Package Loaded")
 
 from user_config import UserConfig
 from resource_path import resource_path
 
-UI_MAIN = "resources/ui/WebPConverterGUI.ui"
+UI_MAIN = "resources/ui/webpconvertergui.ui"
 SAMPLE_FILE_PATH = "resources/"
 
 # 26 ~ 41줄 까지 resource sample.jpg 파일 경로 설정 코드 수정 필요함
@@ -75,8 +75,7 @@ class WebpWindow(QMainWindow, form_class):
         # Preview 영역
         self.window_width_short = 461
         self.window_height = 764
-        self.preview_area_margin = 10
-        self.preview_area = QLabel(self)
+        self.detached_preview_window = PreviewWindow()
         
         # set window size fixed
         # self.size() does not work in init phase (return 640 x 480)
@@ -216,19 +215,17 @@ class WebpWindow(QMainWindow, form_class):
             self.hide_preview()
             return
 
-        image_width, image_height = made_image.size
-        self.setFixedSize(self.window_width_short + self.preview_area_margin + image_width, max(image_height + 30, self.window_height))
-        
-        pixmap = QPixmap(made_file_path + ".webp")
-        
-        self.preview_area.setPixmap(pixmap)
-        self.preview_area.setVisible(True)
-        self.preview_area.setGeometry(self.window_width_short + self.preview_area_margin, 0, image_width, image_height)
+        sample_webp_path = made_file_path + ".webp"
 
-        
-    def hide_preview(self):
-        self.preview_area.setVisible(False)
         self.setFixedSize(self.window_width_short, self.window_height)
+        self.detached_preview_window.set_image(sample_webp_path)
+        self.detached_preview_window.show()
+        self.detached_preview_window.raise_()
+
+    def hide_preview(self):
+        self.setFixedSize(self.window_width_short, self.window_height)
+        if self.detached_preview_window:
+            self.detached_preview_window.hide()
 
     def on_click_open_resize_option(self):
         def on_accepted_resize_option(axis_option, resize_value):
@@ -474,4 +471,3 @@ class WebpWindow(QMainWindow, form_class):
         self.save_original_path = bool(state == Qt.CheckState.Checked.value)
         UserConfig.save_original_path = self.save_original_path_checkbox.isChecked()
         UserConfig.save()
-

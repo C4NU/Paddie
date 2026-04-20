@@ -13,7 +13,7 @@ print("PyQt6 QColor Loaded")
 
 from resource_path import resource_path
 
-RESOURCE_USER_DATA = "resources/user_data.json"
+RESOURCE_USER_DATA = "resources/data/user_data.json"
 
 class UserConfig:
     # setting value is default value
@@ -52,14 +52,14 @@ class UserConfig:
     def save():
         '''
         if platform.system() == "Windows":
-            save_data = open(os.path.join(os.getcwd(), '../resources/user_data.json'), 'w')
+            save_data = open(os.path.join(os.getcwd(), '../resources/data/user_data.json'), 'w')
         else:
             try:
-                save_data = open(os.path.join(os.path.dirname(sys.executable), '../resources/user_data.json'), 'w')
+                save_data = open(os.path.join(os.path.dirname(sys.executable), '../resources/data/user_data.json'), 'w')
             except:
-                save_data = open(os.path.join(os.getcwd(), '../resources/user_data.json'), 'w')'
+                save_data = open(os.path.join(os.getcwd(), '../resources/data/user_data.json'), 'w')'
         '''
-        #with open('resources/user_data.json', 'w') as save_data:
+        #with open('resources/data/user_data.json', 'w') as save_data:
         data = {key: getattr(UserConfig, key) for key in UserConfig.__dict__.keys() if not key.startswith("__") and not callable(getattr(UserConfig, key)) and "_color" not in key}
 
         # Special handling for QColor
@@ -76,9 +76,9 @@ class UserConfig:
             load_data = open(os.path.join(os.getcwd(), '../esources/user_data.json'), 'r')
         else:
             try:
-                load_data = open(os.path.join(os.path.dirname(sys.executable), '../resources/user_data.json'), 'r')
+                load_data = open(os.path.join(os.path.dirname(sys.executable), '../resources/data/user_data.json'), 'r')
             except:
-                load_data = open(os.path.join(os.getcwd(), '../resources/user_data.json'), 'r')
+                load_data = open(os.path.join(os.getcwd(), '../resources/data/user_data.json'), 'r')
         '''
         try:
             with open(resource_path(RESOURCE_USER_DATA), 'r', encoding='utf-8') as load_data:

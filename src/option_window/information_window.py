@@ -13,7 +13,7 @@ from PyQt6.QtGui import QPalette, QColor, QFont
 from PyQt6.QtGui import QFontDatabase
 from PyQt6.QtWidgets import QDialog, QLabel
 
-UI_INFORMATION = "resources/ui/Information.ui"
+UI_INFORMATION = "resources/ui/information.ui"
 PROGRAM_NAME = "Paddie。"
 PROGRAM_VERSION = "V 3.4.1"
 PROGRAM_EMAIL = "paddie.application@gmail.com"

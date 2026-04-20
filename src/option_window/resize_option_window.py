@@ -10,7 +10,7 @@ from PyQt6.QtWidgets import QDialogButtonBox, QSpinBox, QDialog, QComboBox
 from user_config import UserConfig
 from resource_path import resource_path
 
-UI_RESIZE_OPTION = "resources/ui/ResizeOption.ui"
+UI_RESIZE_OPTION = "resources/ui/resizeoption.ui"
 
 try:
     # UI 파일 로드

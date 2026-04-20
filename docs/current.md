@@ -22,15 +22,17 @@
 
 ## 적용한 변경
 
-- `resources/model_map.csv`를 읽을 때 UTF-8 디코딩을 명시했다.
-- `resources/user_data.json`을 읽고 쓸 때 UTF-8 인코딩/디코딩을 명시했다.
+- `resources/data/model_map.csv`를 읽을 때 UTF-8 디코딩을 명시했다.
+- `resources/data/user_data.json`을 읽고 쓸 때 UTF-8 인코딩/디코딩을 명시했다.
 - `user_data.json` 입출력에 context manager를 적용해 파일 핸들이 닫히도록 했다.
 - `src/exif_module.py`, `src/resize_module.py`의 정수 비교를 `is`에서 `==`로 바꿨다.
 - 정보 창의 프로그램명, 버전, 연락처 표시값을 `v3.4.1` 기준으로 코드에서 보정했다.
-- `v3.4.1`의 리소스 구조는 그대로 유지했다.
+- 기존 리소스를 `resources/data`, `resources/fonts`, `resources/icons`, `resources/ui` 구조로 재배치했다.
+- EXIF 미리보기를 항상 별도 프리뷰 창으로 표시하도록 했다.
 
 ## 검증
 
 - `python3 -m compileall -q src docs`가 통과했다.
 - `resize_module` 단독 import가 통과했다.
 - `ModelNameMapper.replace_model_name("ILCE-7RM3")`가 `A7RM3`로 매핑되는 것을 확인했다.
+- 새 리소스 경로 `resources/ui/webpconvertergui.ui`, `resources/data/model_map.csv`, `resources/barlow-light.ttf`가 해석되는 것을 확인했다.
