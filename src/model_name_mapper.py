@@ -12,7 +12,7 @@ class ModelNameMapper:
         path = resource_path('resources/model_map.csv')
 
         try:
-            with open(path, newline='') as csv_file:
+            with open(path, newline='', encoding='utf-8') as csv_file:
                 map_reader = csv.DictReader(csv_file)
                 for row in map_reader:
                     find_string = row['Find']
@@ -24,7 +24,7 @@ class ModelNameMapper:
        
         except:
             path = os.path.join(os.getcwd(), '../resources/model_map.csv')
-            with open(path, newline='') as csv_file:
+            with open(path, newline='', encoding='utf-8') as csv_file:
                 map_reader = csv.DictReader(csv_file)
                 for row in map_reader:
                     find_string = row['Find']

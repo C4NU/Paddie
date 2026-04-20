@@ -58,11 +58,11 @@ class Exif:
 
           side_padding = length / 2 if use_side_padding else length / 6
 
-          if alignment is 1:
+          if alignment == 1:
                 x = side_padding
                 anchor = "ls"
                 align = "left"
-          elif alignment is 2:
+          elif alignment == 2:
                 x = image.width - side_padding
                 anchor = "rs"
                 align = "right"
@@ -134,11 +134,11 @@ class Exif:
           anchor = "ms"
           align = "center"
 
-          if alignment is 1:
+          if alignment == 1:
                 x = self.ratio_image_gap
                 anchor = "ls"
                 align = "left"
-          elif alignment is 2:
+          elif alignment == 2:
                 x = image.width - self.ratio_image_gap
                 anchor = "rs"
                 align = "right"
@@ -207,11 +207,11 @@ class Exif:
           anchor = "ms"
           align = "center"
 
-          if alignment is 1:
+          if alignment == 1:
                 x = self.side_padding_45
                 anchor = "ls"
                 align = "left"
-          elif alignment is 2:
+          elif alignment == 2:
                 x = image.width - self.side_padding_45
                 anchor = "rs"
                 align = "right"

@@ -50,7 +50,6 @@ class UserConfig:
 
     @staticmethod
     def save():
-        save_data = open(resource_path(RESOURCE_USER_DATA), 'w')
         '''
         if platform.system() == "Windows":
             save_data = open(os.path.join(os.getcwd(), '../resources/user_data.json'), 'w')
@@ -67,11 +66,11 @@ class UserConfig:
         data['exif_text_color'] = [UserConfig.exif_text_color.red(), UserConfig.exif_text_color.green(), UserConfig.exif_text_color.blue()]
         data['exif_bg_color'] = [UserConfig.exif_bg_color.red(), UserConfig.exif_bg_color.green(), UserConfig.exif_bg_color.blue()]
 
-        json.dump(data, save_data, indent=4)
+        with open(resource_path(RESOURCE_USER_DATA), 'w', encoding='utf-8') as save_data:
+            json.dump(data, save_data, indent=4, ensure_ascii=False)
 
     @staticmethod
     def load():
-        load_data = open(resource_path(RESOURCE_USER_DATA), 'r')
         '''
         if platform.system() == "Windows":
             load_data = open(os.path.join(os.getcwd(), '../esources/user_data.json'), 'r')
@@ -81,12 +80,9 @@ class UserConfig:
             except:
                 load_data = open(os.path.join(os.getcwd(), '../resources/user_data.json'), 'r')
         '''
-        if not load_data:
-            print("User Data Not loaded")
-            return
-
         try:
-            data = json.load(load_data)
+            with open(resource_path(RESOURCE_USER_DATA), 'r', encoding='utf-8') as load_data:
+                data = json.load(load_data)
 
             for key, value in data.items():
                 # Special handling for QColor
