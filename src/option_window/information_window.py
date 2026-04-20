@@ -14,6 +14,9 @@ from PyQt6.QtGui import QFontDatabase
 from PyQt6.QtWidgets import QDialog, QLabel
 
 UI_INFORMATION = "resources/ui/Information.ui"
+PROGRAM_NAME = "Paddie。"
+PROGRAM_VERSION = "V 3.4.1"
+PROGRAM_EMAIL = "paddie.application@gmail.com"
 
 try:
      # UI 파일 로드
@@ -38,3 +41,6 @@ class InformationWindow(QDialog, form_class):
 		self.program_version: QLabel
 
 		self.setupUi(self)
+		self.program_name.setText(PROGRAM_NAME)
+		self.program_version.setText(PROGRAM_VERSION)
+		self.program_email.setText(PROGRAM_EMAIL)

@@ -26,6 +26,7 @@
 - `resources/user_data.json`을 읽고 쓸 때 UTF-8 인코딩/디코딩을 명시했다.
 - `user_data.json` 입출력에 context manager를 적용해 파일 핸들이 닫히도록 했다.
 - `src/exif_module.py`, `src/resize_module.py`의 정수 비교를 `is`에서 `==`로 바꿨다.
+- 정보 창의 프로그램명, 버전, 연락처 표시값을 `v3.4.1` 기준으로 코드에서 보정했다.
 - `v3.4.1`의 리소스 구조는 그대로 유지했다.
 
 ## 검증
