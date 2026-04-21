@@ -48,7 +48,9 @@ python scripts/build_release.py
 python scripts/package_release.py --artifact-name Paddie-local --format zip
 ```
 
-GitHub Actions는 태그 `v*` push 또는 수동 실행으로 macOS Intel, macOS Apple Silicon, Windows x64, Linux x64 산출물을 빌드합니다. 태그 빌드에서는 산출물을 첨부한 draft release를 생성합니다.
+GitHub Actions는 태그 `v*` push 또는 수동 실행으로 macOS Intel,
+macOS Apple Silicon, Windows x64, Linux x64 산출물을 빌드합니다.
+태그 빌드에서는 산출물을 첨부한 draft release를 생성합니다.
 ## 라이선스
 | 라이선스 항목      | 설                                                            |
 |--------------|--------------------------------------------------------------|

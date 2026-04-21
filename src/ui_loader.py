@@ -30,6 +30,7 @@ PROPERTY_SETTERS = {
 
 class UiLoader(QUiLoader):
     def __init__(self, base_instance):
+        """Attach loaded widgets to an existing object."""
         super().__init__(base_instance)
         self.base_instance = base_instance
 
@@ -92,7 +93,10 @@ def read_ui_translation_sources(ui_path):
                 continue
 
             string_element = property_element.find("string")
-            if string_element is None or string_element.attrib.get("notr") == "true":
+            if (
+                string_element is None
+                or string_element.attrib.get("notr") == "true"
+            ):
                 continue
 
             object_sources[property_name] = string_element.text or ""
@@ -104,7 +108,10 @@ def read_ui_translation_sources(ui_path):
                     continue
 
                 string_element = property_element.find("string")
-                if string_element is None or string_element.attrib.get("notr") == "true":
+                if (
+                    string_element is None
+                    or string_element.attrib.get("notr") == "true"
+                ):
                     continue
 
                 item_sources.append(string_element.text or "")

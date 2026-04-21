@@ -8,6 +8,7 @@ class PreviewWindow(QMainWindow):
     MAX_SCREEN_HEIGHT_RATIO = 0.85
 
     def __init__(self):
+        """Create a fixed-size detached preview window."""
         super().__init__()
         self.setWindowTitle("Paddie - Preview")
 
@@ -45,7 +46,10 @@ class PreviewWindow(QMainWindow):
             max(1, int(available.height() * self.MAX_SCREEN_HEIGHT_RATIO)),
         )
 
-        if image_size.width() <= max_size.width() and image_size.height() <= max_size.height():
+        if (
+            image_size.width() <= max_size.width()
+            and image_size.height() <= max_size.height()
+        ):
             return image_size
 
         return image_size.scaled(max_size, Qt.AspectRatioMode.KeepAspectRatio)

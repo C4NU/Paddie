@@ -2,7 +2,7 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/c4nu/paddie/badge/main)](https://www.codefactor.io/repository/github/c4nu/paddie/overview/main)
 
-![](https://img.shields.io/badge/stable-v3.4.1-blue?style=flat)
+![Stable Version](https://img.shields.io/badge/stable-v3.4.1-blue?style=flat)
 
 [![Github All Releases](https://img.shields.io/github/downloads/c4nu/paddie/total.svg)]()
 
@@ -44,4 +44,6 @@ python scripts/package_release.py --artifact-name Paddie-local --format zip
 
 
 
-GitHub Actions는 태그 `v*` push 또는 수동 실행으로 macOS Intel, macOS Apple Silicon, Windows x64, Linux x64 산출물을 빌드합니다. 태그 빌드에서는 산출물을 첨부한 draft release를 생성합니다.
+GitHub Actions는 태그 `v*` push 또는 수동 실행으로 macOS Intel,
+macOS Apple Silicon, Windows x64, Linux x64 산출물을 빌드합니다.
+태그 빌드에서는 산출물을 첨부한 draft release를 생성합니다.

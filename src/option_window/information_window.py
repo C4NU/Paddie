@@ -1,6 +1,14 @@
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import QDialog, QFrame, QGridLayout, QHBoxLayout, QLabel, QPushButton, QVBoxLayout
+from PySide6.QtWidgets import (
+    QDialog,
+    QFrame,
+    QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QVBoxLayout,
+)
 
 from localization import get_current_language_code
 from resource_path import resource_path
@@ -15,7 +23,10 @@ PROGRAM_LICENSE = "Unspecified"
 LOCALIZED_TEXT = {
     "en": {
         "title": "Information",
-        "tagline": "A compact desktop tool for WebP conversion and EXIF frame output.",
+        "tagline": (
+            "A compact desktop tool for WebP conversion "
+            "and EXIF frame output."
+        ),
         "version": "Version",
         "contact": "Contact",
         "runtime": "Runtime",
@@ -26,7 +37,7 @@ LOCALIZED_TEXT = {
     },
     "ko": {
         "title": "정보",
-        "tagline": "WebP 변환과 EXIF 프레임 출력을 위한 가벼운 데스크톱 도구.",
+        "tagline": "WebP 변환과 EXIF 프레임 출력 도구.",
         "version": "버전",
         "contact": "연락처",
         "runtime": "런타임",
@@ -43,6 +54,7 @@ print("INFORMATION UI Loaded Successfully")
 
 class InformationWindow(QDialog):
     def __init__(self):
+        """Create the information dialog."""
         super().__init__()
         self.setObjectName("informationDialog")
         self.setFixedSize(480, 320)
@@ -74,7 +86,11 @@ class InformationWindow(QDialog):
         header_text_layout.setSpacing(6)
         header_text_layout.addWidget(self.program_name)
         header_text_layout.addWidget(self.tagline_label)
-        header_text_layout.addWidget(self.version_badge, 0, Qt.AlignmentFlag.AlignLeft)
+        header_text_layout.addWidget(
+            self.version_badge,
+            0,
+            Qt.AlignmentFlag.AlignLeft,
+        )
 
         header_layout = QHBoxLayout()
         header_layout.setContentsMargins(0, 0, 0, 0)
@@ -94,14 +110,25 @@ class InformationWindow(QDialog):
         self.license_label = QLabel()
         self.license_value = QLabel()
 
-        for label in (self.version_label, self.contact_label, self.runtime_label, self.license_label):
+        for label in (
+            self.version_label,
+            self.contact_label,
+            self.runtime_label,
+            self.license_label,
+        ):
             label.setObjectName("metaLabel")
 
-        for label in (self.version_value, self.contact_value, self.runtime_value, self.license_value):
+        for label in (
+            self.version_value,
+            self.contact_value,
+            self.runtime_value,
+            self.license_value,
+        ):
             label.setObjectName("metaValue")
 
         self.contact_value.setTextInteractionFlags(
-            Qt.TextInteractionFlag.TextSelectableByMouse | Qt.TextInteractionFlag.TextSelectableByKeyboard
+            Qt.TextInteractionFlag.TextSelectableByMouse
+            | Qt.TextInteractionFlag.TextSelectableByKeyboard
         )
 
         panel_layout = QGridLayout()

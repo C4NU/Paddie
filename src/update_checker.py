@@ -1,17 +1,16 @@
-import http.client
 import json
-import ssl
 import urllib.parse
 import webbrowser
 from dataclasses import dataclass
 
+import requests
 from packaging.version import InvalidVersion, Version
 
 
 CURRENT_VERSION = "3.4.1"
-LATEST_RELEASE_HOST = "api.github.com"
-LATEST_RELEASE_PATH = "/repos/C4NU/Paddie/releases/latest"
-MAX_RESPONSE_BYTES = 1024 * 1024
+LATEST_RELEASE_API_URL = (
+    "https://api.github.com/repos/C4NU/Paddie/releases/latest"
+)
 
 
 @dataclass
@@ -21,28 +20,17 @@ class ReleaseInfo:
 
 
 def fetch_latest_release(timeout=5):
-    context = ssl.create_default_context()
-    connection = http.client.HTTPSConnection(
-        LATEST_RELEASE_HOST,
+    response = requests.get(
+        LATEST_RELEASE_API_URL,
+        headers={
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "Paddie",
+        },
         timeout=timeout,
-        context=context,
+        allow_redirects=False,
     )
-    try:
-        connection.request(
-            "GET",
-            LATEST_RELEASE_PATH,
-            headers={
-                "Accept": "application/vnd.github+json",
-                "User-Agent": "Paddie",
-            },
-        )
-        response = connection.getresponse()
-        if response.status >= 400:
-            raise RuntimeError(f"GitHub API returned HTTP {response.status}")
-
-        payload = json.loads(response.read(MAX_RESPONSE_BYTES).decode("utf-8"))
-    finally:
-        connection.close()
+    response.raise_for_status()
+    payload = json.loads(response.text)
 
     return ReleaseInfo(
         version=normalize_version(payload.get("tag_name", "")),

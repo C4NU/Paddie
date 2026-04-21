@@ -1,8 +1,10 @@
-```
+# Resources
+
+```text
 resources/
 ├── barlow-light.ttf: 기본 제공 폰트
 ├── data
-│   ├── model_map.csv: EXIF 패딩 옵션에서 모델명을 치환하는 파일
+│   ├── model_map.csv: 모델명 치환 파일
 │   └── user_data.json: 사용자 설정 파일
 ├── i18n
 │   ├── translations_en.qm: 영어 번역 파일
