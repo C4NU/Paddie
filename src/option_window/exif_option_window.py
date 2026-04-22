@@ -1,8 +1,5 @@
 import os
-import sys
-import platform
 import pathlib
-from pathlib import Path
 
 from user_config import UserConfig
 from caption_format_converter import CaptionFormatConverter
@@ -27,19 +24,14 @@ from ui_loader import load_ui
 
 UI_EXIF_OPTION = "resources/ui/exifoptions.ui"
 UI_FONTS = "resources/fonts"
-
-try:
-    # UI 파일 로드
-    ui_path = resource_path(UI_EXIF_OPTION)
-except Exception as e:
-    print(f"Resource loading failed: {str(e)}")
-    sys.exit(1)
+ui_path = resource_path(UI_EXIF_OPTION)
 
 print("EXIF OPTION UI Loaded Successfully")
 
 
 class ExifOptionWindow(QDialog):
 	def __init__(self):
+		"""Create the EXIF option dialog."""
 		super().__init__()
 
 		# External EXIF data variable
