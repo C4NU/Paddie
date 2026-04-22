@@ -29,12 +29,11 @@ UI_EXIF_OPTION = "resources/ui/exifoptions.ui"
 UI_FONTS = "resources/fonts"
 
 try:
-     # UI 파일 로드
-     ui_path = resource_path(UI_EXIF_OPTION)
-          
+    # UI 파일 로드
+    ui_path = resource_path(UI_EXIF_OPTION)
 except Exception as e:
-     print(f"Resource loading failed: {str(e)}")
-     sys.exit(1)
+    print(f"Resource loading failed: {str(e)}")
+    sys.exit(1)
 
 print("EXIF OPTION UI Loaded Successfully")
 
