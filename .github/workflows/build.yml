@@ -2,119 +2,77 @@ name: Build Paddie
 
 on:
   push:
-    branches: [ "main" ]
-    tags:
-      - "v*"
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
+
+permissions:
+  contents: read
 
 jobs:
   build:
-    name: Build for ${{ matrix.os }}
+    name: Build ${{ matrix.artifact_name }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.10"]
+        include:
+          - os: ubuntu-24.04
+            artifact_name: Paddie-linux-x64
+            archive_format: tar.gz
+          - os: macos-14
+            artifact_name: Paddie-macos-arm64
+            archive_format: zip
+          - os: windows-2025
+            artifact_name: Paddie-windows-x64
+            archive_format: zip
 
     steps:
-    - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: 'pip'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: src/requirements.txt
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r src/requirements.txt
+      - name: Install Linux Qt runtime libraries
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libegl1 \
+            libgl1 \
+            libxkbcommon-x11-0 \
+            libxcb-cursor0 \
+            libxcb-icccm4 \
+            libxcb-image0 \
+            libxcb-keysyms1 \
+            libxcb-render-util0 \
+            libxcb-xinerama0
 
-    - name: Install Linux dependencies
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libxcb-xinerama0 libxcb-cursor0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-shape0 libxkbcommon-x11-0
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip wheel
+          python -m pip install -r src/requirements.txt
 
-    - name: Build with PyInstaller
-      run: |
-        pyinstaller --noconfirm Paddie.spec
+      - name: Compile sources
+        run: python -m compileall -q src docs scripts
 
-    - name: Package for macOS (Zip)
-      if: matrix.os == 'macos-latest'
-      run: |
-        cd dist
-        zip -r ../Paddie-macOS-app.zip Paddie.app
+      - name: Build application
+        run: python scripts/build_release.py
 
-    - name: Package for macOS (DMG)
-      if: matrix.os == 'macos-latest'
-      run: |
-        hdiutil create -volname "Paddie" -srcfolder dist/Paddie.app -ov -format UDZO Paddie-macOS.dmg
+      - name: Package application
+        run: >
+          python scripts/package_release.py
+          --artifact-name "${{ matrix.artifact_name }}"
+          --format "${{ matrix.archive_format }}"
 
-    - name: Upload Artifact (Windows)
-      if: matrix.os == 'windows-latest'
-      uses: actions/upload-artifact@v4
-      with:
-        name: Paddie-Windows
-        path: dist/Paddie
-
-    - name: Upload Artifact (macOS Zip)
-      if: matrix.os == 'macos-latest'
-      uses: actions/upload-artifact@v4
-      with:
-        name: Paddie-macOS-Zip
-        path: Paddie-macOS-app.zip
-
-    - name: Upload Artifact (macOS DMG)
-      if: matrix.os == 'macos-latest'
-      uses: actions/upload-artifact@v4
-      with:
-        name: Paddie-macOS-DMG
-        path: Paddie-macOS.dmg
-
-    - name: Upload Artifact (Linux)
-      if: matrix.os == 'ubuntu-latest'
-      uses: actions/upload-artifact@v4
-      with:
-        name: Paddie-Linux
-        path: dist/Paddie
-
-  release:
-    name: Create GitHub Release
-    needs: build
-    if: startsWith(github.ref, 'refs/tags/v')
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    
-    steps:
-    - name: Download all artifacts
-      uses: actions/download-artifact@v4
-      with:
-        path: artifacts
-
-    - name: Prepare Assets
-      run: |
-        mkdir -p dist
-        # Windows: Zip the executable
-        cd artifacts/Paddie-Windows && zip -r ../../dist/Paddie-Windows.zip . && cd ../..
-        # macOS: Already zipped or DMG, just move them
-        mv artifacts/Paddie-macOS-Zip/Paddie-macOS-app.zip dist/
-        mv artifacts/Paddie-macOS-DMG/Paddie-macOS.dmg dist/
-        # Linux: Zip the executable
-        cd artifacts/Paddie-Linux && zip -r ../../dist/Paddie-Linux.zip . && cd ../..
-
-    - name: Create Release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: |
-          dist/Paddie-Windows.zip
-          dist/Paddie-macOS-app.zip
-          dist/Paddie-macOS.dmg
-          dist/Paddie-Linux.zip
-        generate_release_notes: true
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: release-artifacts/*
+          if-no-files-found: error

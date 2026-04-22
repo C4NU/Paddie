@@ -34,6 +34,14 @@ def main():
         APP_NAME,
         "--hidden-import",
         "PySide6.QtUiTools",
+        "--exclude-module",
+        "PyQt6",
+        "--exclude-module",
+        "PyQt5",
+        "--exclude-module",
+        "PyQt6.QtCore",
+        "--exclude-module",
+        "PyQt5.QtCore",
     ]
 
     if args.onefile:
