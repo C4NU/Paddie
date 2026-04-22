@@ -11,15 +11,15 @@ from PySide6.QtCore import Qt
 from PySide6.QtGui import QColor, QFont
 from PySide6.QtGui import QFontDatabase
 from PySide6.QtWidgets import (
-	QCheckBox,
-	QColorDialog,
-	QComboBox,
-	QDialog,
-	QDialogButtonBox,
-	QLabel,
-	QPlainTextEdit,
-	QPushButton,
-	QSpinBox,
+    QCheckBox,
+    QColorDialog,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QLabel,
+    QPlainTextEdit,
+    QPushButton,
+    QSpinBox,
 )
 
 from resource_path import resource_path
@@ -36,6 +36,7 @@ except Exception as e:
     sys.exit(1)
 
 print("EXIF OPTION UI Loaded Successfully")
+
 
 class ExifOptionWindow(QDialog):
 	def __init__(self):
