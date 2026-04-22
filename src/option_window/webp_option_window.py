@@ -2,19 +2,18 @@ import os
 import sys
 import platform
 
-from PyQt6 import uic
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton
 
 from user_config import UserConfig
 from resource_path import resource_path
+from ui_loader import load_ui
 
 UI_CONVERSION_OPTION = "resources/ui/conversionoptions.ui"
 
 try:
      # UI 파일 로드
      ui_path = resource_path(UI_CONVERSION_OPTION)
-     form_class = uic.loadUiType(ui_path)[0]
 
 except Exception as e:
      print(f"Resource loading failed: {str(e)}")
@@ -22,7 +21,7 @@ except Exception as e:
 
 print("CONVERSION OPTION UI Loaded Successfully")
 
-class WebPOptionWindow(QDialog, form_class):
+class WebPOptionWindow(QDialog):
 	def __init__(self):
 		super().__init__()
 
@@ -43,7 +42,7 @@ class WebPOptionWindow(QDialog, form_class):
 		self.exact_option = False
 		self.image_quality_option = 80
 
-		self.setupUi(self)
+		load_ui(self, ui_path)
 		self.bind_ui()
 
 	def bind_ui(self):

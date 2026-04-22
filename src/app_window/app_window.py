@@ -2,99 +2,65 @@ import os
 import platform
 import sys
 
-from pathlib import Path
-
-from option_window import WebPOptionWindow, ExifOptionWindow, ResizeOptionWindow, WatermarkOptionWindow, InformationWindow, SettingWindow
+from option_window import (
+    ExifOptionWindow,
+    InformationWindow,
+    ResizeOptionWindow,
+    SettingWindow,
+    WebPOptionWindow,
+)
 from app_window.preview_window import PreviewWindow
 
 print("Python Package Loaded")
 import converter
+import update_checker
 
-from PyQt6.QtWidgets import *
-from PyQt6 import uic
-from PyQt6 import QtGui, QtWidgets, QtCore
-from PyQt6.QtCore import Qt, QLocale, QTranslator
-from PyQt6.QtWidgets import QMainWindow, QFileDialog, QColorDialog, QPushButton, QPlainTextEdit, QLabel, QMessageBox
-from update_module import UpdateManager
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import QThread, pyqtSignal
 
-# Define constants directly here since relative import from src root might be tricky without package restructuring
-# ideally this should be `from constants import ...` but let's keep it simple for this file structure
-WINDOW_WIDTH_SHORT = 461
-WINDOW_HEIGHT = 764
-PREVIEW_AREA_MARGIN = 10
-UI_MAIN = "resources/ui/webpconvertergui.ui"
-SAMPLE_FILE_PATH = "resources/"
-
-print("PyQt6 Package Loaded")
+from PySide6 import QtGui, QtWidgets, QtCore
+from PySide6.QtCore import Qt
+from PySide6.QtWidgets import QApplication, QFileDialog, QMainWindow, QMessageBox
+print("PySide6 Package Loaded")
 
 from user_config import UserConfig
 from resource_path import resource_path
+from ui_loader import load_ui, retranslate_loaded_ui
+from localization import apply_language, get_current_language_code, install_translator
 
-
-UserConfig.load()
-
-app = QApplication(sys.argv)
-system_locale = QLocale.system().name()  # 예: 'ko_KR'
-lang_code = system_locale[:2]  
-
-translator = QTranslator()
-
-# 0: Auto (System Locale), 1: Korean, 2: Japanese, 3: Chinese, 4: English
-lang_index = UserConfig.language
-
-load_code = 'en'
-if lang_index == 1:
-    load_code = 'ko'
-elif lang_index == 2:
-    load_code = 'ja'
-elif lang_index == 3:
-    load_code = 'zh'
-elif lang_index == 4:
-    load_code = 'en'
-else:
-    # Auto (0) or invalid value: Detect from system locale
-    if lang_code in ['ko', 'ja', 'zh']:
-        load_code = lang_code
-    else:
-        load_code = 'en'
-
-# If loading default English when system is Korean, but somehow failed
-if load_code == 'en' and lang_code == 'ko':
-    # Force Korean if system is clearly Korean but index was 0 or invalid
-    load_code = 'ko'
-
-translated_loaded = translator.load(resource_path(f'resources/i18n/translations_{load_code}.qm'))
-if translated_loaded:
-    app.installTranslator(translator)
-else:
-    # Fallback to English if the specific QM file is missing
-    if load_code != 'en':
-        translator.load(resource_path('resources/i18n/translations_en.qm'))
-        app.installTranslator(translator)
+UI_MAIN = "resources/ui/webpconvertergui.ui"
+SAMPLE_FILE_PATH = "resources/"
+WINDOW_TEXT = {
+    "en": {
+        "check_updates": "Check for Updates...",
+        "update_title": "Software Update",
+        "update_available": "Paddie {version} is available.",
+        "up_to_date": "Paddie is up to date.",
+        "update_failed": "Unable to check for updates.\n{error}",
+    },
+    "ko": {
+        "check_updates": "업데이트 확인...",
+        "update_title": "소프트웨어 업데이트",
+        "update_available": "Paddie {version} 버전을 사용할 수 있습니다.",
+        "up_to_date": "Paddie가 최신 버전입니다.",
+        "update_failed": "업데이트를 확인할 수 없습니다.\n{error}",
+    },
+}
 
 # 26 ~ 41줄 까지 resource sample.jpg 파일 경로 설정 코드 수정 필요함
 try:
     # UI 파일 로드
     ui_path = resource_path(UI_MAIN)
     sample_file_path = resource_path(SAMPLE_FILE_PATH)
-    form_class = uic.loadUiType(ui_path)[0]
         
-except (FileNotFoundError, ValueError, OSError) as e:
+except Exception as e:
     print(f"Resource loading failed: {str(e)}")
     sys.exit(1)
 
 print("Main UI Loaded Successfully")
 
-
-
-import converter
-
 class WebpApp:
     def __init__(self):
-        # app is already created at the module level
-        self.app = app
+        self.app = QApplication(sys.argv)
+        self.language_code = install_translator(self.app)
         self.window = WebpWindow()
 
     def show(self):
@@ -103,7 +69,7 @@ class WebpApp:
     def exec(self):
         self.app.exec()
 
-class WebpWindow(QMainWindow, form_class):
+class WebpWindow(QMainWindow):
     default_font = 'Barlow-Light'
 
     def __init__(self):
@@ -122,9 +88,7 @@ class WebpWindow(QMainWindow, form_class):
 
         self.information_window = InformationWindow()
         self.setting_window = SettingWindow()
-        self.setting_window.on_accepted = self.on_setting_accepted
-        self.setting_window.on_config_changed = self.show_or_refresh_preview
-        
+        self.setting_window.on_language_changed = self.on_language_changed
         self.resize_window = ResizeOptionWindow()
 
         # 파일 이름 변수
@@ -132,108 +96,17 @@ class WebpWindow(QMainWindow, form_class):
         self.file_names = []
 
         # Preview 영역
-        self.window_width_short = WINDOW_WIDTH_SHORT
-        self.window_height = WINDOW_HEIGHT
-        self.preview_area_margin = PREVIEW_AREA_MARGIN
-        self.preview_area = QLabel(self)
+        self.window_width_short = 461
+        self.window_height = 764
         self.detached_preview_window = PreviewWindow()
         
         # set window size fixed
         # self.size() does not work in init phase (return 640 x 480)
         self.hide_preview()
 
-        self.setupUi(self)
+        load_ui(self, ui_path)
         self.bind_ui()
         self.init_options()
-        
-        # macOS 등에서 메뉴바 접근이 어려운 경우를 위해 버튼 추가 (setupUi 이후에 호출해야 함)
-        self.create_settings_button()
-        
-        # 백그라운드 업데이트 체크
-        self.check_update_background()
-
-    def check_update_background(self):
-        """앱 시작 시 백그라운드에서 업데이트를 체크합니다."""
-        self.startup_update_manager = UpdateManager(self.information_window.program_version)
-        # 긴급한 작업을 방해하지 않기 위해 약간의 딜레이 후 체크하거나 별도 스레드 권장
-        # 여기서는 단순함을 위해 정보를 가져오는 부분만 호출
-        def on_check_finished():
-            has_update, latest_v, url, body = self.startup_update_manager.check_for_update()
-            if has_update:
-                reply = QMessageBox.question(self, self.tr("Update Available"),
-                                            self.tr(f"A new version ({latest_v}) is available. Do you want to update now?\n\n{body}"),
-                                            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-                if reply == QMessageBox.StandardButton.Yes:
-                    self.on_trigger_information() # 정보 창을 열어 업데이트 진행 유도
-                    self.information_window.on_check_update() # 자동으로 업데이트 체크 버튼 누름
-        
-        # 단순 구현을 위해 QTimer 등을 쓸 수 있지만 여기서는 직접 호출 (네트워크 블락 주의)
-        # 실전에서는 QThread 사용 권장. UpdateManager에 이미 QThread 로직이 있으므로 활용 가능
-        from PyQt6.QtCore import QTimer
-        QTimer.singleShot(2000, on_check_finished) # 2초 후 체크
-
-    def create_settings_button(self):
-        """설정 버튼을 프로그램 우측 하단에 동적으로 추가합니다."""
-        from PyQt6.QtWidgets import QPushButton
-        self.pref_button = QPushButton(self.centralwidget)
-        self.pref_button.setGeometry(300, 697, 40, 31) # 위치 조정 필요할 수 있음
-        self.pref_button.setText("⚙️")
-        self.pref_button.setToolTip(self.tr("Settings"))
-        self.pref_button.clicked.connect(self.on_trigger_preferences)
-
-    def on_setting_accepted(self, index):
-        """설정이 변경되었을 때 호출됩니다."""
-        self.change_language(index)
-
-    def change_language(self, lang_index):
-        """프로그램 재시작 없이 언어를 변경합니다."""
-        load_code = 'en'
-        if lang_index == 1: load_code = 'ko'
-        elif lang_index == 2: load_code = 'ja'
-        elif lang_index == 3: load_code = 'zh'
-        elif lang_index == 4: load_code = 'en'
-        else:
-            system_locale = QLocale.system().name()[:2]
-            load_code = system_locale if system_locale in ['ko', 'ja', 'zh'] else 'en'
-
-        new_translator = QTranslator()
-        if new_translator.load(resource_path(f'resources/translations_{load_code}.qm')):
-            # 기존 트랜슬레이터 제거 후 새 트랜슬레이터 설치
-            global translator
-            app_inst = QtWidgets.QApplication.instance()
-            app_inst.removeTranslator(translator)
-            translator = new_translator
-            app_inst.installTranslator(translator)
-            
-            # 모든 활성 UI 요소 재번역
-            self.retranslate_all_ui()
-            print(f"Language changed to: {load_code}")
-
-    def retranslate_all_ui(self):
-        """모든 윈도우의 UI를 현재 언어로 다시 로드합니다."""
-        # 메인 윈도우
-        self.retranslateUi(self)
-        
-        # 설정 버튼 등 동적 생성 요소 갱신
-        self.pref_button.setToolTip(self.tr("Settings"))
-        
-        # 서브 윈도우들
-        windows = [
-            self.webp_conversion_option_window,
-            self.exif_padding_option_window,
-            self.information_window,
-            self.setting_window,
-            self.resize_window,
-            self.detached_preview_window
-        ]
-        
-        for win in windows:
-            if hasattr(win, 'retranslateUi'):
-                win.retranslateUi(win)
-            # PreviewWindow 같은 커스텀 클래스의 경우 제목 등 수동 갱신
-            if isinstance(win, PreviewWindow):
-                win.setWindowTitle(self.tr("Paddie - Preview"))
-
 
     def bind_ui(self):
         # 실행 버튼 함수 링킹
@@ -248,10 +121,15 @@ class WebpWindow(QMainWindow, form_class):
         # 파일 일괄 비우기 기능 함수 링킹
         self.actionClear_List.triggered.connect(self.on_trigger_clear_files)
         # 프로그램 정보 기능 함수 링킹
+        self.actionCheck_For_Updates = QtGui.QAction(self)
+        self.actionCheck_For_Updates.triggered.connect(self.on_trigger_check_updates)
+        self.menuOptions.insertAction(self.actionInformation, self.actionCheck_For_Updates)
+        self.actionPreferences.setMenuRole(QtGui.QAction.MenuRole.PreferencesRole)
+        self.actionInformation.setMenuRole(QtGui.QAction.MenuRole.AboutRole)
+        self.actionPreferences.triggered.connect(self.on_trigger_preferences)
         self.actionInformation.triggered.connect(self.on_trigger_information)
-        # 프로그램 설정 기능 함수 링킹
-        self.actionPref.triggered.connect(self.on_trigger_preferences)
         # 종료 버튼 함수 링킹
+        self.actionExit.setMenuRole(QtGui.QAction.MenuRole.QuitRole)
         self.actionExit.triggered.connect(WebpWindow.on_trigger_exit)
         # 목록 선택 이벤트 링킹
         self.image_list_widget.itemSelectionChanged.connect(self.on_image_list_widget_selection_changed)
@@ -274,8 +152,9 @@ class WebpWindow(QMainWindow, form_class):
         self.open_resize_option_button.setEnabled(self.enable_resize_option_box.isChecked())
         # 원본 사진 위치 저장 옵션 링킹
         self.save_original_path_checkbox.stateChanged.connect(self.on_toggle_save_original_path)
+        self.retranslate_dynamic_ui()
 
-    #################### PyQt FUNCTIONS
+    #################### Qt FUNCTIONS
     def init_options(self):
         ####################	이미지 품질 관련 옵션
         self.conversion_option = self.enable_conversion_option_box.isChecked()
@@ -291,7 +170,6 @@ class WebpWindow(QMainWindow, form_class):
         self.save_original_path = self.save_original_path_checkbox.isChecked()
 
         UserConfig.load()
-
         if UserConfig.resize_options:
             self.enable_resize_option_box.toggle()
 
@@ -339,13 +217,13 @@ class WebpWindow(QMainWindow, form_class):
         
         selected_path = self.file_paths[self.image_list_widget.currentRow()]
         made_file_name = "sample_output"
-        made_file_path = os.path.join(resource_path(SAMPLE_FILE_PATH), made_file_name)
+        made_file_path = os.path.join(sample_file_path, made_file_name)
 
         if os.path.exists(made_file_path):
             os.remove(made_file_path)
 
         made_image = self.converter.convert_exif_image(file_path=selected_path,
-                                                       save_path=resource_path(SAMPLE_FILE_PATH),
+                                                       save_path=sample_file_path,
                                                        save_name=made_file_name,
                                                        file_format_option=2, # webp
                                                        font_path=self.exif_padding_option_window.get_current_font_path(),
@@ -368,32 +246,15 @@ class WebpWindow(QMainWindow, form_class):
             self.hide_preview()
             return
 
-        image_width, image_height = made_image.size
         sample_webp_path = made_file_path + ".webp"
-        
-        if UserConfig.exif_detached_preview:
-            # Detached preview mode
-            self.hide_internal_preview()
-            self.detached_preview_window.set_image(sample_webp_path)
-            self.detached_preview_window.show()
-            self.detached_preview_window.raise_()
-        else:
-            # Internal preview mode
-            if self.detached_preview_window.isVisible():
-                self.detached_preview_window.hide()
-                
-            self.setFixedSize(self.window_width_short + self.preview_area_margin + image_width, max(image_height + 30, self.window_height))
-            pixmap = QPixmap(sample_webp_path)
-            self.preview_area.setPixmap(pixmap)
-            self.preview_area.setVisible(True)
-            self.preview_area.setGeometry(self.window_width_short + self.preview_area_margin, 0, image_width, image_height)
-        
-    def hide_internal_preview(self):
-        self.preview_area.setVisible(False)
+
         self.setFixedSize(self.window_width_short, self.window_height)
+        self.detached_preview_window.set_image(sample_webp_path)
+        self.detached_preview_window.show()
+        self.detached_preview_window.raise_()
 
     def hide_preview(self):
-        self.hide_internal_preview()
+        self.setFixedSize(self.window_width_short, self.window_height)
         if self.detached_preview_window:
             self.detached_preview_window.hide()
 
@@ -445,15 +306,71 @@ class WebpWindow(QMainWindow, form_class):
     def on_trigger_information(self):
         self.information_window.show()
 
+    def on_trigger_check_updates(self):
+        text = self.localized_window_text()
+        try:
+            release_info = update_checker.fetch_latest_release()
+        except Exception as error:
+            QMessageBox.warning(
+                self,
+                text["update_title"],
+                text["update_failed"].format(error=error),
+            )
+            return
+
+        if update_checker.has_newer_release(release_info.version):
+            result = QMessageBox.information(
+                self,
+                text["update_title"],
+                text["update_available"].format(version=release_info.version),
+                QMessageBox.StandardButton.Open | QMessageBox.StandardButton.Cancel,
+            )
+            if result == QMessageBox.StandardButton.Open:
+                update_checker.open_release_page(release_info)
+            return
+
+        QMessageBox.information(self, text["update_title"], text["up_to_date"])
+
     def on_trigger_preferences(self):
-        self.setting_window.show()
+        self.setting_window.on_call()
+
+    def on_language_changed(self, language_index):
+        app = QApplication.instance()
+        if app is None:
+            return
+
+        apply_language(app, language_index)
+        self.retranslate_ui()
+
+    def retranslate_ui(self):
+        retranslate_loaded_ui(self)
+        self.retranslate_dynamic_ui()
+
+        for window in (
+            self.webp_conversion_option_window,
+            self.exif_padding_option_window,
+            self.information_window,
+            self.setting_window,
+            self.resize_window,
+        ):
+            if hasattr(window, "retranslate_ui"):
+                window.retranslate_ui()
+            else:
+                retranslate_loaded_ui(window)
+
+    def retranslate_dynamic_ui(self):
+        self.actionCheck_For_Updates.setText(self.localized_window_text()["check_updates"])
+
+    def localized_window_text(self):
+        language_code = get_current_language_code()
+        return WINDOW_TEXT.get(language_code, WINDOW_TEXT["en"])
 
     @staticmethod
     def on_trigger_exit():
         sys.exit()
 
-    def open_file(self) -> None:
-        open_files = QFileDialog.getOpenFileNames(self, caption="Open File", directory=UserConfig.latest_load_path)
+    def open_file(self):
+        open_files = QFileDialog.getOpenFileNames(self, "Open File", UserConfig.latest_load_path or "")
 
         if len(open_files) > 0:
             load_path = None
@@ -474,7 +391,7 @@ class WebpWindow(QMainWindow, form_class):
                 UserConfig.latest_load_path = load_path
                 UserConfig.save()
 
-    def delete_file(self) -> None:
+    def delete_file(self):
         selected_index = self.image_list_widget.currentRow()
         if selected_index < 0 or selected_index >= self.image_list_widget.count():
             return
@@ -488,7 +405,7 @@ class WebpWindow(QMainWindow, form_class):
         
     
 
-    def load_file(self, filePath: str) -> None:
+    def load_file(self, filePath):
         icon = QtGui.QIcon(filePath)
         #todo: manipulate string
         widget_item_text = self.path_string_with_width(filePath, 54)
@@ -504,7 +421,7 @@ class WebpWindow(QMainWindow, form_class):
         self.file_names.append(file_name.split(sep='/')[-1])
         self.image_list_widget.addItem(item)
 
-    def path_string_with_width(self, text: str, width: int) -> str:
+    def path_string_with_width(self, text, width):
         if '/' in text:
             split_character = '/'
         elif '\\' in text:
@@ -525,83 +442,67 @@ class WebpWindow(QMainWindow, form_class):
         result = '\n'.join(lines)
         return result
 
-    def save_file(self) -> None:
+    def save_file(self):
+        # 변환 실행 버튼 callback 함수
+        # self.watermarkOption()
+
         if self.save_original_path and self.image_list_widget.count() > 0:
             file_path = self.file_paths[self.image_list_widget.currentRow()]
             save_path = os.path.dirname(file_path)
         else:
-            save_path = QFileDialog.getExistingDirectory(caption='Save Directory',
-                                                        directory=UserConfig.latest_save_path)
+            save_path = QFileDialog.getExistingDirectory(self, "Save Directory", UserConfig.latest_save_path or "")
             UserConfig.latest_save_path = save_path
             UserConfig.save()
 
         if save_path:
-            mode = None
+            # 01 WebP 이미지로만 변환할 때
             if self.conversion_option:
-                mode = 'conversion'
+                for index in range(self.image_list_widget.count()):
+                    self.converter.convert_image_to_webp(file_path=self.file_paths[index],
+                                                         save_path=save_path + '/',
+                                                         save_name=self.file_names[index],
+                                                         loseless_option=UserConfig.conversion_loseless,
+                                                         image_quality_option=UserConfig.conversion_quality,
+                                                         exif_option=UserConfig.conversion_exif,
+                                                         icc_profile_option=UserConfig.conversion_icc,
+                                                         exact_option=UserConfig.conversion_transparent, watermark_text="",
+                                                         conversion_option=self.conversion_option,
+                                                         resize_option=self.resize_option,
+                                                         axis_option=UserConfig.resize_options,
+                                                         resize_value=UserConfig.resize_size)
+
+            # 02 Exif Padding 이미지로만 변환할때
             elif self.exif_writing_option:
-                mode = 'exif'
+                for index in range(self.image_list_widget.count()):
+                    self.converter.convert_exif_image(file_path=self.file_paths[index],
+                                                      save_path=save_path + '/',
+                                                      save_name=self.file_names[index],
+                                                      file_format_option=UserConfig.exif_type,
+                                                      font_path=self.exif_padding_option_window.get_current_font_path(),
+                                                      bg_color=UserConfig.exif_bg_color,
+                                                      text_color=UserConfig.exif_text_color,
+                                                      ratio_option=UserConfig.exif_ratio,
+                                                      exif_padding_option=UserConfig.exif_padding_mode,
+                                                      save_exif_data_option=UserConfig.exif_save_exifdata,
+                                                      resize_option=self.resize_option,
+                                                      axis_option=UserConfig.resize_axis,
+                                                      alignment_option=UserConfig.exif_format_alignment,
+                                                      resize_value=UserConfig.resize_size,
+                                                      quality_option=UserConfig.exif_quality,
+                                                      caption_format=UserConfig.exif_format,
+                                                      easymode_option=UserConfig.exif_easymode_options,
+                                                      easymode_oneline=UserConfig.exif_easymode_oneline,
+                                                      auto_hide_nonedata=UserConfig.exif_auto_hide_nonedata)
+
             else:
                 print("옵션 선택 에러 / 다시 선택해주세요")
-                return
 
-            config_options = {
-                'conversion_loseless': UserConfig.conversion_loseless,
-                'conversion_quality': UserConfig.conversion_quality,
-                'conversion_exif': UserConfig.conversion_exif,
-                'conversion_icc': UserConfig.conversion_icc,
-                'conversion_transparent': UserConfig.conversion_transparent,
-                'resize_option': self.resize_option,
-                'resize_options': UserConfig.resize_options,
-                'resize_size': UserConfig.resize_size,
-                'exif_type': UserConfig.exif_type,
-                'exif_bg_color': UserConfig.exif_bg_color,
-                'exif_text_color': UserConfig.exif_text_color,
-                'exif_ratio': UserConfig.exif_ratio,
-                'exif_padding_mode': UserConfig.exif_padding_mode,
-                'exif_save_exifdata': UserConfig.exif_save_exifdata,
-                'resize_axis': UserConfig.resize_axis,
-                'exif_format_alignment': UserConfig.exif_format_alignment,
-                'exif_quality': UserConfig.exif_quality,
-                'exif_format': UserConfig.exif_format,
-                'exif_easymode_options': UserConfig.exif_easymode_options,
-                'exif_easymode_oneline': UserConfig.exif_easymode_oneline,
-                'exif_auto_hide_nonedata': UserConfig.exif_auto_hide_nonedata
-            }
-            font_path = self.exif_padding_option_window.get_current_font_path()
+            if platform.system() == "Windows":  # Windows
+                os.startfile(save_path)
+            elif platform.system() == "Darwin":  # macOS
+                os.system("open " + '"' + save_path + '"')
 
-            self.worker = converter.ConversionWorker(mode, self.file_paths.copy(), self.file_names.copy(), save_path, config_options, font_path)
-            self.worker.progress.connect(self.on_progress)
-            self.worker.finished_conversion.connect(self.on_conversion_finished)
-            self.worker.error.connect(self.on_conversion_error)
-            
-            self.save_button.setEnabled(False)
-            if self.save_button.buttons():
-                self.save_button.buttons()[0].setText("변환 중...")
-            self.worker.start()
-
-    def on_progress(self, value):
-        if self.save_button.buttons():
-            self.save_button.buttons()[0].setText(f"변환 중... {value}%")
-
-    def on_conversion_finished(self, save_path):
-        self.save_button.setEnabled(True)
-        if self.save_button.buttons():
-            self.save_button.buttons()[0].setText("Save")
-        
-        if platform.system() == "Windows":  # Windows
-            os.startfile(save_path)
-        elif platform.system() == "Darwin":  # macOS
-            os.system("open " + '"' + save_path + '"')
-
-        self.on_trigger_clear_files()
-
-    def on_conversion_error(self, error_msg):
-        self.save_button.setEnabled(True)
-        if self.save_button.buttons():
-            self.save_button.buttons()[0].setText("Save")
-        print(f"변환 중 오류 발생: {error_msg}")
-        QMessageBox.warning(self, "오류", f"변환 중 오류가 발생했습니다: {error_msg}")
+            self.on_trigger_clear_files()
 
     # WebP 변환 옵션
     def on_toggle_conversion_enable(self, state):
@@ -659,4 +560,3 @@ class WebpWindow(QMainWindow, form_class):
         self.save_original_path = bool(state == Qt.CheckState.Checked.value)
         UserConfig.save_original_path = self.save_original_path_checkbox.isChecked()
         UserConfig.save()
-

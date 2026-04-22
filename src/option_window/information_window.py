@@ -1,106 +1,249 @@
-import os
-import sys
-import platform
-import pathlib
-import json
-from pathlib import Path
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import (
+    QDialog,
+    QFrame,
+    QGridLayout,
+    QHBoxLayout,
+    QLabel,
+    QPushButton,
+    QVBoxLayout,
+)
 
-from user_config import UserConfig
+from localization import get_current_language_code
 from resource_path import resource_path
 
-from PyQt6 import uic
-from PyQt6.QtWidgets import QDialog, QLabel, QWidget, QPushButton, QProgressBar, QMessageBox
-from update_module import UpdateManager
 
-UI_INFORMATION = "resources/ui/information.ui"
-PROGRAM_DATA = "resources/data/program_data.json"
+PROGRAM_NAME = "Paddie。"
+PROGRAM_VERSION = "3.4.1"
+PROGRAM_EMAIL = "paddie.application@gmail.com"
+PROGRAM_ICON = "resources/icons/icon.icns"
+PROGRAM_LICENSE = "Unspecified"
 
-try:
-	# UI 파일 로드
-	ui_path = resource_path(UI_INFORMATION)
-	program_data_path = resource_path(PROGRAM_DATA)
-	form_class = uic.loadUiType(ui_path)[0]
-	
-except Exception as e:
-	print(f"Resource loading failed: {str(e)}")
-	sys.exit(1)
+LOCALIZED_TEXT = {
+    "en": {
+        "title": "Information",
+        "tagline": (
+            "A compact desktop tool for WebP conversion "
+            "and EXIF frame output."
+        ),
+        "version": "Version",
+        "contact": "Contact",
+        "runtime": "Runtime",
+        "runtime_value": "Python + PySide6",
+        "license": "License",
+        "license_value": PROGRAM_LICENSE,
+        "close": "Close",
+    },
+    "ko": {
+        "title": "정보",
+        "tagline": "WebP 변환과 EXIF 프레임 출력 도구.",
+        "version": "버전",
+        "contact": "연락처",
+        "runtime": "런타임",
+        "runtime_value": "Python + PySide6",
+        "license": "라이선스",
+        "license_value": "별도 명시 없음",
+        "close": "닫기",
+    },
+}
+
 
 print("INFORMATION UI Loaded Successfully")
 
-class InformationWindow(QWidget, form_class):
-	def __init__(self):
-		super().__init__()
-		self.setupUi(self) # UI 초기화
 
-		with open(program_data_path, 'r', encoding='utf-8') as f:
-			program_data = json.load(f)
-			self.program_name = program_data["name"]
-			self.program_version = program_data["version"]
-			self.program_description = program_data["description"]
-			self.program_author = program_data["contact"]
-			self.program_license = program_data["license"]
-		
-		print(f"Program Name: {self.program_name}, Version: {self.program_version}")
-		self.default_font = 'Barlow-Light'
+class InformationWindow(QDialog):
+    def __init__(self):
+        """Create the information dialog."""
+        super().__init__()
+        self.setObjectName("informationDialog")
+        self.setFixedSize(480, 320)
+        self.setSizeGripEnabled(False)
 
-		self.update_manager = UpdateManager(self.program_version)
-		
-		# 업데이트 관련 UI 추가
-		self.btn_check_update = QPushButton(self.tr("Check for Updates"))
-		self.btn_check_update.clicked.connect(self.on_check_update)
-		self.verticalLayout.addWidget(self.btn_check_update)
-		
-		self.progress_bar = QProgressBar()
-		self.progress_bar.setVisible(False)
-		self.verticalLayout.addWidget(self.progress_bar)
+        self.icon_label = QLabel()
+        self.icon_label.setObjectName("appIcon")
+        self.icon_label.setFixedSize(72, 72)
+        self.icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-		self.init()
+        app_icon = QIcon(resource_path(PROGRAM_ICON))
+        icon_pixmap = app_icon.pixmap(64, 64)
+        if not icon_pixmap.isNull():
+            self.icon_label.setPixmap(icon_pixmap)
 
-	def on_check_update(self):
-		self.btn_check_update.setEnabled(False)
-		self.btn_check_update.setText(self.tr("Checking..."))
-		
-		has_update, latest_v, url, body = self.update_manager.check_for_update()
-		
-		if has_update:
-			# 서버 정보를 로컬 program_data.json에 동기화
-			self.update_manager.sync_program_data(latest_v)
-			self.label_version_text.setText(latest_v)
-			
-			reply = QMessageBox.question(self, self.tr("Update Available"),
-										self.tr(f"A new version ({latest_v}) is available.\nDo you want to download and update?"),
-										QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
-			
-			if reply == QMessageBox.StandardButton.Yes:
-				self.btn_check_update.setText(self.tr("Downloading..."))
-				self.progress_bar.setVisible(True)
-				self.update_manager.start_download(url, self.update_progress, self.update_finished)
-			else:
-				self.btn_check_update.setEnabled(True)
-				self.btn_check_update.setText(self.tr("Check for Updates"))
-		else:
-			QMessageBox.information(self, self.tr("No Update"), self.tr("You are using the latest version."))
-			self.btn_check_update.setEnabled(True)
-			self.btn_check_update.setText(self.tr("Check for Updates"))
+        self.program_name = QLabel()
+        self.program_name.setObjectName("programName")
 
-	def update_progress(self, value):
-		self.progress_bar.setValue(value)
+        self.tagline_label = QLabel()
+        self.tagline_label.setObjectName("tagline")
+        self.tagline_label.setWordWrap(True)
 
-	def update_finished(self, success, message):
-		if success:
-			self.btn_check_update.setText(self.tr("Installing..."))
-			QMessageBox.information(self, self.tr("Download Complete"), 
-									self.tr("Download finished. The app will restart to apply the update."))
-			self.update_manager.apply_update(message)
-		else:
-			QMessageBox.warning(self, self.tr("Update Failed"), self.tr(f"Error: {message}"))
-			self.btn_check_update.setEnabled(True)
-			self.btn_check_update.setText(self.tr("Check for Updates"))
-			self.progress_bar.setVisible(False)
+        self.version_badge = QLabel()
+        self.version_badge.setObjectName("versionBadge")
+        self.version_badge.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-	def init(self):
-		# 프로그램 정보 텍스트 설정
-		self.label_program_text.setText(self.program_name)
-		self.label_version_text.setText(self.program_version)
-		self.label_contact_text.setText(self.program_author)
-		self.label_license_text.setText(self.program_license)
+        header_text_layout = QVBoxLayout()
+        header_text_layout.setContentsMargins(0, 0, 0, 0)
+        header_text_layout.setSpacing(6)
+        header_text_layout.addWidget(self.program_name)
+        header_text_layout.addWidget(self.tagline_label)
+        header_text_layout.addWidget(
+            self.version_badge,
+            0,
+            Qt.AlignmentFlag.AlignLeft,
+        )
+
+        header_layout = QHBoxLayout()
+        header_layout.setContentsMargins(0, 0, 0, 0)
+        header_layout.setSpacing(18)
+        header_layout.addWidget(self.icon_label)
+        header_layout.addLayout(header_text_layout, 1)
+
+        self.info_panel = QFrame()
+        self.info_panel.setObjectName("infoPanel")
+
+        self.version_label = QLabel()
+        self.version_value = QLabel()
+        self.contact_label = QLabel()
+        self.contact_value = QLabel()
+        self.runtime_label = QLabel()
+        self.runtime_value = QLabel()
+        self.license_label = QLabel()
+        self.license_value = QLabel()
+
+        for label in (
+            self.version_label,
+            self.contact_label,
+            self.runtime_label,
+            self.license_label,
+        ):
+            label.setObjectName("metaLabel")
+
+        for label in (
+            self.version_value,
+            self.contact_value,
+            self.runtime_value,
+            self.license_value,
+        ):
+            label.setObjectName("metaValue")
+
+        self.contact_value.setTextInteractionFlags(
+            Qt.TextInteractionFlag.TextSelectableByMouse
+            | Qt.TextInteractionFlag.TextSelectableByKeyboard
+        )
+
+        panel_layout = QGridLayout()
+        panel_layout.setContentsMargins(18, 14, 18, 14)
+        panel_layout.setHorizontalSpacing(18)
+        panel_layout.setVerticalSpacing(10)
+        panel_layout.addWidget(self.version_label, 0, 0)
+        panel_layout.addWidget(self.version_value, 0, 1)
+        panel_layout.addWidget(self.contact_label, 1, 0)
+        panel_layout.addWidget(self.contact_value, 1, 1)
+        panel_layout.addWidget(self.runtime_label, 2, 0)
+        panel_layout.addWidget(self.runtime_value, 2, 1)
+        panel_layout.addWidget(self.license_label, 3, 0)
+        panel_layout.addWidget(self.license_value, 3, 1)
+        panel_layout.setColumnStretch(1, 1)
+        self.info_panel.setLayout(panel_layout)
+
+        self.close_button = QPushButton()
+        self.close_button.setObjectName("closeButton")
+        self.close_button.clicked.connect(self.close)
+
+        footer_layout = QHBoxLayout()
+        footer_layout.setContentsMargins(0, 0, 0, 0)
+        footer_layout.addStretch(1)
+        footer_layout.addWidget(self.close_button)
+
+        root_layout = QVBoxLayout()
+        root_layout.setContentsMargins(24, 22, 24, 20)
+        root_layout.setSpacing(18)
+        root_layout.addLayout(header_layout)
+        root_layout.addWidget(self.info_panel)
+        root_layout.addLayout(footer_layout)
+        self.setLayout(root_layout)
+
+        self.setStyleSheet(
+            """
+            QDialog#informationDialog {
+                background: #17181b;
+                color: #f4f1eb;
+            }
+            QLabel#appIcon {
+                background: #f7f4ee;
+                border: 1px solid #e7dfd0;
+                border-radius: 8px;
+            }
+            QLabel#programName {
+                color: #fbf7ef;
+                font-size: 34px;
+                font-weight: 650;
+            }
+            QLabel#tagline {
+                color: #b9c2c8;
+                font-size: 13px;
+                line-height: 18px;
+            }
+            QLabel#versionBadge {
+                background: #e9b44c;
+                border-radius: 8px;
+                color: #17181b;
+                font-size: 12px;
+                font-weight: 700;
+                padding: 5px 10px;
+            }
+            QFrame#infoPanel {
+                background: #222429;
+                border: 1px solid #343941;
+                border-radius: 8px;
+            }
+            QLabel#metaLabel {
+                color: #8fa0aa;
+                font-size: 12px;
+                font-weight: 650;
+            }
+            QLabel#metaValue {
+                color: #f1ede6;
+                font-size: 13px;
+            }
+            QPushButton#closeButton {
+                background: #2c7da0;
+                border: 0;
+                border-radius: 7px;
+                color: #ffffff;
+                font-size: 13px;
+                font-weight: 650;
+                min-width: 82px;
+                padding: 8px 14px;
+            }
+            QPushButton#closeButton:hover {
+                background: #348eb5;
+            }
+            QPushButton#closeButton:pressed {
+                background: #246a88;
+            }
+            """
+        )
+
+        self.retranslate_ui()
+
+    def retranslate_ui(self):
+        text = self._localized_text()
+
+        self.setWindowTitle(text["title"])
+        self.program_name.setText(PROGRAM_NAME)
+        self.tagline_label.setText(text["tagline"])
+        self.version_badge.setText(f"{text['version']} {PROGRAM_VERSION}")
+        self.version_label.setText(text["version"])
+        self.version_value.setText(PROGRAM_VERSION)
+        self.contact_label.setText(text["contact"])
+        self.contact_value.setText(PROGRAM_EMAIL)
+        self.runtime_label.setText(text["runtime"])
+        self.runtime_value.setText(text["runtime_value"])
+        self.license_label.setText(text["license"])
+        self.license_value.setText(text["license_value"])
+        self.close_button.setText(text["close"])
+
+    def _localized_text(self):
+        language_code = get_current_language_code()
+        return LOCALIZED_TEXT.get(language_code, LOCALIZED_TEXT["en"])

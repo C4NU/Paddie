@@ -23,7 +23,7 @@ class ModelNameMapper:
                         return new_model_name
        
         except:
-            path = os.path.join(os.getcwd(), '../resources/model_map.csv')
+            path = os.path.join(os.getcwd(), '../resources/data/model_map.csv')
             with open(path, newline='', encoding='utf-8') as csv_file:
                 map_reader = csv.DictReader(csv_file)
                 for row in map_reader:

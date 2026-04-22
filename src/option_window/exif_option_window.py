@@ -1,49 +1,37 @@
 import os
-import sys
-import platform
 import pathlib
-from pathlib import Path
-import locale
-
 
 from user_config import UserConfig
 from caption_format_converter import CaptionFormatConverter
 
-from PyQt6 import uic
-from PyQt6.QtCore import Qt, QLocale, QTranslator
-from PyQt6.QtGui import QColor, QFont
-from PyQt6.QtGui import QFontDatabase
-from PyQt6.QtWidgets import QDialogButtonBox, QDialog, QCheckBox, QSpinBox, QPushButton, QComboBox, QPlainTextEdit, QColorDialog, QLabel, QVBoxLayout
+from PySide6.QtCore import Qt
+from PySide6.QtGui import QColor, QFont
+from PySide6.QtGui import QFontDatabase
+from PySide6.QtWidgets import (
+    QCheckBox,
+    QColorDialog,
+    QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QLabel,
+    QPlainTextEdit,
+    QPushButton,
+    QSpinBox,
+)
 
 from resource_path import resource_path
+from ui_loader import load_ui
 
 UI_EXIF_OPTION = "resources/ui/exifoptions.ui"
 UI_FONTS = "resources/fonts"
-
-system_locale = QLocale.system().name()  # 예: 'ko_KR'
-lang_code = system_locale[:2]  
-
-translator = QTranslator()
-if lang_code == 'ko':
-    translator.load('translations_ko.qm')
-elif lang_code == 'en':
-    translator.load('translations_en.qm')
-elif lang_code == 'ja':
-    translator.load('translations_ja.qm')
-
-try:
-     # UI 파일 로드
-     ui_path = resource_path(UI_EXIF_OPTION)
-     form_class = uic.loadUiType(ui_path)[0]
-          
-except Exception as e:
-     print(f"Resource loading failed: {str(e)}")
-     sys.exit(1)
+ui_path = resource_path(UI_EXIF_OPTION)
 
 print("EXIF OPTION UI Loaded Successfully")
 
-class ExifOptionWindow(QDialog, form_class):
+
+class ExifOptionWindow(QDialog):
 	def __init__(self):
+		"""Create the EXIF option dialog."""
 		super().__init__()
 
 		# External EXIF data variable
@@ -89,7 +77,7 @@ class ExifOptionWindow(QDialog, form_class):
 		self.auto_hide_nonedata_checkbox: QCheckBox
 		
 		# UI 불러오기
-		self.setupUi(self)
+		load_ui(self, ui_path)
 		self.bind_ui()
 		self.setup_ui_internal()
 
@@ -141,9 +129,9 @@ class ExifOptionWindow(QDialog, form_class):
 		font_asset_path = resource_path(UI_FONTS)
 		'''
 		if platform.system() == "Windows":
-			font_asset_path = os.path.join(os.getcwd(), "../resources/Fonts")
+			font_asset_path = os.path.join(os.getcwd(), "../resources/fonts")
 		else:
-			font_asset_path = os.path.join(os.path.dirname(sys.executable), "../resources/Fonts")'
+			font_asset_path = os.path.join(os.path.dirname(sys.executable), "../resources/fonts")'
 		'''
 
 		print(f"Font_asset: {font_asset_path}")
@@ -160,7 +148,7 @@ class ExifOptionWindow(QDialog, form_class):
 					self.__add_font_combobox(item, font_item)
 		except:
 			# py 형식으로 실행할 때 macOS 오류 처리용 경로 설정
-			fonts = pathlib.Path(os.path.join(os.getcwd(), "../resources/Fonts"))
+			fonts = pathlib.Path(os.path.join(os.getcwd(), "../resources/fonts"))
 			for item in fonts.iterdir():
 				if item.is_file():
 					continue
@@ -288,13 +276,13 @@ class ExifOptionWindow(QDialog, form_class):
 		self.image_quality_option = self.image_quality_spinbox.value()
 
 	def on_change_textcolor_picker(self):
-		picked_color = QColorDialog.getColor(title='Pick Text Color', initial=self.text_color)
+		picked_color = QColorDialog.getColor(self.text_color, self, 'Pick Text Color')
 		if picked_color.isValid():
 			self.text_color = picked_color
 			self.__update_font_preview()
 		
 	def on_change_bgcolor_picker(self):
-		picked_color = QColorDialog.getColor(title='Pick Background Color', initial=self.background_color)
+		picked_color = QColorDialog.getColor(self.background_color, self, 'Pick Background Color')
 		if picked_color.isValid():
 			self.background_color = picked_color
 			self.__update_font_preview()

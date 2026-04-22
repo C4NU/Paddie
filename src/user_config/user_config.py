@@ -1,44 +1,46 @@
 # Copyright 2023 Eugene Kim (komastar) komastar.photo@gmail.com
 
 import json
-
+import os
 import platform
+from pathlib import Path
+
 print("User_Config Python Package Loaded")
 
-from PyQt6 import QtGui
-from PyQt6.QtGui import QColor
-print("PyQt6 QColor Loaded") 
+from PySide6.QtGui import QColor
+print("PySide6 QColor Loaded")
 
-import os
-import sys
-from pathlib import Path
 from resource_path import resource_path
 
 RESOURCE_USER_DATA = "resources/data/user_data.json"
+USER_CONFIG_FILE_NAME = "user_data.json"
 
-def get_user_data_path():
-    """사용자 데이터(설정)를 저장할 쓰기 가능한 경로를 반환합니다."""
-    # PyInstaller 번들 모드인 경우 시스템의 AppData/Application Support 경로 사용 권장
-    if getattr(sys, 'frozen', False):
-        if platform.system() == "Darwin":
-            app_data_dir = Path(os.path.expanduser("~/Library/Application Support/Paddie"))
-        elif platform.system() == "Windows":
-            app_data_dir = Path(os.environ.get("APPDATA", os.path.expanduser("~"))) / "Paddie"
-        else:
-            app_data_dir = Path(os.path.expanduser("~/.paddie"))
-            
-        if not app_data_dir.exists():
-            app_data_dir.mkdir(parents=True, exist_ok=True)
-        return os.fspath(app_data_dir / "user_data.json")
-    
-    # 개발 모드에서는 기존처럼 resources 폴더 사용
-    return resource_path(RESOURCE_USER_DATA, check_exists=False)
+
+def user_config_path():
+    config_dir_override = os.environ.get("PADDIE_CONFIG_DIR")
+    if config_dir_override:
+        config_dir = Path(config_dir_override)
+        config_dir.mkdir(parents=True, exist_ok=True)
+        return config_dir / USER_CONFIG_FILE_NAME
+
+    system = platform.system()
+    if system == "Windows":
+        base_path = Path(os.environ.get("APPDATA", Path.home() / "AppData" / "Roaming"))
+    elif system == "Darwin":
+        base_path = Path.home() / "Library" / "Application Support"
+    else:
+        base_path = Path(os.environ.get("XDG_CONFIG_HOME", Path.home() / ".config"))
+
+    config_dir = base_path / "Paddie"
+    config_dir.mkdir(parents=True, exist_ok=True)
+    return config_dir / USER_CONFIG_FILE_NAME
+
 
 class UserConfig:
     # setting value is default value
-    language = 1 # 0: English, 1: Korean 2: Japanese
     latest_load_path = None
     latest_save_path = None
+    language = 0 # 0:Auto, 1:Korean, 2:Japanese, 3:Chinese, 4:English
     save_original_path = False
 
     resize_options = False
@@ -49,11 +51,11 @@ class UserConfig:
     conversion_loseless = False
     conversion_exif = False
     conversion_icc = False
+    conversion_transparent = False
     conversion_quality = 92
     
     exif_options = False
     exif_show_preview = False
-    exif_detached_preview = False
     exif_padding_mode = 0 # 0:None, 1:Under, 2:Frame
     exif_save_exifdata = False
     exif_quality = 92
@@ -70,32 +72,40 @@ class UserConfig:
 
     @staticmethod
     def save():
-        path = get_user_data_path()
-        data = {key: getattr(UserConfig, key) for key in UserConfig.__dict__.keys() 
-                if not key.startswith("__") and not callable(getattr(UserConfig, key)) and "_color" not in key}
+        data = {key: getattr(UserConfig, key) for key in UserConfig.__dict__.keys() if not key.startswith("__") and not callable(getattr(UserConfig, key)) and "_color" not in key}
 
         # Special handling for QColor
         data['exif_text_color'] = [UserConfig.exif_text_color.red(), UserConfig.exif_text_color.green(), UserConfig.exif_text_color.blue()]
         data['exif_bg_color'] = [UserConfig.exif_bg_color.red(), UserConfig.exif_bg_color.green(), UserConfig.exif_bg_color.blue()]
 
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
-        print(f"UserConfig saved to {path}")
+        with open(user_config_path(), 'w', encoding='utf-8') as save_data:
+            json.dump(data, save_data, indent=4, ensure_ascii=False)
 
     @staticmethod
     def load():
-        path = get_user_data_path()
         try:
-            with open(path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
+            config_path = user_config_path()
+            if not config_path.exists():
+                default_config_path = resource_path(RESOURCE_USER_DATA)
+                with open(default_config_path, 'r', encoding='utf-8') as default_data:
+                    data = json.load(default_data)
+                UserConfig.__load_data(data)
+                UserConfig.save()
+                return
 
-            for key, value in data.items():
-                # Special handling for QColor
-                if key == 'exif_text_color' or key == 'exif_bg_color':
-                    setattr(UserConfig, key, QColor(value[0], value[1], value[2]))
-                else:
-                    setattr(UserConfig, key, value)
-            print(f"UserConfig loaded from {path}")
+            with open(config_path, 'r', encoding='utf-8') as load_data:
+                data = json.load(load_data)
 
-        except (FileNotFoundError, json.decoder.JSONDecodeError):
-            print(f"UserConfig load failed or not found at {path}")
+            UserConfig.__load_data(data)
+
+        except json.decoder.JSONDecodeError:
+            print('json decode error')
+
+    @staticmethod
+    def __load_data(data):
+        for key, value in data.items():
+            # Special handling for QColor
+            if key == 'exif_text_color' or key == 'exif_bg_color':
+                setattr(UserConfig, key, QColor(value[0], value[1], value[2]))
+            else:
+                setattr(UserConfig, key, value)

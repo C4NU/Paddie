@@ -6,7 +6,6 @@ import platform
 from PIL import Image, ImageDraw, ImageFont
 import math
 
-from caption_format_converter import CaptionFormatConverter
 from resource_path import resource_path
 
 FONT_MAIN = "resources/barlow-light.ttf"
@@ -30,12 +29,12 @@ class Exif:
                 sys.exit(1)
      '''
                 if platform.system() == "Windows":
-                     self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/barlow-light.ttf'), self.font_size)
+	                     self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/barlow-light.ttf'), self.font_size)
                 else:
                      try:
-                          self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "resources/barlow-light.ttf"), self.font_size)
+	                          self.font = ImageFont.truetype(os.path.join(os.path.dirname(sys.executable), "resources/barlow-light.ttf"), self.font_size)
                      except:
-                          self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/barlow-light.ttf'), self.font_size)
+	                          self.font = ImageFont.truetype(os.path.join(os.getcwd(), 'resources/barlow-light.ttf'), self.font_size)
      '''
      def set_image_padding(self, image, top, side, bottom, color):
           width, height = image.size
@@ -70,8 +69,6 @@ class Exif:
           self.font_size = length / 6
 
           line_count = len(text.splitlines())
-          print(f"text: {text}")
-          print(f"line_count: {line_count}")
           if line_count == 1:
                 y += math.floor(self.font_size / 3)
           elif line_count == 2:
@@ -85,54 +82,43 @@ class Exif:
           return image
 
      def set_square_padding(self, image, gap, color, horizontalImage):
-            """1:1 비율 패딩 옵션에서 사용하는 함수
+          width, height = image.size
+          instaSize = 1440
+          ratio = width / height      
 
-            Args:
-                  image (_type_): _description_
-                  gap (_type_): _description_
-                  color (_type_): _description_
-                  horizontalImage (_type_): _description_
+          newWidth = 0
+          newHeight = 0
+          newX = 0
+          newY = 0
 
-            Returns:
-                  _type_: _description_
-            """
-            width, height = image.size
-            instaSize = 1440
-            ratio = width / height      
+          self.ratio_image_gap = gap
 
-            newWidth = 0
-            newHeight = 0
-            newX = 0
-            newY = 0
+          if (horizontalImage) : 			
+                newWidth = instaSize - 2*gap
+                newHeight = math.floor(newWidth / ratio)
+                
+                if (newHeight>=instaSize-10*gap) :
+                     newHeight = instaSize-10*gap
+                     newWidth= math.floor(newHeight*ratio)
+ 
+                newX = math.floor((instaSize - newWidth )/2) 
+                newY = math.floor((instaSize - newHeight)/2)
+		
+          else :
+                newHeight = instaSize - 2*gap
+                newWidth = math.floor(newHeight*ratio)
 
-            self.ratio_image_gap = gap
+                if (newWidth>=instaSize-10*gap) :
+                     newWidth = instaSize-10*gap
+                     newHeight= math.floor(newWidth/ratio)
 
-            if (horizontalImage) : 			
-                  newWidth = instaSize - 2*gap
-                  newHeight = math.floor(newWidth / ratio)
-                  
-                  if (newHeight>=instaSize-10*gap) :
-                        newHeight = instaSize-10*gap
-                        newWidth= math.floor(newHeight*ratio)
+                newX = math.floor((instaSize-newWidth)/2)
+                newY = math.floor((instaSize-newHeight)/2)
 
-                  newX = math.floor((instaSize - newWidth )/2) 
-                  newY = math.floor((instaSize - newHeight)/2)
-            
-            else :
-                  newHeight = instaSize - 2*gap
-                  newWidth = math.floor(newHeight*ratio)
-
-                  if (newWidth>=instaSize-10*gap) :
-                        newWidth = instaSize-10*gap
-                        newHeight= math.floor(newWidth/ratio)
-
-                  newX = math.floor((instaSize-newWidth)/2)
-                  newY = math.floor((instaSize-newHeight)/2)
-
-            result = Image.new(image.mode, (instaSize, instaSize), color)		
-            resizedImage = image.resize((newWidth,newHeight))		
-            result.paste(resizedImage, (newX, newY))
-            return result	
+          result = Image.new(image.mode, (instaSize, instaSize), color)		
+          resizedImage = image.resize((newWidth,newHeight))		
+          result.paste(resizedImage, (newX, newY))
+          return result	
      
      def set_square_text(self, image, text, font_path, color, horizontalImage, alignment):
           self.font_size = 46
@@ -243,26 +229,3 @@ class Exif:
           draw = ImageDraw.Draw(image)
           draw.text(xy=(x, y), text=text, font=self.font, fill=color, anchor=anchor, align=align, spacing=math.floor(self.font_size / 2))
           return image
-
-
-def main():
-     exif_test = Exif()
-
-     try:
-          with Image.open("Error-Test/IMG_0058.jpeg") as img:
-               longer_length = img.width if img.width >= img.height else img.height
-               padding = int(longer_length / 10)
-
-               text = CaptionFormatConverter.convert("{body} | {lens}\n{focal_f} | {aper} | {iso} | {ss}", img._getexif())
-               img = exif_test.set_image_padding(img, top=int(padding / 2), side=int(padding / 2), bottom=padding,
-                                                       color=(255, 255, 255))
-               img = exif_test.set_image_text(img, text=text, length=padding, font_path="resources/barlow-light.ttf", color=(0,0,0), alignment=0, use_side_padding=False)
-               img.show()
-               img.save("Test.jpg")
-     except FileNotFoundError:
-          print("Error: Test image not found.")
-     except Exception as e:
-          print(f"An unexpected error occurred during test: {e}")
-
-if __name__ == "__main__":
-     main()

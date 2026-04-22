@@ -2,52 +2,48 @@
 
 [![CodeFactor](https://www.codefactor.io/repository/github/c4nu/paddie/badge/main)](https://www.codefactor.io/repository/github/c4nu/paddie/overview/main)
 
-![](https://img.shields.io/badge/stable-v3.4.2-blue?style=flat)
+![Stable Version](https://img.shields.io/badge/stable-v3.4.1-blue?style=flat)
 
 [![Github All Releases](https://img.shields.io/github/downloads/c4nu/paddie/total.svg)]()
 
 ## Package Version
 
-Python 3.9+
+Python 3.11 for release builds
 
-PyQt6
+PySide6 6.10.3
 
-Pillows
+Pillow 11.1.0
 
-Pyinstaller
+PyInstaller 6.12.0
 
 ## Description
 
-이미지 포맷 변환 및 EXIF 정보 기반 프레임(레터박스) 합성 프로그램.
+JPG, PNG등의 이미지 사진을 변환시켜주는 프로그램.
 
-### 주요 기능
+### Functions
 
-1. **WebP 변환**: JPG, PNG, TIFF 등을 WebP로 일괄 변환 (무손실, 품질, EXIF/ICC 보존 옵션 제공)
-2. **EXIF 프레임**: 사진 하단 또는 전체에 촬영 정보(바디, 렌즈, 설정값 등)가 포함된 프레임 합성
-3. **멀티스레딩 지원**: 변환 작업 중 UI 멈춤 현상 없앰 및 진행률 실시간 표시
-4. **다국어 지원**: 한국어, 영어, 일본어, 중국어 지원
-5. **설정 UI**: 메인 화면 ⚙️ 버튼을 통해 언어 및 사용자 설정 직접 관리
+1. JPG, PNG, TIFF 이미지 파일을 WebP로 변환시키는 기능.
+   1. Loseless Option
+   2. Image Quality Option
+   3. Save Exif Option
+   4. Save ICC Profile Option
+   5. Save RGBA data(?) Option
+2. EXIF 데이터가 존재하는 이미지파일을 레터박스를 씌워 JPG / PNG / WebP 형태로 저장시키는 기능
+   1. 아무튼 여러가지 옵션 있음 ㅅㄱ
+
 
 ## Build
 
-### 자동 빌드 (추천)
 ```bash
-python3 build_paddie.py
+python -m pip install -r src/requirements.txt
+python -m compileall -q src docs scripts
+python scripts/build_release.py
+python scripts/package_release.py --artifact-name Paddie-local --format zip
 ```
 
-### 수동 빌드
-```bash
-# macOS
-pyinstaller --windowed --noconfirm --clean \
---hidden-import PyQt6 \
---name "Paddie" \
---icon resources/icon.icns \
---add-data "resources/ui:resources/ui" \
---add-data "resources/fonts:resources/fonts" \
---add-data "resources/model_map.csv:resources" \
---add-data "resources/user_data.json:resources" \
---add-data "resources/Barlow-Light.ttf:resources" \
---add-binary "/opt/homebrew/lib/libzstd.1.dylib:." \
---osx-bundle-identifier "paddie_legacy" \
-src/main.py
-```
+
+
+
+GitHub Actions는 태그 `v*` push 또는 수동 실행으로 macOS Intel,
+macOS Apple Silicon, Windows x64, Linux x64 산출물을 빌드합니다.
+태그 빌드에서는 산출물을 첨부한 draft release를 생성합니다.
