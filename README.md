@@ -12,6 +12,12 @@
 ![Pillows](https://img.shields.io/badge/Pillow-11.1.0-yellow?style=flat)
 ![Pyinstaller](https://img.shields.io/badge/PyInstaller-6.12.0-red?style=flat)
 
+## 홍보
+iOS / iPadOS / macOS를 지원하는 New Paddie가 출시되었습니다.
+
+![Download 링크](https://apps.apple.com/us/app/paddie-%EA%B8%B0%EB%A1%9D%EC%9D%84-%EC%83%88%EA%B8%B0%EB%8A%94-%EC%82%AC%EC%A7%84-%ED%94%84%EB%A0%88%EC%9E%84/id6758503800?l=ko)
+
+기존 Paddie 또한 Lite, 혹은 Legacy 버전으로 유지보수는 계속 진행됩니다.
 ## 기능
 | 이름       | 설명                                                           |
 |----------|--------------------------------------------------------------|
