@@ -1,0 +1,10 @@
+{
+  "block_sha256": "b12e5c5539c2109c9adb7aab69db7c7b57aeeca78de3b3bc10ec616417b0742f",
+  "files": {
+    "instructions/documentation.md": "08adb1284ef9eceb21f4afb89545af35e785cd7a672571683a951db861d7b337"
+  },
+  "schema_version": 1,
+  "source_repository": "studio-artifakt/knowledge",
+  "source_sha256": "d9e1db59490c57007f83f95cc23dfcee40838df30ceda18c3b882a709ce42210",
+  "target_id": "paddie-legacy"
+}
