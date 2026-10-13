@@ -4,37 +4,38 @@
 
 공통 규칙은 여기 심어져 있다. 관리 블록은 직접 편집하지 않는다.
 
-<!-- source: studio-artifakt/knowledge; sha256: d9e1db59490c57007f83f95cc23dfcee40838df30ceda18c3b882a709ce42210 -->
+<!-- source: studio-artifakt/knowledge; sha256: 9556051bb26d0969c7b06e720484b3e43a92f8bdd2724a0b438c704057c89b7d -->
 
 # 공통 규칙
 
 ## 문서 규칙 — 지켜야 하는 최소
 
-🔴 **`plan/`은 사람이 읽고 `tech-docs/`는 AI가 읽는다.** 섞지 않는다.
-`plan/`은 체크리스트라 짧게 유지하고 **끝난 항목은 지운다.** `tech-docs/`는 장기 기억이라 쌓이고 지우지 않는다.
-작업하다 알게 된 함정·원인·되돌릴 수 없는 결정은 `plan/`이 아니라 `tech-docs/`에 남긴다.
+🔴 **할 일은 마크다운이 아니라 Studio Ops 보드에 둔다.** `docs/plan/`의 current·backlog·roadmap·code-review에
+새 항목을 쓰지 않는다. 보드는 MCP 서버 `studio`로 읽고 쓴다(연결: studio-ops `docs/guide/agents.md`).
 
-🔴 **`plan/`의 활성 문서는 아래 다섯 종류만 둔다.** 여섯 번째 마크다운을 만들지 않는다.
+| 예전 문서 | 이제 보드에서 |
+|---|---|
+| `current.md` | `in_progress`·`in_review` 카드 |
+| `backlog.md` | 이번 버전 릴리즈에 묶인 `planned`·`backlog` 카드 |
+| `roadmap.md` | 예정 릴리즈 + 아이디어함 |
+| `code-review.md`의 남은 것 | `bug` 카드(라벨 `code-review`). 재현·원인은 `tech-docs/review/` |
 
-| 파일 | 담는 것 | 상한 |
-|---|---|---|
-| `roadmap.md` | **앞으로 할 것만.** 끝난 버전은 `archive/`로 내린다 | 200줄 |
-| `backlog.md` | **이번 버전**에서 아직 작업하지 않은 전체 목록 | 300줄 |
-| `current.md` | backlog에서 지금 착수한 것. 체크리스트 | **150줄** |
-| `code-review.md` | 리뷰가 찾은 것의 **제목과 한두 줄 요약만** | 200줄 |
-| `revenue.md` | 상품·가격·권한의 **지금 상태** | 200줄 |
+- 작업을 시작하면 카드를 `in_progress`로, 끝나면 `done`으로 옮긴다(`move_work_item`).
+  🔴 **한 번 끝낼 때마다 옮긴다.** 세션이 끝날 때 몰아서 하지 않는다.
+- 하다가 생긴 할 일은 `create_work_item`. 먼저 `list_work_items`의 `q`로 같은 카드가 있는지 찾는다.
+- 막히면 라벨 `blocked`를 더하고 설명에 이유를 적는다. 떠오른 생각은 `capture_idea`.
+- 저장소의 프로젝트 키(예: `PAD`)는 그 저장소 `AGENTS.md`에 적는다.
 
-시점 스냅샷(핸드오프·컨텍스트 덤프)은 `plan/archive/`로 내린다.
+🔴 **`studio`가 연결돼 있지 않으면 마크다운으로 되돌아가지 않는다.** 작업은 하고, 보드에 반영하지
+못한 것(시작·완료·새 할 일)을 끝에 사용자에게 목록으로 알린다.
 
-🔴 **`current.md`는 세 묶음만 쓴다 — 현재 진행중 · 진행 예정 · 진행 불가.** 그 밖의 절을 만들지 않는다.
-상단에 상태·막힌 것·다음을 인용 블록으로 두고, 본문은 체크리스트로만 쓴다.
+**기존 `plan/` 파일은 동결한다.** 고치지도 지우지도 않는다 — 보드로 옮긴 뒤 사용자가 `plan/archive/`로 내린다.
+`plan/`에 계속 쓰는 마크다운은 `revenue.md`(상품·가격·권한의 지금 상태)뿐이다.
 
-🔴 **항목은 정확히 한 곳에만 있다.** backlog에서 current로 가져오면 backlog에서 지운다.
-current에서 완료되면 지운다 — `[x]`를 쌓아두지 않는다. 남길 가치가 있으면 `tech-docs/`로 올린다.
+🔴 **`tech-docs/`는 그대로 마크다운이다.** 작업하다 알게 된 함정·원인·되돌릴 수 없는 결정은
+보드 카드가 아니라 `tech-docs/`에 남긴다. 카드 설명에 교훈을 쌓지 않는다.
 
-🔴 **작업을 한 번 끝낼 때마다 `current.md`를 갱신한다.** 세션이 끝날 때 몰아서 쓰지 않는다.
-
-상한을 넘었거나 형식·약어·`tech-docs/` 방 구성이 헷갈리면 [문서 규칙](.agent-instructions/knowledge/instructions/documentation.md)을 읽는다.
+형식·약어·`tech-docs/` 방 구성이 헷갈리면 [문서 규칙](.agent-instructions/knowledge/instructions/documentation.md)을 읽는다.
 단순 오탈자 수정에 무관한 문서를 모두 읽지 않는다.
 
 ## 작업 원칙
@@ -79,7 +80,7 @@ current에서 완료되면 지운다 — `[x]`를 쌓아두지 않는다. 남길
 - **변경 대신 새 값을 만든다** — 객체를 제자리에서 바꾸지 않는다.
 - 함수는 작게(50줄 이하), 파일은 집중되게(800줄 이하), 중첩은 4단계 이하.
 - 하드코딩된 값과 남은 `console.log`/`print` 디버그 출력을 남기지 않는다.
-- 항상 docs/plan을 우선으로 두고, 작업을 진행한 뒤 문서를 업데이트한다.
+- 작업은 보드의 카드부터 확인하고, 끝나면 카드를 옮긴다.
 
 ## 오류 처리와 입력 검증
 
@@ -136,15 +137,14 @@ current에서 완료되면 지운다 — `[x]`를 쌓아두지 않는다. 남길
 
 1. `git status`
 2. 이 파일과 해당 저장소의 `AGENTS.md`
-3. 구현·계획 작업이면 `docs/plan/current.md` · 관련 `backlog.md` 항목
+3. 구현·계획 작업이면 보드에서 이 프로젝트의 `in_progress`·`planned` 카드(`list_work_items`)
 4. 건드릴 영역의 tech-docs 항목을 먼저 찾고 관련 문서만 읽는다
 5. 빌드·테스트 설정
 
 ## 작업 후 확인
 
-1. `docs/plan/current.md` 갱신 — 체크박스·새 항목·상단 요약
+1. 보드 갱신 — 끝낸 카드는 `done`, 새로 생긴 할 일은 카드로, 막힌 것은 `blocked`
 2. 알게 된 함정이나 되돌릴 수 없는 결정이 있으면 `docs/tech-docs/<방>/`에 남긴다
-3. `plan/` 파일이 상한을 넘었으면 그 자리에서 정리한다
 
 ## AI instruction 파일을 고칠 때
 
